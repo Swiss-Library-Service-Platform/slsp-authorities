@@ -1,23 +1,23 @@
-# Hands-On: Building Your First Cloud App
+# Workshop: Hands-On Exercise
 
-This folder contains everything you need to get started with building your first Ex Libris Cloud App.
+This guide walks you through building your first Cloud App during the workshop.
 
 ## Prerequisites
 
 Before you start, make sure you have:
 
-- **Node.js** (v18.19.1 or higher)
+- [ ] **Node.js** (v18.19.1 or higher)
   - Check: `node --version`
   - Download: https://nodejs.org/
 
-- **npm** (comes with Node.js)
+- [ ] **npm** (comes with Node.js)
   - Check: `npm --version`
 
-- **IDE/Code Editor**
+- [ ] **IDE/Code Editor**
   - Recommended: [VS Code](https://code.visualstudio.com/)
   - You can use any text editor, but an IDE will make development easier.
 
-- **Git** (optional, but recommended)
+- [ ] **Git** (optional, but recommended)
   - Check: `git --version`
   - Download: https://git-scm.com/
 
@@ -44,12 +44,14 @@ The following steps can also be found in the official Ex Libris [Getting Started
 
    Follow the prompts to set up your new Cloud App project.
 
-   **Important:** When asked for Environment URL, use the HPH Sandbox URL:
+   **Important:** When asked for Environment URL, use:
    ```
    https://slsp-hph-psb.alma.exlibrisgroup.com/institution/41SLSP_HPH
    ```
 
-   Verify that the project structure is created.
+   Verify that the project structure is created:
+   - `manifest.json`
+   - ...
 
 4. **Start the development server**
    ```bash
@@ -58,7 +60,7 @@ The following steps can also be found in the official Ex Libris [Getting Started
 
 5. **Open the app in your browser**
 
-   Navigate to http://localhost:4200 to see your Cloud App in action.
+   Navigate to http://localhost:3000 to see your Cloud App in action.
 
 
 ## Resources
