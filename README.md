@@ -2,14 +2,11 @@
 
 Supplementary materials for the SLSP Developer Forum 2025 Cloud App Workshop.
 
-## Contents
-- Sample Cloud App template  
-- Setup instructions for local development  
-- Reference links and resources  
-- Space for your own prototype
 
-## Usage
-Clone the repository and follow the setup steps in the `docs/` folder.
+## Repository Structure
 
-## License
-To be defined.
+- **`slides/`** - Workshop presentation materials
+- **`hands-on/`** - Setup instructions, sample app
+  - `sample-cloud-app/` - Example Cloud App
+  - `resources/` - Documentation links and references
+

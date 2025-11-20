@@ -98,7 +98,7 @@ Apps interact with Alma through dedicated SDK services
 
 **We'll use it in the hands-on session!**
 
-<!-- _footer: '📖 SDK on GitHub: [github.com/ExLibrisGroup/exl-cloudapp-cli](https://github.com/ExLibrisGroup/exl-cloudapp-cli)' -->
+<!-- _footer: '📖 SDK on GitHub: [github.com/ExLibrisGroup/exl-cloudapp-cli](https://github.com/ExLibrisGroup/cloudapp-sdk)' -->
 
 ---
 
