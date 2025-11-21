@@ -1,0 +1,15 @@
+{
+	"main": {
+		"actionMessage": "Demo",
+		"actionButtonLabel": "Primär-Aktion",
+		"detailsButtonLabel": "Details",
+		"resetButtonLabel": "Reset",
+		"noEntities": "Keine Elemente",
+		"entity": {
+			"description": "Beschreibung",
+			"id": "Id",
+			"type": "Type",
+			"link": "Link"
+		}
+	}
+}
