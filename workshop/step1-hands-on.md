@@ -70,7 +70,7 @@ The following steps can also be found in the official Ex Libris [Getting Started
 
 5. **Open the app in your browser**
 
-   Navigate to http://localhost:3000 to see your Cloud App in action.
+   Navigate to http://localhost:4200 to see your Cloud App in action.
 
 ## Resources
 
