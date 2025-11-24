@@ -355,6 +355,40 @@ this.restService.call('/users')
 ---
 
 <!-- _class: lead -->
+# 5. Internationalization (i18n)
+
+---
+
+# Multi-Language Support
+
+- Apps automatically use user's Alma language
+- Translation files in `cloudapp/src/i18n/` (`en.json`, `de.json`, etc.)
+
+<div style="font-size: 0.7em;">
+
+**In templates (HTML):**
+```html
+<button>{{ 'main.actionButtonLabel' | translate }}</button>
+```
+
+**In TypeScript:**
+```typescript
+this.translate.instant('main.actionMessage')
+```
+
+**Translation files:**
+```json
+// en.json: "actionButtonLabel": "Primary Action"
+// de.json: "actionButtonLabel": "Primär-Aktion"
+```
+
+</div>
+
+<!-- _footer: '📖 [developers.exlibrisgroup.com/cloudapps/tutorials/translate](https://developers.exlibrisgroup.com/cloudapps/tutorials/translate/)' -->
+
+---
+
+<!-- _class: lead -->
 # 6. Publishing & Lifecycle
 
 ---
@@ -485,9 +519,9 @@ Let's build something together!
 
   - **Option A:** Git (recommended)
   ```bash
-  git clone https://github.com/Swiss-Library-Service-Platform/cloudapp-demo
+  git clone https://github.com/Swiss-Library-Service-Platform/slsp-cloudapps-resources
   ```
 
 - **Option B:** Download ZIP
-  - Go to: https://github.com/Swiss-Library-Service-Platform/cloudapp-demo
+  - Go to: https://github.com/Swiss-Library-Service-Platform/slsp-cloudapps-resources
   - Click "Code" → "Download ZIP"
