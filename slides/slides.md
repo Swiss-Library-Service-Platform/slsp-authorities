@@ -340,6 +340,8 @@ this.restService.call('/users')
     map(users => users.filter(u => u.active)),
     catchError(error => of([]))
   )
+  // TODO: change to tap
+  // take until destroyed
   .subscribe(activeUsers => {
     this.users = activeUsers;
   });
