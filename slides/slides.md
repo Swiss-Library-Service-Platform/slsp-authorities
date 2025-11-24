@@ -328,29 +328,46 @@ restService.call('/users/{user_id}').subscribe(
 
 # RxJS & Asynchronous Patterns
 
-**RxJS = Reactive Extensions for JavaScript**
-
 - Frontend is inherently asynchronous (API calls, user interactions)
 - RxJS makes this manageable with consistent patterns
-  
-**Common Pattern:**
-```typescript
-this.restService.call('/users')
-  .pipe(
-    map(users => users.filter(u => u.active)),
-    catchError(error => of([]))
-  )
-  // TODO: change to tap
-  // take until destroyed
-  .subscribe(activeUsers => {
-    this.users = activeUsers;
-  });
-```
 
 **Key Concepts:**
-- Observables for asynchronous operations
-- Operators for data transformation
-- Subscribe to get results
+- **Observables** - Asynchronous data streams
+- **Operators** - Transform data (map, filter, tap, catchError)
+- **Subscribe** - Execute and get results
+
+**You'll see RxJS everywhere:**
+- All Cloud App SDK services return Observables
+- 📖 Learn more: [learnrxjs.io/learn-rxjs/concepts/rxjs-primer](https://www.learnrxjs.io/learn-rxjs/concepts/rxjs-primer)
+
+---
+
+# RxJS: Best Practice Pattern
+
+<div style="font-size: 0.75em;">
+
+**Recommended approach with proper cleanup:**
+
+```typescript
+private destroyRef = inject(DestroyRef);
+
+this.eventsService.entities$.pipe(
+  takeUntilDestroyed(this.destroyRef),
+  tap(entities => this.entities = entities),
+  catchError(error => {
+    this.alert.error(error.message);
+    return EMPTY;
+  })
+).subscribe();
+```
+
+**Best practices shown:**
+- `takeUntilDestroyed()` - Auto-unsubscribe when component destroyed
+- `tap()` - Side effects (assignment) without changing the stream
+- Keep subscribe empty - logic stays in operators
+- `catchError()` - Handle errors gracefully
+
+</div>
 
 ---
 
