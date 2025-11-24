@@ -1,6 +1,6 @@
 ---
 marp: true
-theme: default
+theme: slsp
 paginate: true
 ---
 

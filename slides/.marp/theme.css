@@ -1,4 +1,6 @@
-/* Marp Theme for SLSP Cloud Apps Workshop */
+/* @theme slsp */
+
+@import 'default';
 
 section {
   font-family: 'Helvetica Neue', Arial, sans-serif;
@@ -14,12 +16,18 @@ h1 {
 }
 
 h2 {
-  color: #4E4A99;
+  color: #333;
 }
 
-ul {
-  font-size: 1.2em;
-  line-height: 1.6;
+ul, ol {
+  font-size: 1em;
+  //line-height: 1.6;
+}
+
+/* Nested lists should be smaller */
+ul ul, ol ul {
+  font-size: 0.75em;
+  margin-top: 0.3em;
 }
 
 code {
