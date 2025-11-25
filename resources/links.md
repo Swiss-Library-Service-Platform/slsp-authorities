@@ -15,6 +15,14 @@
 - **Alma API Documentation**: https://developers.exlibrisgroup.com/alma/apis/
 - **Alma API Console**: https://developers.exlibrisgroup.com/console/
 
+### Alma API - Network Zone Access
+
+- **SLSP Cloud App Proxy**: 
+  - Enables Cloud Apps to securely access the Network Zone (NZ) API
+  - Provides JWT-based authentication and institution authorization
+  - Required for NZ API access from Cloud Apps
+  - Read docs here: https://proxy02.swisscovery.network/docs
+
 ### Angular/RxJS
 
 - **Angular Documentation**: https://angular.dev/
