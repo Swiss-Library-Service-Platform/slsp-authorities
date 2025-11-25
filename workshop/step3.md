@@ -4,12 +4,12 @@ Now it's time to experiment. There are two options:
 
 ## Option 1: Build Your Own Idea
 
-If you have a specific use case or idea in mind, go for it. This is a great opportunity to:
+If you have a specific use case or idea in mind, go for it. This is a good opportunity to discuss with others, ask questions, and explore what's possible.
 
-- Discuss with others
-- Ask questions about what's possible
-- Prototype something relevant to your institution
-- Explore the [Alma API documentation](https://developers.exlibrisgroup.com/alma/apis/)
+Some ideas to get you started:
+- Prototype something relevant to your institution's workflows
+- Build a dashboard widget for daily tasks (e.g., monitoring queues, quick stats, ...)
+- Experiment with integrating external APIs or services
 
 ## Option 2: Extend the Starter App
 
