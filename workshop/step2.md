@@ -29,19 +29,13 @@ This serves as a good foundation for your own Cloud App projects.
 
    **Not using VS Code?** You can use any editor, but you won't get the automatic extension recommendations.
 
-2. **Navigate to the starter-app folder** (if not already there)
-
-   ```bash
-   cd starter-app
-   ```
-
-3. **Install dependencies**
+2. **Install dependencies**
 
    ```bash
    npm install
    ```
 
-4. **Configure your Alma environment**
+3. **Configure your Alma environment**
 
    Copy the config template and edit it:
 
@@ -58,15 +52,20 @@ This serves as a good foundation for your own Cloud App projects.
    }
    ```
 
-5. **Start the development server**
+4. **Start the development server**
 
    ```bash
    eca start
    ```
 
-6. **Open in browser**
+5. **Open in browser**
 
    Navigate to http://localhost:4200
+
+6. **Log in to Alma**
+
+   Use the Alma Sandbox credentials provided in SLSPhere to authenticate the app.
+   See here for credentials: [SLSP Premium Sandbox - Testing](https://slsp.atlassian.net/wiki/spaces/AlmaPrimoVE/pages/77532053/SLSP+Premium+Sandbox#5.-Sandbox-4:-Testing)
 
 ## Explore the Project Structure
 
