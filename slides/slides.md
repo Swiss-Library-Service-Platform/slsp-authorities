@@ -287,7 +287,7 @@ Each service is injected via Angular Dependency Injection
 **$entities: Recommended approach with proper cleanup:**
 
 ```typescript
-export class MyComponent {
+export class MainComponent implements OnInit {
   private eventsService = inject(CloudAppEventsService);
   private alert = inject(CloudAppAlertService);
   private destroyRef = inject(DestroyRef);
