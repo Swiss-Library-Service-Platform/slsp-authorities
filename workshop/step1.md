@@ -39,7 +39,7 @@ The following steps can also be found in the official Ex Libris [Getting Started
 2. **Verify installation**
 
    ```bash
-   eca --version
+   eca version
    ```
 
 3. **Create a new Cloud App project**
