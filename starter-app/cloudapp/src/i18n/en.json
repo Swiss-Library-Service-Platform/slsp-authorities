@@ -5,6 +5,9 @@
 		"detailsButtonLabel": "Details",
 		"resetButtonLabel": "Reset",
 		"noEntities": "No entities",
+		"noIdrefAuthority": "There is no authority record linked to this PPN.",
+		"idrefSearchButtonLabel": "Idref search",
+		"noActiveRecordInMetadataEditor": "No active record, please open a bibliographical record in the Metadata editor",
 		"entity": {
 			"description": "Description",
 			"id": "Id",

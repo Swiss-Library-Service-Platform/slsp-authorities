@@ -19,6 +19,8 @@ import { AppComponent } from './app.component';
 import { MainComponent } from './main/main.component';
 import { EntityListComponent } from './entity-list/entity-list.component';
 import { EntityDetailComponent } from './entity-detail/entity-detail.component';
+import { ExternalComponent } from './external/external.component';
+import { IdrefSearchComponent } from './idref-search/idref-search.component';
 
 @NgModule({
 	declarations: [
@@ -26,6 +28,8 @@ import { EntityDetailComponent } from './entity-detail/entity-detail.component';
 		MainComponent,
 		EntityListComponent,
 		EntityDetailComponent,
+		ExternalComponent,
+		IdrefSearchComponent
 	],
 	bootstrap: [AppComponent],
 	imports: [

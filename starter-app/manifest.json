@@ -1,6 +1,17 @@
 {
-   "id": "alma-cloud-app-template",
-   "title": "alma-cloud-app-template",
-   "subtitle": "A more or less empty CloudApp",
-   "author": "App Author"
+   "id": "first-alam-cloud-app",
+   "title": "first alam cloud app",
+   "subtitle": "First alam cloudapp based on the documentation of the slsp github",
+   "author": "Ylann BASTIAN",
+   "contentSecurity": {
+      "connectSrc": [
+         "https://catalog.hathitrust.org/",
+         "https://www.idref.fr/",
+         "https://proxy02.swisscovery.network/"
+      ]
+   },
+   "fullscreen": {
+      "allow": true,
+      "open": false
+   }
 }

@@ -20,7 +20,7 @@
 } @else if (selectedEntity) {
 	<app-entity-detail [entity]="selectedEntityDetails$ | async" />
 } @else {
-	<p>{{ 'main.noEntities' | translate }}</p>
+	<p>{{ 'main.noActiveRecordInMetadataEditor' | translate }}</p>
 }
 @if (loader.isLoading | async) {
 	<div class="loading-shade">
@@ -31,3 +31,4 @@
 		></mat-spinner>
 	</div>
 }
+<app-external></app-external>

@@ -1,3 +1,72 @@
 @if (entity()) {
-	<pre>{{ entity() | json }}</pre>
+	<div class="selected-head">
+		<div class="entity-title">
+			<h1 class="entity-title">{{ title }}</h1>
+			<span class="entity-subtitle">{{ mms_id }}</span>
+		</div>
+		<button mat-flat-button color="primary" (click)="updateAllowedTags()">
+			{{ 'main.detailsButtonLabel' | translate }}
+		</button>
+		<button
+			mat-flat-button
+			color="primary"
+			(click)="showIdrefSearch = !showIdrefSearch">
+			{{ 'main.idrefSearchButtonLabel' | translate }}
+		</button>
+	</div>
+	@if (showIdrefSearch) {
+		<app-idref-search></app-idref-search>
+	}
+	<div class="marc">
+		@for (entry of marcFields; track entry.tag) {
+			<div
+				class="marc-row"
+				[style.background-color]="getColorForTag(entry.tag)">
+				@if(getIdrefAllowedTags().includes(entry.tag)){
+					<button (click)="searchForTag(entry)">
+					<mat-icon color="primary">search</mat-icon>
+					</button>
+				}
+				<div class="marc-column"></div>
+				<div class="marc-column">
+					<span class="tag">{{ entry.tag }}</span>
+				</div>
+				<div class="marc-column">
+					<span class="ind">{{ entry.ind1 }}</span>
+				</div>
+				<div class="marc-column">
+					<span class="ind">{{ entry.ind2 }}</span>
+				</div>
+				<div class="marc-column">
+					@for (valueEntry of entry.value; track valueEntry) {
+						<div class="marc-column-value">
+							@if (valueEntry.code && valueEntry.code !== '') {
+								<span class="subfield">$${{ valueEntry.code }}</span>
+							}
+							<span class="value">{{ valueEntry.value }} </span>
+						</div>
+					}
+				</div>
+			</div>
+		}
+	</div>
+	<div class="idrefmarc">
+		@if (idrefResult) {
+			@if (idrefResult.response.docs.length >= 1) {
+				@for (key of idrefResult.response.docs[0] | keyvalue; track key) {
+					<div class="idrefmarc-row">
+						<div class="idrefmarc-column">
+							<span class="tag">{{ key.key }}</span>
+						</div>
+						<div class="idrefmarc-column">
+							<span class="value">{{ key.value }}</span>
+						</div>
+					</div>
+				}
+				{{ idrefResult.response.docs[0] | json }}
+			} @else {
+				{{ 'main.noIdrefAuthority' | translate }}
+			}
+		}
+	</div>
 }

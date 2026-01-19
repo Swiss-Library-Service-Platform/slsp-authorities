@@ -1,0 +1,16 @@
+.entities-list {
+  .mat-list-item {
+    height: 50px;
+    padding: unset;
+
+    .mat-icon {
+      margin-right: 10px;
+    }
+  }
+
+  .entity-description {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}

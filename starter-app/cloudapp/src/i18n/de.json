@@ -5,6 +5,7 @@
 		"detailsButtonLabel": "Details",
 		"resetButtonLabel": "Reset",
 		"noEntities": "Keine Elemente",
+		"noActiveRecordInMetadataEditor": "Kein aktiver Datensatz, bitte öffnen Sie einen bibliografischen Datensatz im Metadaten-Editor.",
 		"entity": {
 			"description": "Beschreibung",
 			"id": "Id",

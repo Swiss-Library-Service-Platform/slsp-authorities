@@ -1,42 +1,14 @@
-<mat-list>
-	@for (entity of entities(); track entity.id) {
-		<mat-list-item>
-			<mat-card>
-				<mat-card-content>
-					<mat-list>
-						<mat-list-item [lines]="'3'">
-							<mat-icon matListItemIcon>info</mat-icon>
-							{{ 'main.entity.description' | translate }}:
-							{{ entity.description }}</mat-list-item
-						>
-						<mat-list-item>
-							<mat-icon matListItemIcon>lightbulb</mat-icon>
-							{{ 'main.entity.id' | translate }}: {{ entity.id }}</mat-list-item
-						>
-						<mat-list-item>
-							<mat-icon matListItemIcon>type_specimen</mat-icon>
-							{{ 'main.entity.type' | translate }}:
-							{{ entity.type }}</mat-list-item
-						>
-						<mat-list-item>
-							<mat-icon matListItemIcon>link</mat-icon>
-							{{ 'main.entity.link' | translate }}:
-							{{ entity.link }}</mat-list-item
-						>
-					</mat-list>
-				</mat-card-content>
-				<mat-card-footer>
-					<mat-card-actions [align]="'end'"
-						><button
-							mat-flat-button
-							color="primary"
-							(click)="selectEntity(entity)"
-						>
-							{{ 'main.detailsButtonLabel' | translate }}
-						</button>
-					</mat-card-actions>
-				</mat-card-footer>
-			</mat-card>
-		</mat-list-item>
-	}
-</mat-list>
+<div>
+	<mat-list>
+		@for (entity of entities(); track entity.id) {
+			<mat-list-item
+				matTooltip="{{ entity.description }}"
+				[matTooltipShowDelay]="800"
+				(click)="selectEntity(entity)"
+			>
+				<mat-icon color="primary">menu_book</mat-icon>
+				<span class="entity-description">{{ entity.description }}</span>
+			</mat-list-item>
+		}
+	</mat-list>
+</div>
