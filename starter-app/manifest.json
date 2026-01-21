@@ -1,7 +1,7 @@
 {
    "id": "first-alam-cloud-app",
-   "title": "first alam cloud app",
-   "subtitle": "First alam cloudapp based on the documentation of the slsp github",
+   "title": "SLSPAuthorities",
+   "subtitle": "Alma cloudapp that aims to simplify cataloguing workflows that are currently hindered by the architecture of the IdRef-integration into Alma. ",
    "author": "Ylann BASTIAN",
    "contentSecurity": {
       "connectSrc": [

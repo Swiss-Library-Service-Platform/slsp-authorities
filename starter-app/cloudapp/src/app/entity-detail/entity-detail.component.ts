@@ -8,8 +8,8 @@ import {
 } from 'rxjs';
 import { Bib, xmlEntry } from '../models/bib-records';
 import { IdrefService } from '../services/idref.service';
-import { IdrefRecords } from '../models/idref-model';
-import { allowedTags,tagGroups } from '../models/idref-model';
+import { getIdrefRecordsFromXmlentry, IdrefRecords, MARC_STRUCTURE_KEY } from '../models/idref-model';
+import { tagGroups } from '../models/idref-model';
 
 @Component({
 	selector: 'app-entity-detail',
@@ -20,7 +20,6 @@ export class EntityDetailComponent implements OnInit {
 	public entity = input.required<Bib | null>();
 	public entity$ = toObservable(this.entity);
 	public idrefResult: IdrefRecords | undefined;
-	public showIdrefSearch = false;
 
 	public entityAnnies$ = this.entity$.pipe(
 		map((e) => e?.anies[0] ?? null),
@@ -41,13 +40,13 @@ export class EntityDetailComponent implements OnInit {
 
 
 	// ✅ BehaviorSubject pour allowedTags
-	private allowedTags$ = new BehaviorSubject<string[]>(allowedTags);
+	private allowedTags$ = new BehaviorSubject<string[]>(MARC_STRUCTURE_KEY);
 	private idrefService = inject(IdrefService);
 
 	//TODO: modifier les allowed tags pour les affiner
 	//retourne les tag de la notice bibliographique sur lesquels on peut faire une recherche
 	public getIdrefAllowedTags(): string[]{
-		return allowedTags;
+		return MARC_STRUCTURE_KEY;
 	}
 	public reset(): void{
 		//TODO: trouver un moyen de mettre l'entité à nullpour que le composant main n'affiche plus celui ci
@@ -66,6 +65,7 @@ export class EntityDetailComponent implements OnInit {
 
 	public ngOnInit(): void {
 		// Combine xmlString et allowedTags pour recalculer marcFields
+		//donc lorsque l'on met à jour allowedTags avec updateAllowedTags ça recalcule automatiquement marcfields
 		combineLatest([this.entityAnnies$, this.allowedTags$]).subscribe(
 			([xmlString, allowedTagsArray]) => {
 				if (!xmlString) {
@@ -88,19 +88,28 @@ export class EntityDetailComponent implements OnInit {
 		if(this.allowedTags$.value.length > 0){
 			this.allowedTags$.next([]);
 		}else{
-			this.allowedTags$.next(allowedTags);
+			//on récupère toutes les clés de MARC_STRUCTURE et on les mets dans un tableau pour les afficher dans le html
+			this.allowedTags$.next(MARC_STRUCTURE_KEY);
 		}
 	}
 
 
 	public searchForTag(entry: xmlEntry): void {
 		console.log(entry);
-		//console.log(entry.value.find(v => v.code === '0')?.value.replace("(IDREF)", ""));
 
-		this.idrefService.searchForPPN(entry).subscribe((response) => {
+		//console.log(entry.value.find(v => v.code === '0')?.value.replace("(IDREF)", ""));
+		const idRefEntry = entry.value.find((v) => v.code === '0');
+
+		//si on trouve un ppn relié à idref, on fait une recherche selon ce PPN
+		if (idRefEntry && idRefEntry.value.includes('(IDREF)')) {		
+			this.idrefService.searchForPPN(idRefEntry).subscribe((response) => {
 			this.idrefResult = response;
 			console.log('Données reçues :', this.idrefResult);
 		});
+		}else{
+			const idrefEqu = getIdrefRecordsFromXmlentry(entry)
+
+		}
 	}
 
 	private updateMarcFields(xmlString: string, allowedTagsArray: string[]): void {

@@ -4,7 +4,7 @@ import {
 } from '@angular/common/http';
 import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldModule } from '@angular/material/form-field';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {
@@ -21,6 +21,8 @@ import { EntityListComponent } from './entity-list/entity-list.component';
 import { EntityDetailComponent } from './entity-detail/entity-detail.component';
 import { ExternalComponent } from './external/external.component';
 import { IdrefSearchComponent } from './idref-search/idref-search.component';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
 
 @NgModule({
 	declarations: [
@@ -41,6 +43,9 @@ import { IdrefSearchComponent } from './idref-search/idref-search.component';
 		FormsModule,
 		ReactiveFormsModule,
 		CloudAppTranslateModule.forRoot(),
+		MatSelectModule,
+		MatFormFieldModule,
+		MatInputModule
 	],
 	providers: [
 		{

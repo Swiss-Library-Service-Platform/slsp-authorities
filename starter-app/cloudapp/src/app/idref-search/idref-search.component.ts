@@ -1,20 +1,24 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { IdrefService } from '../services/idref.service';
-import { IdrefSolrIndexKeys } from '../models/idref-model';
-import { values } from 'lodash';
+import {
+	IdrefSolrIndex,
+	IdrefSolrIndexKeys,
+	recordType,
+} from '../models/idref-model';
 
 @Component({
 	selector: 'app-idref-search',
 	templateUrl: './idref-search.component.html',
-	styleUrls: ['./idref-search.component.scss'],
+	styleUrls: ['./idref-search.component.scss']
 })
 export class IdrefSearchComponent {
 	public IdrefSolrIndexKeys = IdrefSolrIndexKeys;
-
+	public RecordTypeKeys = recordType;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	public results: any[] = [];
 	public loading = false;
+	public recordTypeSelected!: string;
 
 	public searchForm: FormGroup;
 	private idrefService = inject(IdrefService);
@@ -25,10 +29,6 @@ export class IdrefSearchComponent {
 	}
 
 	public onSelectKey(key: string): void {
-		// Ajouter dynamiquement le FormControl si pas déjà présent (peut-être utile si on veut créer dynamiquement un formulaire plus complexe dans le futur)
-		/*if (!this.searchForm.contains(key)) {
-      this.searchForm.addControl(key, new FormControl(''));
-    }*/
 
 		// Réinitialiser le formulaire avec uniquement le champ sélectionné
 		this.searchForm = this.fb.group({
@@ -38,6 +38,7 @@ export class IdrefSearchComponent {
 
 	public onSubmit(): void {
 		console.log('Valeurs du formulaire :', this.searchForm.value);
+		this.onSearch();
 	}
 
 	public onSearch(): void {
@@ -58,7 +59,14 @@ export class IdrefSearchComponent {
 	//const url = environment.idrefUrl+'persname_t:(albert%20AND%20einstein)&wt=json'
 
 	private buildQuery(): string {
-   // const values = this.searchForm.value
+		const values = this.searchForm.value as IdrefSolrIndex;
+		const keyValuePairs = Object.entries(values)
+			.filter(([_, value]) => value !== null && value !== '') // On garde uniquement les valeurs non nulles et non vides
+			.map(([key, value]) => `${key}:${value}`); // On transforme en "clé=valeur"
+		const resultString = keyValuePairs.join('&'); // Par exemple, concaténation avec "&"
+    const r=resultString.concat(`&${this.recordTypeSelected}`);
+
+		console.log(r);
 
 		return values.toString();
 	}

@@ -1,52 +1,35 @@
 <!-- eslint-disable @angular-eslint/template/label-has-associated-control -->
+<h3>Choisir un type de notice :</h3>
+<mat-form-field>
+	<mat-label>-- Sélectionnez un champ --</mat-label>
+	<mat-select
+		#selectBoxRecord
+		(change)="recordTypeSelected = selectBoxRecord.value"
+	>
+		@for (recordKey of RecordTypeKeys | keyvalue; track RecordTypeKeys) {
+			<mat-option [value]="recordKey.key">{{ recordKey.value }}</mat-option>
+		}
+	</mat-select>
+</mat-form-field>
 
-
-<div class="dropdown-container">
-  <h3>Choisir un index :</h3>
-  <select #selectBox  (change)="onSelectKey(selectBox.value)">
-    <option value="" disabled selected>-- Sélectionnez un champ --</option>
-	@for(indexKey of IdrefSolrIndexKeys; track indexKey){
-		<option [value]="indexKey">{{ indexKey }}</option>
-	}
-  </select>
-</div>
-@for(control of searchForm.controls | keyvalue; track control.key){
-	<div [formGroup]="searchForm">
-    <label [for]="control.key">{{ control.key }} :</label>
-    <input [id]="control.key" [formControlName]="control.key" type="text" />
-	</div>
+<h3>Choisir un index :</h3>
+<mat-form-field>
+	<mat-label>-- Sélectionnez un champ --</mat-label>
+	<mat-select #selectBoxIndex (change)="onSelectKey(selectBoxIndex.value)">
+		@for (indexKey of IdrefSolrIndexKeys; track indexKey) {
+			<mat-option [value]="indexKey">{{ indexKey }}</mat-option>
+		}
+	</mat-select>
+</mat-form-field>
+@for (control of searchForm.controls | keyvalue; track control.key) {
+	<mat-form-field [formGroup]="searchForm">
+		<mat-label>{{ control.key }} :</mat-label>
+		<input
+			matInput
+			[id]="control.key"
+			[formControlName]="control.key"
+			type="text"
+		/>
+	</mat-form-field>
 }
-@if(searchForm.touched){
-	<button (click)="onSubmit()">Valider</button>
-}
-
-
-<!--
-<div class="idref-search">
-	<form [formGroup]="searchForm" (ngSubmit)="onSearch()">
-		<label>Nom :</label>
-		<input formControlName="name" type="text" />
-
-		<label>Prénom :</label>
-		<input formControlName="firstName" type="text" />
-
-		<label>ID IdRef :</label>
-		<input formControlName="idrefId" type="text" />
-
-		<button type="submit" [disabled]="loading">Rechercher</button>
-	</form>
-	@if (loading) {
-		<div>Chargement...</div>
-	}
-	@if (results.length > 0) {
-		<div>
-			<h3>Résultats :</h3>
-			<ul>
-				@for (r of results; track results) {
-					<li>{{ r.name }} ({{ r.idref }})</li>
-				}
-			</ul>
-		</div>
-	}
-</div>
--->
+<button mat-flat-button color="secondary" (click)="onSubmit()">Valider</button>

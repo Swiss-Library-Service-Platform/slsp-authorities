@@ -1,3 +1,5 @@
+import { xmlEntry } from './bib-records';
+
 //mapping des couleurs des champs en fonction de leur rapport avec des notices d'authorités
 export const tagGroups: {
 	[groupName: string]: { tags: string[]; color: string };
@@ -182,172 +184,234 @@ export interface IdrefSolrIndex {
 	all: string;
 }
 
-export interface IdrefResolution {
-  /** Clé dans IDREF_MAPPING, ex. "person", "subject", "trademark", ... */
-  typeKey: keyof typeof IDREF_MAPPING;
-  /** Libellé lisible (ex. Personne, Sujet, …) */
-  label: string;
-  /** Filtres Solr IdRef recommandés pour la recherche texte (ex. ["persname_t", ...]) */
-  filters: string[];
-  /** Codes recordtype_z à filtrer dans la requête (ex. ["a"], ["j","t"], …) */
-  recordtypes: string[];
-  /** Score de correspondance (pour désambiguiser lorsqu’on passe presentSubfields) */
-  score: number;
-  /** Définition(s) MARC qui ont matché */
-  matchedMarcDefs: Array<{ tag: string; indicators: [string, string]; subfields: string[] }>;
+export const MARC_STRUCTURE = new Map<
+	string,
+	{
+		label: string;
+		filters: string[];
+		recordtypes: string[];
+	}
+>([
+	// Personne
+	[
+		'100|0 ',
+		{
+			label: 'Personne',
+			filters: ['persname_t', 'datenaisance_dt', 'datemort_dt'],
+			recordtypes: ['a'],
+		},
+	],
+	[
+		'100|1 ',
+		{
+			label: 'Personne',
+			filters: ['persname_t', 'datenaisance_dt', 'datemort_dt'],
+			recordtypes: ['a'],
+		},
+	],
+	[
+		'700|0 ',
+		{
+			label: 'Personne',
+			filters: ['persname_t', 'datenaisance_dt', 'datemort_dt'],
+			recordtypes: ['a'],
+		},
+	],
+	[
+		'700|1 ',
+		{
+			label: 'Personne',
+			filters: ['persname_t', 'datenaisance_dt', 'datemort_dt'],
+			recordtypes: ['a'],
+		},
+	],
+	[
+		'600|0 ',
+		{
+			label: 'Personne',
+			filters: ['persname_t', 'datenaisance_dt', 'datemort_dt'],
+			recordtypes: ['a'],
+		},
+	],
+	[
+		'600|1 ',
+		{
+			label: 'Personne',
+			filters: ['persname_t', 'datenaisance_dt', 'datemort_dt'],
+			recordtypes: ['a'],
+		},
+	],
+
+	// Collectivité
+	[
+		'110|  ',
+		{ label: 'Collectivité', filters: ['corpname_t'], recordtypes: ['b'] },
+	],
+	[
+		'610|  ',
+		{ label: 'Collectivité', filters: ['corpname_t'], recordtypes: ['b'] },
+	],
+	[
+		'710|  ',
+		{ label: 'Collectivité', filters: ['corpname_t'], recordtypes: ['b'] },
+	],
+
+	// Congrès
+	[
+		'111|  ',
+		{ label: 'Congrès', filters: ['conference_t'], recordtypes: ['s'] },
+	],
+	[
+		'611|  ',
+		{ label: 'Congrès', filters: ['conference_t'], recordtypes: ['s'] },
+	],
+	[
+		'711|  ',
+		{ label: 'Congrès', filters: ['conference_t'], recordtypes: ['s'] },
+	],
+
+	// Famille
+	['100|3 ', { label: 'Famille', filters: ['famname_t'], recordtypes: ['e'] }],
+	['600|3 ', { label: 'Famille', filters: ['famname_t'], recordtypes: ['e'] }],
+	['700|3 ', { label: 'Famille', filters: ['famname_t'], recordtypes: ['e'] }],
+
+	// Titre uniforme
+	[
+		'130|  ',
+		{
+			label: 'Titre uniforme',
+			filters: ['uniformtitle_t'],
+			recordtypes: ['f'],
+		},
+	],
+	[
+		'630|  ',
+		{
+			label: 'Titre uniforme',
+			filters: ['uniformtitle_t'],
+			recordtypes: ['f'],
+		},
+	],
+	[
+		'730|  ',
+		{
+			label: 'Titre uniforme',
+			filters: ['uniformtitle_t'],
+			recordtypes: ['f'],
+		},
+	],
+
+	// Auteur / titre
+	[
+		'600|1 |a,t',
+		{ label: 'Auteur / titre', filters: ['nametitle_t'], recordtypes: ['h'] },
+	],
+	[
+		'600|0 |a,t',
+		{ label: 'Auteur / titre', filters: ['nametitle_t'], recordtypes: ['h'] },
+	],
+
+	// Sujet
+	[
+		'650|  ',
+		{ label: 'Sujet', filters: ['subjectheading_t'], recordtypes: ['j', 't'] },
+	],
+
+	// Nom géographique
+	[
+		'651|  ',
+		{ label: 'Nom géographique', filters: ['geoname_t'], recordtypes: ['c'] },
+	],
+	[
+		'751|  ',
+		{ label: 'Nom géographique', filters: ['geoname_t'], recordtypes: ['c'] },
+	],
+
+	// Forme / genre
+	[
+		'655|  ',
+		{
+			label: 'Forme / genre',
+			filters: ['formgenreheading_t'],
+			recordtypes: ['u', 'v'],
+		},
+	],
+]);
+
+function getMarStructureKey(): string[] {
+	const mapStructureIterator = MARC_STRUCTURE.keys();
+	let key = mapStructureIterator.next();
+	const keys: string[] = [];
+
+	if (key.value) {
+		keys.push(key.value.substring(0, 3));
+	}
+
+	while (!key.done) {
+		keys.push(key.value.substring(0, 3));
+		key = mapStructureIterator.next();
+	}
+
+	return keys;
 }
 
+//les champs pouvant être relié à idref qui sont calculé depuis MARC_STRUCTURE
+export const MARC_STRUCTURE_KEY = getMarStructureKey();
 
-// idref-mapping.ts (mise à jour)
-export interface IdRefMapping {
-  label: string;
-  /** Champ(s) Solr IdRef pertinents pour la recherche texte */
-  filters: string[];
-  /** Codes recordtype_z IdRef pour ce type (filtre obligatoire) */
-  recordtypes: string[];     // ex: ['a'] pour Personne, ['j','t'] pour Sujet (RAMEAU/FMeSH)
-  /** Zones MARC applicables à ce type IdRef */
-  marc: Array<{
-    tag: string;                    // ex: "700", "110", "650"
-    indicators: [string, string];   // ind1, ind2 (' ' = blanc)
-    subfields: string[];            // ex: ['a','b','q','d']
-  }>;
+export function getIdrefRecordsFromXmlentry(
+	entry: xmlEntry,
+): { label: string; filters: string[]; recordtypes: string[] } | undefined {
+	console.log('entry: ', entry);
+
+	const tag = entry.tag;
+	const ind1 = entry.ind1.length > 0 ? entry.ind1 : ' ';
+	const ind2 = entry.ind2.length > 0 ? entry.ind2 : ' ';
+	const subfields: string[] = [];
+
+	entry.value.forEach((v) => {
+		subfields.push(v.code);
+	});
+
+	//ici on met ans l'ordre pour que cela corresponde au mapping
+	const subfieldsStr = subfields.sort().join(',');
+	let result = MARC_STRUCTURE.get(`${tag}|${ind1}${ind2}|${subfieldsStr}`);
+
+	//d'abord on regarde si on a besoin de spécifier les subfields
+	if (result) {
+		return result;
+	} else {
+		//si pas de subfields on regarde les indicateurs
+		result = MARC_STRUCTURE.get(`${tag}|${ind1}${ind2}`);
+
+		if (result) {
+			return result;
+		} else if ((result = MARC_STRUCTURE.get(`${tag}|  `))) {
+			return result;
+		} else {
+			console.error('il ny a pas de mapping associé');
+
+			return;
+		}
+	}
 }
 
-//les champs pouvant être relié à idref
-export const allowedTags = ['100', '110', '650', '651', '655'];
-
-export function getAllowedTags(): string[]{
-	return [];
-}
-
-
-export const IDREF_MAPPING: Record<string, IdRefMapping> = {
-  person: {
-    label: 'Personne',
-    filters: ['persname_t', 'datenaisance_dt', 'datemort_dt'],
-    recordtypes: ['a'], // Personne physique
-    marc: [
-      { tag: '100', indicators: ['0',' '], subfields: [] },
-      { tag: '100', indicators: ['1',' '], subfields: [] },
-      { tag: '700', indicators: ['0',' '], subfields: [] },
-      { tag: '700', indicators: ['1',' '], subfields: [] },
-      { tag: '600', indicators: ['0',' '], subfields: [] },
-      { tag: '600', indicators: ['1',' '], subfields: [] }
-    ]
-  },
-
-  corporate: {
-    label: 'Collectivité',
-    filters: ['corpname_t'],
-    recordtypes: ['b'], // Collectivité (hors congrès)
-    marc: [
-      { tag: '110', indicators: [' ',' '], subfields: [] },
-      { tag: '610', indicators: [' ',' '], subfields: [] },
-      { tag: '710', indicators: [' ',' '], subfields: [] }
-    ]
-  },
-
-  conference: {
-    label: 'Congrès',
-    filters: ['conference_t'],
-    recordtypes: ['s'], // Congrès
-    marc: [
-      { tag: '111', indicators: [' ',' '], subfields: [] },
-      { tag: '611', indicators: [' ',' '], subfields: [] },
-      { tag: '711', indicators: [' ',' '], subfields: [] }
-    ]
-  },
-
-  family: {
-    label: 'Famille',
-    filters: ['famname_t'],
-    recordtypes: ['e'], // Famille
-    marc: [
-      { tag: '100', indicators: ['3',' '], subfields: [] },
-      { tag: '600', indicators: ['3',' '], subfields: [] },
-      { tag: '700', indicators: ['3',' '], subfields: [] }
-    ]
-  },
-
-  uniformTitle: {
-    label: 'Titre uniforme',
-    filters: ['uniformtitle_t'],
-    recordtypes: ['f'], // Titre uniforme
-    marc: [
-      { tag: '130', indicators: [' ',' '], subfields: [] },
-      { tag: '630', indicators: [' ',' '], subfields: [] },
-      { tag: '730', indicators: [' ',' '], subfields: [] }
-    ]
-  },
-
-  nameTitle: {
-    label: 'Auteur / titre',
-    filters: ['nametitle_t'],
-    recordtypes: ['h'], // Auteur–Titre
-    marc: [
-      { tag: '600', indicators: ['1',' '], subfields: ['a','t'] },
-      { tag: '600', indicators: ['0',' '], subfields: ['a','t'] }
-    ]
-  },
-
-  subject: {
-    label: 'Sujet',
-    filters: ['subjectheading_t'],
-    recordtypes: ['j','t'], // j = RAMEAU (nom commun & notices avec subdivision RAMEAU), t = FMeSH
-    marc: [
-      { tag: '650', indicators: [' ',' '], subfields: [] }
-    ]
-  },
-
-  trademark: {
-    label: 'Nom de marque',
-    filters: ['trademark_t'],
-    recordtypes: ['d'], // Marque
-    marc: [
-      { tag: '650', indicators: [' ',' '], subfields: [] }
-    ]
-  },
-
-  geographic: {
-    label: 'Nom géographique',
-    filters: ['geoname_t'],
-    recordtypes: ['c'], // Nom géographique
-    marc: [
-      { tag: '651', indicators: [' ',' '], subfields: [] },
-      { tag: '751', indicators: [' ',' '], subfields: [] }
-    ]
-  },
-
-  formGenre: {
-    label: 'Forme / genre',
-    filters: ['formgenreheading_t'],
-    recordtypes: ['u','v'], // u = Forme RAMEAU ; v = Genre RAMEAU
-    marc: [
-      { tag: '655', indicators: [' ',' '], subfields: [] }
-    ]
-  },
-};
-
-export const tagIndex = Object.values(IDREF_MAPPING)
-  .flatMap(mapping => mapping.marc.map(rule => ({ ...rule, type: mapping.label })))
-  .reduce((acc, rule) => {
-    acc[rule.tag] = acc[rule.tag] || [];
-    acc[rule.tag].push(rule);
-
-    return acc;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  }, {} as Record<string, any[]>)
-
-  
-export function validateMarc(tag: string, indicators: string[], subfields: string[]): boolean {
-  const rules = tagIndex[tag];
-
-  if (!rules) return false;
-
-  return rules.some(rule =>
-    rule.indicators.every((ind: string, i: number) => ind === ' ' || ind === indicators[i]) &&
-    rule.subfields.every((sf: string) => subfields.includes(sf))
-  );
-}
-
-
+export const recordType = new Map<string, string>([
+	['a', 'Personne physique'],
+	['b', 'Collectivité (sauf Congrès)'],
+	['s', 'Congrès'],
+	['c', 'Nom géographique'],
+	['d', 'Marque'],
+	['e', 'Famille'],
+	['f', 'Titre uniforme'],
+	['h', 'Auteur Titre'],
+	[
+		'j',
+		'Rameau : notice Nom commun Rameau ou notice d’autre type ayant une subdivision de sujet Rameau',
+	],
+	['r', 'Regroupement'],
+	['t', 'FMeSH'],
+	['u', 'Forme Rameau'],
+	['v', 'Genre Rameau'],
+	['w', 'Centre de ressources (RCR) = bibliothèque Sudoc'],
+	['x', 'Descripteur chronologique Rameau (laps de temps)'],
+]);

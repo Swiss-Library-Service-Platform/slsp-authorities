@@ -4,30 +4,26 @@
 			<h1 class="entity-title">{{ title }}</h1>
 			<span class="entity-subtitle">{{ mms_id }}</span>
 		</div>
-		<button mat-flat-button color="primary" (click)="updateAllowedTags()">
+		<!--ici on met à jour la  liste des champs à afficher lorsquon appuie sur le detail-->
+		<div class="eca-actions">
+			<button mat-flat-button color="primary" (click)="updateAllowedTags()">
 			{{ 'main.detailsButtonLabel' | translate }}
-		</button>
-		<button
-			mat-flat-button
-			color="primary"
-			(click)="showIdrefSearch = !showIdrefSearch">
-			{{ 'main.idrefSearchButtonLabel' | translate }}
-		</button>
+			</button>
+		</div>
 	</div>
-	@if (showIdrefSearch) {
 		<app-idref-search></app-idref-search>
-	}
 	<div class="marc">
 		@for (entry of marcFields; track entry.tag) {
+			<!--pour les couleurs [style.background-color]="getColorForTag(entry.tag)"-->
 			<div
-				class="marc-row"
-				[style.background-color]="getColorForTag(entry.tag)">
+				class="marc-row">
+				<div class="marc-column">
 				@if(getIdrefAllowedTags().includes(entry.tag)){
-					<button (click)="searchForTag(entry)">
+					<button mat-flat-button color="primary" (click)="searchForTag(entry)">
 					<mat-icon color="primary">search</mat-icon>
 					</button>
 				}
-				<div class="marc-column"></div>
+				</div>
 				<div class="marc-column">
 					<span class="tag">{{ entry.tag }}</span>
 				</div>
@@ -63,7 +59,7 @@
 						</div>
 					</div>
 				}
-				{{ idrefResult.response.docs[0] | json }}
+
 			} @else {
 				{{ 'main.noIdrefAuthority' | translate }}
 			}

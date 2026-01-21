@@ -101,6 +101,12 @@ pre {
       word-break: break-all;
       padding-left: 8px;
 
+      //pour pas qu'il y ai de décallage à cause des boutons
+      /*&:empty {
+        min-width: 65px; // ✅ largeur minimale si la div est vide
+      }*/
+
+
       .marc-column-value {
         gap: 8px;
         display: flex;
