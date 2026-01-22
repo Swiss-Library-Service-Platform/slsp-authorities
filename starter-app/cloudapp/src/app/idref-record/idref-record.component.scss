@@ -1,0 +1,65 @@
+.idrefmarc {
+  border-collapse: collapse;
+  font-family: Arial Unicode MS, Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: rgb(0, 0, 0);
+
+  .idrefmarc-row {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 4px 0;
+  }
+
+  .idrefmarc-column {
+    display: flex;
+    flex-direction: column;
+    padding-left: 8px;
+
+    .idrefmarc-column-value {
+      display: flex;
+      flex-direction: row;
+      gap: 8px;
+      align-items: flex-start;
+
+      > span:first-child {
+        white-space: nowrap;       // ✅ clé sur une seule ligne
+        font-weight: bold;
+        width: 120px;              // ✅ largeur fixe pour la clé
+        flex-shrink: 0;            // ✅ empêche la clé de se réduire
+      }
+
+      > span:last-child {
+        flex: 1;                   // ✅ prend tout l’espace restant
+        overflow-y: auto;          // ✅ scroll si dépasse
+        display: block;
+        line-height: 1em;
+        word-break: break-word;    // ✅ coupe proprement les mots
+      }
+    }
+  }
+  .idrefmarc-row:nth-child(odd) {
+      background: rgb(243, 245, 244);
+    }
+  
+    .tag {
+      color: rgb(128, 0, 128);
+      width: 100px;
+      padding-left: 3px;
+    }
+  
+    .ind {
+      color: rgb(0, 128, 0);
+      width: 1em;
+    }
+  
+    .subfield {
+      color: rgb(0, 0, 255);
+      // width: 3em;
+    }
+  
+    .value {
+      width: fit-content;
+    }
+}

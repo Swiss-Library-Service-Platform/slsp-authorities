@@ -1,0 +1,21 @@
+<!--pour le moment ne gere que le cas où il y a une seule notice de renvoyé -->
+<div class="idrefmarc">
+        @let result = idrefResult();
+		@if (result) {
+			@if (result.response.docs.length >= 1) {
+				@for (key of result.response.docs[0] | keyvalue; track key) {
+					<div class="idrefmarc-row">
+						<div class="idrefmarc-column">
+							<span class="tag">{{ key.key }}</span>
+						</div>
+						<div class="idrefmarc-column">
+							<span class="value">{{ key.value }}</span>
+						</div>
+					</div>
+				}
+
+			} @else {
+				{{ 'main.noIdrefAuthority' | translate }}
+			}
+		}
+	</div>

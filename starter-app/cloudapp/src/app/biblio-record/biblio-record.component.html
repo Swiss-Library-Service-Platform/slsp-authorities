@@ -1,0 +1,33 @@
+<div class="marc">
+		@for (entry of marcFields; track entry.tag) {
+			<!--pour les couleurs [style.background-color]="getColorForTag(entry.tag)"-->
+			<div
+				class="marc-row">
+				<div class="marc-column">
+				@if(getIdrefAllowedTags().includes(entry.tag)){
+					<mat-icon color="primary" (click)="pushToInput(entry)">edit</mat-icon>
+					<mat-icon color="primary" >delete</mat-icon>
+				}
+				</div>
+				<div class="marc-column">
+					<span class="tag">{{ entry.tag }}</span>
+				</div>
+				<div class="marc-column">
+					<span class="ind">{{ entry.ind1 }}</span>
+				</div>
+				<div class="marc-column">
+					<span class="ind">{{ entry.ind2 }}</span>
+				</div>
+				<div class="marc-column">
+					@for (valueEntry of entry.value; track valueEntry) {
+						<div class="marc-column-value">
+							@if (valueEntry.code && valueEntry.code !== '') {
+								<span class="subfield">$${{ valueEntry.code }}</span>
+							}
+							<span class="value">{{ valueEntry.value }} </span>
+						</div>
+					}
+				</div>
+			</div>
+		}
+	</div>
