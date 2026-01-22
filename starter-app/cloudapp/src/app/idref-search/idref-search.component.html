@@ -1,11 +1,9 @@
-<!-- eslint-disable @angular-eslint/template/label-has-associated-control -->
+<!--
 <h3>Choisir un type de notice :</h3>
+
 <mat-form-field>
 	<mat-label>-- Sélectionnez un champ --</mat-label>
-	<mat-select
-		#selectBoxRecord
-		(change)="recordTypeSelected = selectBoxRecord.value"
-	>
+	<mat-select #selectBoxRecord (change)="recordTypeSelected = selectBoxRecord.value">
 		@for (recordKey of RecordTypeKeys | keyvalue; track RecordTypeKeys) {
 			<mat-option [value]="recordKey.key">{{ recordKey.value }}</mat-option>
 		}
@@ -32,4 +30,17 @@
 		/>
 	</mat-form-field>
 }
-<button mat-flat-button color="secondary" (click)="onSubmit()">Valider</button>
+	-->
+<form [formGroup]="searchForm">
+	<input class="tagInput" placeholder="tag" formControlName="tag" />
+
+	<input class="indInput" formControlName="ind1" />
+
+	<input class="indInput" formControlName="ind2" />
+
+	<input placeholder="subfields" formControlName="subfields">
+
+	<mat-icon color="primary" fontIcon="search" (click)="onSearch()"></mat-icon>
+
+	<mat-icon color="primary" fontIcon="add_circle"></mat-icon>
+</form>

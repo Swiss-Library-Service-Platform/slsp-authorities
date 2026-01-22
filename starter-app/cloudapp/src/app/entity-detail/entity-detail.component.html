@@ -1,8 +1,8 @@
 @if (entity()) {
 	<div class="selected-head">
 		<div class="entity-title">
-			<h1 class="entity-title">{{ title }}</h1>
-			<span class="entity-subtitle">{{ mms_id }}</span>
+			<h1 class="entity-title">{{ entity()?.title }}</h1>
+			<span class="entity-subtitle">{{ entity()?.mms_id }}</span>
 		</div>
 		<!--ici on met à jour la  liste des champs à afficher lorsquon appuie sur le detail-->
 		<div class="eca-actions">
@@ -12,57 +12,7 @@
 		</div>
 	</div>
 		<app-idref-search></app-idref-search>
-	<div class="marc">
-		@for (entry of marcFields; track entry.tag) {
-			<!--pour les couleurs [style.background-color]="getColorForTag(entry.tag)"-->
-			<div
-				class="marc-row">
-				<div class="marc-column">
-				@if(getIdrefAllowedTags().includes(entry.tag)){
-					<button mat-flat-button color="primary" (click)="searchForTag(entry)">
-					<mat-icon color="primary">search</mat-icon>
-					</button>
-				}
-				</div>
-				<div class="marc-column">
-					<span class="tag">{{ entry.tag }}</span>
-				</div>
-				<div class="marc-column">
-					<span class="ind">{{ entry.ind1 }}</span>
-				</div>
-				<div class="marc-column">
-					<span class="ind">{{ entry.ind2 }}</span>
-				</div>
-				<div class="marc-column">
-					@for (valueEntry of entry.value; track valueEntry) {
-						<div class="marc-column-value">
-							@if (valueEntry.code && valueEntry.code !== '') {
-								<span class="subfield">$${{ valueEntry.code }}</span>
-							}
-							<span class="value">{{ valueEntry.value }} </span>
-						</div>
-					}
-				</div>
-			</div>
-		}
-	</div>
-	<div class="idrefmarc">
-		@if (idrefResult) {
-			@if (idrefResult.response.docs.length >= 1) {
-				@for (key of idrefResult.response.docs[0] | keyvalue; track key) {
-					<div class="idrefmarc-row">
-						<div class="idrefmarc-column">
-							<span class="tag">{{ key.key }}</span>
-						</div>
-						<div class="idrefmarc-column">
-							<span class="value">{{ key.value }}</span>
-						</div>
-					</div>
-				}
-
-			} @else {
-				{{ 'main.noIdrefAuthority' | translate }}
-			}
-		}
-	</div>
+		<app-idref-record></app-idref-record>
+		<app-biblio-record [entity]="entity()"></app-biblio-record>
+		<app-idref-record></app-idref-record>
 }

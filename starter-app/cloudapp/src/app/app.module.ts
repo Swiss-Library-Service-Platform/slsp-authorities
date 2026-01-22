@@ -23,6 +23,8 @@ import { ExternalComponent } from './external/external.component';
 import { IdrefSearchComponent } from './idref-search/idref-search.component';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
+import { BiblioRecordComponent } from './biblio-record/biblio-record.component';
+import { IdrefRecordComponent } from './idref-record/idref-record.component';
 
 @NgModule({
 	declarations: [
@@ -31,7 +33,9 @@ import { MatInputModule } from '@angular/material/input';
 		EntityListComponent,
 		EntityDetailComponent,
 		ExternalComponent,
-		IdrefSearchComponent
+		IdrefSearchComponent,
+		BiblioRecordComponent,
+		IdrefRecordComponent,
 	],
 	bootstrap: [AppComponent],
 	imports: [
@@ -56,7 +60,7 @@ import { MatInputModule } from '@angular/material/input';
 		},
 		{
 			provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
-			useValue: { appearance: 'standard' },
+			useValue: { appearance: 'fill' },
 		},
 		provideHttpClient(withInterceptorsFromDi()),
 	],
