@@ -184,13 +184,15 @@ export interface IdrefSolrIndex {
 	all: string;
 }
 
-export const MARC_STRUCTURE = new Map<
-	string,
-	{
-		label: string;
+export interface idrefSearch{
+	label: string;
 		filters: string[];
 		recordtypes: string[];
-	}
+}
+
+export const MARC_STRUCTURE = new Map<
+	string,
+	idrefSearch
 >([
 	// Personne
 	[

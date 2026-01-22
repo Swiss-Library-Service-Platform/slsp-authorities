@@ -2,6 +2,7 @@ import { Component, inject, effect } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { IdrefService } from '../services/idref.service';
 import {
+	idrefSearch,
 	IdrefSolrIndexKeys,
 	MARC_STRUCTURE,
 	recordType,
@@ -78,12 +79,9 @@ export class IdrefSearchComponent {
 
 			this.idrefService.searchWithPPN(ppn);
 		} else {
-			const searchParams = this.getMarcStructure(
-				values.tag,
-				values.ind1,
-				values.ind2,
-				subfields,
-			);
+			const searchParams = this.getMarcStructure();
+
+			this.idrefService.calculatedSearch(searchParams);
 		}
 		/*const query = this.buildQuery(values.tag,values.ind1,values.ind2,subfieldsStr);
 		this.idrefService.searchAuthorities(query).subscribe({
@@ -96,37 +94,18 @@ export class IdrefSearchComponent {
 			},
 		});*/
 	}
-	//const url = environment.idrefUrl+'persname_t:(albert%20AND%20einstein)&wt=json'
 
-	/*private buildQuery(): string {
-		const keyValuePairs = Object.entries(values)
-			.filter(([_, value]) => value !== null && value !== '') // On garde uniquement les valeurs non nulles et non vides
-			.map(([key, value]) => `${key}:${value}`); // On transforme en "clé=valeur"
-		const resultString = keyValuePairs.join('&'); // Par exemple, concaténation avec "&"
-		const r = resultString.concat(`&${this.recordTypeSelected}`);
 
-		console.log(r);
+	//permet de récuperer la strucutre lié 
+	private getMarcStructure():idrefSearch | undefined {
 
-		return values.toString();
-	}*/
-
-	private getMarcStructure(
-		tag: string,
-		ind1: string,
-		ind2: string,
-		subfields: string,
-	):
-		| {
-				label: string;
-				filters: string[];
-				recordtypes: string[];
-		  }
-		| undefined {
-		//ici on récupère les sous champs dans un tableau code/value
-		const subfieldsArray = this.parseFlattenedArray(subfields);
 		const codes: string[] = [];
+		const tag= this.NZSelectedEntry()?.tag;
+		const ind1 = this.NZSelectedEntry()?.ind1;
+		const ind2 = this.NZSelectedEntry()?.ind2;
+		const value = this.NZSelectedEntry()?.value;
 
-		subfieldsArray.forEach((subfield) =>
+		value?.forEach((subfield) =>
 			codes.push(subfield.code.replace('$$', '')),
 		);
 
