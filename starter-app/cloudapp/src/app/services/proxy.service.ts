@@ -6,7 +6,7 @@ import {
 	Entity,
 } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
-import { catchError, EMPTY, finalize, firstValueFrom, Observable } from 'rxjs';
+import { catchError, EMPTY, finalize, forkJoin, map, mapTo, Observable, of, shareReplay, switchMap, tap, throwError } from 'rxjs';
 import { LoadingIndicatorService } from './loading-indicator.service';
 import { Bib } from '../models/bib-records';
 import { environment } from '../environments/environment';
@@ -23,96 +23,123 @@ export class ProxyService {
 	private httpOptions!: object;
 	private baseUrl = environment.proxyUrl;
 
-	public constructor() {
-		this.initialize();
-	}
+	
+/** 🔁 Flux d'initialisation, exécuté une seule fois puis rejoué à tous les abonnés */
+  private init$: Observable<void>;
 
-	public async initialize(): Promise<void> {
-		// Get environment and JWT token
-		const initData = await firstValueFrom(this.eventsService.getInitData());
-		const authToken = await firstValueFrom(this.eventsService.getAuthToken());
-		// Determine if production environment
-		const regExp = new RegExp('^https(.*)psb(.*)com/?$|.*localhost.*');
-		const isProdEnvironment = !regExp.test(initData.urls.alma);
+  public constructor() {
+    this.init$ = this.createInit$();
+  }
 
-		// Build HTTP Options
-		this.httpOptions = {
-			params: { isProdEnvironment },
-			headers: new HttpHeaders({
-				Authorization: `Bearer ${authToken}`,
-				'Content-Type': 'application/json',
-			}),
-		};
-	}
+  // ---------------------------
+  // 📚 Appel NZ : Bib record
+  // ---------------------------
 
-	// get the bib record from the NZ
-	public getBibRecord(entity: Entity): Observable<Bib> {
-		try {
-			// First verify access
-			if (!this.checkUserRoles() || !this.isInstitutionAllowed()) {
-				throw new Error('Access denied');
-			}
+  /** Récupère la notice bib de la NZ pour l'entité sélectionnée */
+  public getBibRecord(entity: Entity): Observable<Bib> {
+    return this.ensureAccess$().pipe(
+      switchMap(() =>
+        this.http.get<Bib>(
+          `${this.baseUrl}/p/api-eu.hosted.exlibrisgroup.com/almaws/v1/bibs/${entity.id}`,
+          this.httpOptions,
+        ),
+      ),
+      catchError((error) => {
+        const errorMsg =
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (error as any)?.message || (error as any)?.statusText || 'Unknown error';
 
-			// Then make NZ API call
-			const response = this.http
-				.get<Bib>(
-					`${this.baseUrl}/p/api-eu.hosted.exlibrisgroup.com/almaws/v1/bibs/${entity.id}`,
-					this.httpOptions,
-				)
-				.pipe(
-					catchError((error) => {
-						const errorMsg = (error as Error).message;
+        this.alert.error(
+          this.translate.instant('error.restApiError', [errorMsg]),
+          {
+            autoClose: false,
+          },
+        );
 
-						this.alert.error(
-							this.translate.instant('error.restApiError', [errorMsg]),
-							{
-								autoClose: false,
-							},
-						);
+        return EMPTY;
+      }),
+      finalize(() => {
+        this.loader.hide();
+      }),
+    );
+  }
 
-						return EMPTY;
-					}),
-					finalize(() => {
-						this.loader.hide();
-					}),
-				);
+  /** Crée le flux d'initialisation (token + httpOptions), partagé entre tous les abonnés */
+  private createInit$(): Observable<void> {
+    return forkJoin({
+      initData: this.eventsService.getInitData().pipe(),
+      authToken: this.eventsService.getAuthToken().pipe(),
+    }).pipe(
+      tap(({ initData, authToken }) => {
+        const regExp = new RegExp('^https(.*)psb(.*)com/?$|.*localhost.*');
+        const isProdEnvironment = !regExp.test(initData.urls.alma);
 
-			return response;
-		} catch (error) {
-			console.error('Failed to get bib record:', error);
-			throw error;
-		}
-	}
+        this.httpOptions = {
+          params: { isProdEnvironment },
+          headers: new HttpHeaders({
+            Authorization: `Bearer ${authToken}`,
+            'Content-Type': 'application/json',
+          }),
+        };
+      }),
+      mapTo(void 0),
+      // 🔁 Pour que l'init ne se fasse qu'une seule fois
+      shareReplay({ bufferSize: 1, refCount: false }),
+    );
+  }
 
-    //ask the proxy if the IZ is allowed to use the cloud-app
-	private async isInstitutionAllowed(): Promise<boolean> {
-		try {
-			const response = await firstValueFrom(
-				this.http.get(`${this.baseUrl}/isallowed`, this.httpOptions),
-			);
+  // ---------------------------
+  // 🔐 Vérifications d'accès
+  // ---------------------------
 
-			return !!response;
-		} catch (error) {
-			console.error('Institution check failed:', error);
+  /** Vérifie que l'utilisateur a les rôles requis (Observable<boolean>) */
+  private checkUserRoles$(): Observable<boolean> {
+    return this.http
+      .get<{ hasRequiredRoles: boolean }>(
+        `${this.baseUrl}/check-user-roles`,
+        this.httpOptions,
+      )
+      .pipe(
+        map((res) => res?.hasRequiredRoles ?? false),
+        catchError((error) => {
+          console.error('Role check failed:', error);
 
-			return false;
-		}
-	}
-    //ask the proxy if the user have the right role to use the cloud-app
-	private async checkUserRoles(): Promise<boolean> {
-		try {
-			const response = await firstValueFrom(
-				this.http.get<{ hasRequiredRoles: boolean }>(
-					`${this.baseUrl}/check-user-roles`,
-					this.httpOptions,
-				),
-			);
+          // En cas d'erreur, on considère que ce n’est pas ok
+          return of(false);
+        }),
+      );
+  }
 
-			return response?.hasRequiredRoles || false;
-		} catch (error) {
-			console.error('Role check failed:', error);
+  /** Vérifie que l'IZ est autorisée à utiliser la CloudApp (Observable<boolean>) */
+  private isInstitutionAllowed$(): Observable<boolean> {
+    return this.http
+      .get(`${this.baseUrl}/isallowed`, this.httpOptions)
+      .pipe(
+        map((response) => !!response),
+        catchError((error) => {
+          console.error('Institution check failed:', error);
 
-			return false;
-		}
-	}
+          return of(false);
+        }),
+      );
+  }
+
+  /** S'assure que tout est prêt & autorisé avant d'appeler l'API NZ */
+  private ensureAccess$(): Observable<void> {
+    return this.init$.pipe(
+      switchMap(() =>
+        forkJoin({
+          hasRoles: this.checkUserRoles$(),
+          allowed: this.isInstitutionAllowed$(),
+        }),
+      ),
+      switchMap(({ hasRoles, allowed }) => {
+        if (!hasRoles || !allowed) {
+          return throwError(() => new Error('Access denied'));
+        }
+
+        return of(void 0);
+      }),
+    );
+  }
 }

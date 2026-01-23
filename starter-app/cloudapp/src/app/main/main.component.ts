@@ -46,7 +46,7 @@ export class MainComponent implements OnInit {
 			filter((entities) =>
 				entities.every((entity) => entity.type === EntityType.BIB_MMS),
 			),
-			//seulement les entité présentes dans la NZ
+			//seulement les entité présentes dans la NZ TODO: c'ets pas très propre, ça ne fonctionne que pour la NZ
 			filter((entities) =>
 				entities.every((entity) => entity.id.endsWith("01")),
 			),
@@ -83,8 +83,11 @@ export class MainComponent implements OnInit {
 
 	public ngOnInit(): void {
 		this.loader.show();
+		    this.eventsService.getInitData().subscribe(
+      data => console.log('Page called by', data)
+    );
 
-		/*this.refresh().subscribe({
+		this.refresh().subscribe({
 			next: () => {
 				// ✅ Ici, on est sûr que le refresh est TERMINÉ
 				console.log('Refresh terminé, je peux continuer');
@@ -93,7 +96,7 @@ export class MainComponent implements OnInit {
 			error: (err) => {
 				console.error('Erreur pendant le refresh', err);
 			},
-		});*/
+		});
 		this.entities$.subscribe();
 	}
 	//pour voir les pageInfo des changement de page
