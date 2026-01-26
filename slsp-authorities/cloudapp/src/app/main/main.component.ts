@@ -1,118 +1,112 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+// main.component.ts
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import {
-	AlertService,
-	CloudAppEventsService,
-	Entity,
-	EntityType,
-	RefreshPageResponse,
+  AlertService,
+  CloudAppEventsService,
+  Entity,
+  EntityType,
+  RefreshPageResponse,
 } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
-import { EMPTY, Observable } from 'rxjs';
-import { catchError, filter, finalize, tap } from 'rxjs/operators';
+import { EMPTY, Observable, forkJoin, of } from 'rxjs';
+import { catchError, filter, finalize, switchMap, tap } from 'rxjs/operators';
 import { LoadingIndicatorService } from '../services/loading-indicator.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Bib } from '../models/bib-records';
 import { ProxyService } from '../services/proxy.service';
 
 @Component({
-	selector: 'app-main',
-	templateUrl: './main.component.html',
-	styleUrls: ['./main.component.scss'],
+  selector: 'app-main',
+  templateUrl: './main.component.html',
+  styleUrls: ['./main.component.scss'],
 })
 export class MainComponent implements OnInit {
-	public entities: Entity[] = [];
-	public selectedEntity: Entity | null = null;
-	public selectedEntityDetails$: Observable<Bib> = EMPTY;
-	public loader = inject(LoadingIndicatorService);
-	public authToken!: string;
+  public entities: Entity[] = [];
+  public selectedEntity: Entity | null = null;
+  public selectedEntityDetails$: Observable<Bib> = EMPTY;
+  public loader = inject(LoadingIndicatorService);
+  public hasCatalogerRole = false;
+  public isInstitutionAllowed = false;
 
-	/** XML content of the selected record */
-	//public xml: string;
-	/** String representation of XML content */
-	//public xmlString: string;
+  private eventsService = inject(CloudAppEventsService);
+  private alert = inject(AlertService);
+  private translate = inject(TranslateService);
+  private destroyRef = inject(DestroyRef);
+  private proxyService = inject(ProxyService);
 
-	private eventsService = inject(CloudAppEventsService);
-	private alert = inject(AlertService);
-	private translate = inject(TranslateService);
-	private destroyRef = inject(DestroyRef);
-	private proxyService = inject(ProxyService);
+  private entities$: Observable<Entity[]>;
 
-	private entities$: Observable<Entity[]>;
+  public constructor() {
+    this.entities$ = this.eventsService.entities$.pipe(
+      filter((entities) => entities.every((e) => e.type === EntityType.BIB_MMS)),
+      takeUntilDestroyed(this.destroyRef),
+      tap(() => this.reset()),
+      tap((entities) => (this.entities = entities)),
+      tap((entities) => { if (entities.length === 1) this.selectEntity(entities[0]); }),
+      catchError((error) => {
+        const errorMsg = (error as Error).message;
 
-	public constructor() {
-		this.entities$ = this.eventsService.entities$.pipe(
-			//filter in order to select only bibrecords
-			filter((entities) =>
-				entities.every((entity) => entity.type === EntityType.BIB_MMS),
-			),
-			//seulement les entité présentes dans la NZ TODO: c'ets pas très propre, ça ne fonctionne que pour la NZ
-			/*filter((entities) =>
-				entities.every((entity) => entity.id.endsWith("01")),
-			),*/
-			takeUntilDestroyed(this.destroyRef),
-			tap(() => this.reset()),
-			//filter((entities) => // filter by EntityType),
-			//map((entities) => // map to custom model),
-			tap((entities) => (this.entities = entities)),
+        this.alert.error(this.translate.instant('error.restApiError', [errorMsg]), { autoClose: false });
 
-			// si un seul entity, auto-sélection
-			tap((entities) => {
-				if (entities.length === 1) {
-					this.selectEntity(entities[0]);
-				}
-			}),
+        return EMPTY;
+      }),
+    );
+  }
 
-			catchError((error) => {
-				const errorMsg = (error as Error).message;
+  public ngOnInit(): void {
+    this.loader.show();
 
-				this.alert.error(
-					this.translate.instant('error.restApiError', [errorMsg]),
-					{
-						autoClose: false,
-					},
-				);
+    // ✅ Attend implicitement ready$ via les méthodes publiques du service
+    forkJoin({
+      hasRole: this.proxyService.checkUserRoles$(),
+      allowed: this.proxyService.isInstitutionAllowed$(),
+    }).pipe(
+      tap(({ hasRole, allowed }) => {
+        this.hasCatalogerRole = hasRole;
+        this.isInstitutionAllowed = allowed;
 
-				return EMPTY;
-			}),
-			finalize(() => {
-				this.loader.hide();
-			}),
-		);
-	}
+        if (!hasRole) {
+          this.alert.error(this.translate.instant('error.catalogerRoleError'), { autoClose: false });
+        }
 
-	public ngOnInit(): void {
-		this.loader.show();
+        if (!allowed) {
+          this.alert.error(this.translate.instant('error.institutionAllowedError'), { autoClose: false });
+        }
+      }),
+      // Ensuite seulement, on déclenche le refresh de la page
+      switchMap(() => this.refresh()),
+      tap(() => console.log('Refresh terminé, je peux continuer')),
+      catchError((err) => {
+        console.error('Erreur pendant l’initialisation/refresh', err);
 
-		this.refresh().subscribe({
-			next: () => {
-				// ✅ Ici, on est sûr que le refresh est TERMINÉ
-				console.log('Refresh terminé, je peux continuer');
-			},
-			error: (err) => {
-				console.error('Erreur pendant le refresh', err);
-			},
-		});
-		this.entities$.subscribe();
-	}
+        return of<RefreshPageResponse>({} as any);
+      }),
+      finalize(() => this.loader.hide()),
+      takeUntilDestroyed(this.destroyRef),
+    ).subscribe();
 
-	public selectEntity(entity: Entity): void {
-		this.selectedEntity = entity;
-		this.loader.show();
-		console.log(entity)
-		this.selectedEntityDetails$ = this.proxyService.getBibRecord(entity);
-	}
+    // Abonnement aux entités
+    this.entities$.subscribe();
+  }
 
-	public action(): void {
-		this.alert.info(this.translate.instant('main.actionMessage'), {
-			autoClose: true,
-		});
-	}
+  public selectEntity(entity: Entity): void {
+    this.selectedEntity = entity;
+    this.loader.show();
+    console.log(entity);
+    this.selectedEntityDetails$ = this.proxyService.getBibRecord(entity);
+  }
 
-	public reset(): void {
-		this.selectedEntity = null;
-	}
+  public action(): void {
+    this.alert.info(this.translate.instant('main.actionMessage'), { autoClose: true });
+  }
 
-	public refresh(): Observable<RefreshPageResponse> {
-		return this.eventsService.refreshPage();
-	}
+  public reset(): void {
+    this.selectedEntity = null;
+  }
+
+  public refresh(): Observable<RefreshPageResponse> {
+    return this.eventsService.refreshPage();
+  }
 }

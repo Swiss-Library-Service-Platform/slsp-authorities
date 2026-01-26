@@ -1,37 +1,44 @@
+
+// proxy.service.ts
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import {
-	AlertService,
-	CloudAppEventsService,
-	CloudAppRestService,
-	Entity,
-	HttpMethod 
+  AlertService,
+  CloudAppEventsService,
+  CloudAppRestService,
+  Entity,
+  HttpMethod
 } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
-import { catchError, EMPTY, finalize, forkJoin, map, mapTo, Observable, of, shareReplay, switchMap, tap, throwError } from 'rxjs';
+import {
+  catchError, EMPTY, finalize, forkJoin, map, mapTo, Observable, of,
+  shareReplay, switchMap, tap, throwError, take
+} from 'rxjs';
 import { LoadingIndicatorService } from './loading-indicator.service';
 import { Bib } from '../models/bib-records';
 import { environment } from '../environments/environment';
-@Injectable({
-	providedIn: 'root',
-})
+
+@Injectable({ providedIn: 'root' })
 export class ProxyService {
-	public loader = inject(LoadingIndicatorService);
-	private alert = inject(AlertService);
-	private translate = inject(TranslateService);
-	private eventsService = inject(CloudAppEventsService);
-	private restService = inject(CloudAppRestService);
-	private http = inject(HttpClient);
+  /** ✅ Émet 1 fois quand init$ est prêt */
+  public readonly ready$: Observable<void>;
+  public loader = inject(LoadingIndicatorService);
+  private alert = inject(AlertService);
+  private translate = inject(TranslateService);
+  private eventsService = inject(CloudAppEventsService);
+  private restService = inject(CloudAppRestService);
+  private http = inject(HttpClient);
 
-	private httpOptions!: object;
-	private baseUrl = environment.proxyUrl;
+  private httpOptions!: { headers: HttpHeaders; params: { isProdEnvironment: boolean } };
+  private baseUrl = environment.proxyUrl;
 
-	
-/** 🔁 Flux d'initialisation, exécuté une seule fois puis rejoué à tous les abonnés */
+  /** 🔁 Initialisation (token + httpOptions), faite une seule fois */
   private init$: Observable<void>;
+
 
   public constructor() {
     this.init$ = this.createInit$();
+    this.ready$ = this.init$.pipe(take(1)); // garantit 1 seule émission
   }
 
   // ---------------------------
@@ -41,7 +48,7 @@ export class ProxyService {
   /** Récupère la notice bib de la NZ pour l'entité sélectionnée */
   public getBibRecord(entity: Entity): Observable<Bib> {
     return this.ensureAccess$().pipe(
-		switchMap(() => this.getNzMmsIdFromEntity(entity)),
+      switchMap(() => this.getNzMmsIdFromEntity(entity)),
       switchMap((nzMmsId) =>
         this.http.get<Bib>(
           `${this.baseUrl}/p/api-eu.hosted.exlibrisgroup.com/almaws/v1/bibs/${nzMmsId}`,
@@ -49,34 +56,61 @@ export class ProxyService {
         ),
       ),
       catchError((error) => {
-        const errorMsg =
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (error as any)?.message || (error as any)?.statusText || 'Unknown error';
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const errorMsg = (error as any)?.message || (error as any)?.statusText || 'Unknown error';
 
-        this.alert.error(
-          this.translate.instant('error.restApiError', [errorMsg]),
-          {
-            autoClose: false,
-          },
-        );
+        this.alert.error(this.translate.instant('error.restApiError', [errorMsg]), { autoClose: false });
 
         return EMPTY;
       }),
-      finalize(() => {
-        this.loader.hide();
+      finalize(() => this.loader.hide()),
+    );
+  }
+
+  // ---------------------------
+  // 🔐 Vérifications d'accès
+  // ---------------------------
+
+  /** ✅ Attend l'init avant d'appeler l'API rôles */
+  public checkUserRoles$(): Observable<boolean> {
+    return this.ready$.pipe(
+      switchMap(() =>
+        this.http.get<{ hasRequiredRoles: boolean }>(
+          `${this.baseUrl}/check-user-roles`,
+          this.httpOptions,
+        ),
+      ),
+      map((res) => res?.hasRequiredRoles ?? false),
+      catchError((error) => {
+        console.error('Role check failed:', error);
+
+        return of(false);
       }),
+      shareReplay({ bufferSize: 1, refCount: false }),
+    );
+  }
+
+  /** ✅ Attend l'init avant d'appeler l'API d’autorisation d’IZ */
+  public isInstitutionAllowed$(): Observable<boolean> {
+    return this.ready$.pipe(
+      switchMap(() => this.http.get(`${this.baseUrl}/isallowed`, this.httpOptions)),
+      map((response) => !!response),
+      catchError((error) => {
+        console.error('Institution check failed:', error);
+
+        return of(false);
+      }),
+      shareReplay({ bufferSize: 1, refCount: false }),
     );
   }
 
   /**
    * Retrieves the NZ MMS ID from the given entity.
-   * @param entity - The entity for which to retrieve the NZ MMS ID
-   * @returns Observable of NZ MMS ID
    */
   private getNzMmsIdFromEntity(entity: Entity): Observable<string> {
     const id = entity.id;
 
-    if (entity.link.indexOf("?nz_mms_id") >= 0) {
+    if (entity.link.indexOf('?nz_mms_id') >= 0) {
       return of(id);
     }
 
@@ -84,31 +118,28 @@ export class ProxyService {
       method: HttpMethod.GET,
       url: entity.link,
       queryParams: { view: 'brief' }
-    })
-      .pipe(
-        switchMap(response => {
-          const nzMmsId: string = response?.linked_record_id?.value;
+    }).pipe(
+      switchMap(response => {
+        const nzMmsId: string = response?.linked_record_id?.value;
 
-          if (!nzMmsId) {
-            throw new Error('No NZ MMSID found in linked record');
-          }
+        if (!nzMmsId) throw new Error('No NZ MMSID found in linked record');
 
-          return of(nzMmsId);
-        }),
-        catchError(error => {
-          console.error('Error retrieving NZ MSSID. Trying with entity ID.', error);
+        return of(nzMmsId);
+      }),
+      catchError(error => {
+        console.error('Error retrieving NZ MSSID. Trying with entity ID.', error);
 
-          return of(entity.id);
-        }),
-        shareReplay(1)
-      );
+        return of(entity.id);
+      }),
+      shareReplay(1)
+    );
   }
 
-  /** Crée le flux d'initialisation (token + httpOptions), partagé entre tous les abonnés */
+  /** ⚙️ Construit httpOptions une fois */
   private createInit$(): Observable<void> {
     return forkJoin({
-      initData: this.eventsService.getInitData().pipe(),
-      authToken: this.eventsService.getAuthToken().pipe(),
+      initData: this.eventsService.getInitData(),
+      authToken: this.eventsService.getAuthToken(),
     }).pipe(
       tap(({ initData, authToken }) => {
         const regExp = new RegExp('^https(.*)psb(.*)com/?$|.*localhost.*');
@@ -123,50 +154,13 @@ export class ProxyService {
         };
       }),
       mapTo(void 0),
-      // 🔁 Pour que l'init ne se fasse qu'une seule fois
       shareReplay({ bufferSize: 1, refCount: false }),
     );
   }
 
-  // ---------------------------
-  // 🔐 Vérifications d'accès
-  // ---------------------------
-
-  /** Vérifie que l'utilisateur a les rôles requis (Observable<boolean>) */
-  private checkUserRoles$(): Observable<boolean> {
-    return this.http
-      .get<{ hasRequiredRoles: boolean }>(
-        `${this.baseUrl}/check-user-roles`,
-        this.httpOptions,
-      )
-      .pipe(
-        map((res) => res?.hasRequiredRoles ?? false),
-        catchError((error) => {
-          console.error('Role check failed:', error);
-
-          // En cas d'erreur, on considère que ce n’est pas ok
-          return of(false);
-        }),
-      );
-  }
-
-  /** Vérifie que l'IZ est autorisée à utiliser la CloudApp (Observable<boolean>) */
-  private isInstitutionAllowed$(): Observable<boolean> {
-    return this.http
-      .get(`${this.baseUrl}/isallowed`, this.httpOptions)
-      .pipe(
-        map((response) => !!response),
-        catchError((error) => {
-          console.error('Institution check failed:', error);
-
-          return of(false);
-        }),
-      );
-  }
-
-  /** S'assure que tout est prêt & autorisé avant d'appeler l'API NZ */
+  /** S'assure que tout est prêt & autorisé (utilisé par getBibRecord) */
   private ensureAccess$(): Observable<void> {
-    return this.init$.pipe(
+    return this.ready$.pipe( // ✅ attend l'init
       switchMap(() =>
         forkJoin({
           hasRoles: this.checkUserRoles$(),

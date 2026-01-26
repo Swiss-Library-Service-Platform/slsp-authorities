@@ -1,5 +1,6 @@
 {
 	"main": {
+		"rightIssue": "you didn't have rights in order to use this cloud app",
 		"actionMessage": "Demo",
 		"actionButtonLabel": "Primary-Action",
 		"detailsButtonLabel": "Details",
@@ -16,6 +17,8 @@
 		}
 	},
 	"error": {
-		"restApiError": "REST API error: {{0}}"
+		"restApiError": "REST API error: {{0}}",
+		"catalogerRoleError": "You need cataloger role in order to use this cloud app",
+		"institutionAllowedError": "Your institution isn't allowed to use this cloud app"
 	}
 }

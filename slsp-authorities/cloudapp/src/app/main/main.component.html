@@ -1,3 +1,4 @@
+@if(isInstitutionAllowed && hasCatalogerRole){
 <div class="eca-actions">
 	<button
 		mat-flat-button
@@ -31,4 +32,6 @@
 		></mat-spinner>
 	</div>
 }
-
+}@else{
+	<p>{{ 'main.rightIssue' | translate }}</p>
+}
