@@ -9,6 +9,8 @@ import {
 	BehaviorSubject,
 } from 'rxjs';
 import { IdrefService } from '../services/idref.service';
+import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
+import { TranslateService } from '@ngx-translate/core';
 //Composant pour afficher les notices bibliographique provenant de la NZ
 @Component({
 	selector: 'app-biblio-record',
@@ -36,6 +38,8 @@ export class BiblioRecordComponent implements OnInit {
 
 	public title: string | null = null;
 	public mms_id: string | null = null;
+	private translate = inject(TranslateService);
+		private alert = inject(AlertService);
 	private idrefService = inject(IdrefService);
 	// ✅ BehaviorSubject pour allowedTags
 	private allowedTags$ = new BehaviorSubject<string[]>(MARC_STRUCTURE_KEY);
@@ -48,6 +52,10 @@ export class BiblioRecordComponent implements OnInit {
 	public pushToInput(entry: xmlEntry): void {
 		
 		this.idrefService.NZSelectedEntry.set({...entry});
+	}
+
+	public deleteField(entry: xmlEntry): void {
+		this.alert.info(this.translate.instant('biblioRecord.notImplemented'), { autoClose: true });
 	}
 
 	public ngOnInit(): void {

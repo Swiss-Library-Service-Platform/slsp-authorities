@@ -98,10 +98,6 @@ export class MainComponent implements OnInit {
     this.selectedEntityDetails$ = this.proxyService.getBibRecord(entity);
   }
 
-  public action(): void {
-    this.alert.info(this.translate.instant('main.actionMessage'), { autoClose: true });
-  }
-
   public reset(): void {
     this.selectedEntity = null;
   }

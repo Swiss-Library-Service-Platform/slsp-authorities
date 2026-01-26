@@ -7,6 +7,8 @@ import {
 	MARC_STRUCTURE,
 	recordType,
 } from '../models/idref-model';
+import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
 	selector: 'app-idref-search',
@@ -22,6 +24,8 @@ export class IdrefSearchComponent {
 	public recordTypeSelected!: string;
 	public searchForm: FormGroup;
 	private idrefService = inject(IdrefService);
+	private translate = inject(TranslateService);
+	private alert = inject(AlertService);
 	// eslint-disable-next-line @typescript-eslint/member-ordering
 	public NZSelectedEntry = this.idrefService.NZSelectedEntry;
 	// eslint-disable-next-line @typescript-eslint/member-ordering
@@ -94,6 +98,18 @@ export class IdrefSearchComponent {
 			},
 		});*/
 	}
+
+	public addrecord(): void {
+    	this.alert.info(this.translate.instant('idrefSearch.notImplemented'), { autoClose: true });
+  	}
+
+	public to902(): void {
+    	this.alert.info(this.translate.instant('idrefSearch.notImplemented'), { autoClose: true });
+  	}
+
+	public clear(): void {
+    	this.alert.info(this.translate.instant('idrefSearch.notImplemented'), { autoClose: true });
+  	}
 
 
 	//permet de récuperer la strucutre lié 

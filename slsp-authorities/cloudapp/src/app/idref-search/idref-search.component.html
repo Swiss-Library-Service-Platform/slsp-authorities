@@ -1,46 +1,26 @@
-<!--
-<h3>Choisir un type de notice :</h3>
+<div class="eca-actions">
+	<form [formGroup]="searchForm">
+		<input class="tagInput" placeholder="tag" formControlName="tag" />
 
-<mat-form-field>
-	<mat-label>-- Sélectionnez un champ --</mat-label>
-	<mat-select #selectBoxRecord (change)="recordTypeSelected = selectBoxRecord.value">
-		@for (recordKey of RecordTypeKeys | keyvalue; track RecordTypeKeys) {
-			<mat-option [value]="recordKey.key">{{ recordKey.value }}</mat-option>
-		}
-	</mat-select>
-</mat-form-field>
+		<input class="indInput" formControlName="ind1" />
 
-<h3>Choisir un index :</h3>
-<mat-form-field>
-	<mat-label>-- Sélectionnez un champ --</mat-label>
-	<mat-select #selectBoxIndex (change)="onSelectKey(selectBoxIndex.value)">
-		@for (indexKey of IdrefSolrIndexKeys; track indexKey) {
-			<mat-option [value]="indexKey">{{ indexKey }}</mat-option>
-		}
-	</mat-select>
-</mat-form-field>
-@for (control of searchForm.controls | keyvalue; track control.key) {
-	<mat-form-field [formGroup]="searchForm">
-		<mat-label>{{ control.key }} :</mat-label>
-		<input
-			matInput
-			[id]="control.key"
-			[formControlName]="control.key"
-			type="text"
-		/>
-	</mat-form-field>
-}
-	-->
-<form [formGroup]="searchForm">
-	<input class="tagInput" placeholder="tag" formControlName="tag" />
+		<input class="indInput" formControlName="ind2" />
 
-	<input class="indInput" formControlName="ind1" />
+		<input placeholder="subfields" formControlName="subfields">
 
-	<input class="indInput" formControlName="ind2" />
+		<mat-icon color="primary" fontIcon="search" (click)="onSearch()"></mat-icon>
 
-	<input placeholder="subfields" formControlName="subfields">
+		<!--<mat-icon color="primary" fontIcon="add_circle"></mat-icon>-->
+		<button mat-flat-button color="primary" (click)="addrecord()">
+			{{ 'idrefSearch.addToRecord' | translate }}
+		</button>
 
-	<mat-icon color="primary" fontIcon="search" (click)="onSearch()"></mat-icon>
+		<button mat-flat-button color="primary" (click)="to902()">
+			{{ 'idrefSearch.to902' | translate }}
+		</button>
+		<button mat-flat-button color="primary" (click)="clear()">
+			{{ 'idrefSearch.clear' | translate }}
+		</button>
 
-	<mat-icon color="primary" fontIcon="add_circle"></mat-icon>
-</form>
+	</form>
+</div>

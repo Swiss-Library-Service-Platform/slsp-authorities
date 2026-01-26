@@ -20,5 +20,14 @@
 		"restApiError": "REST API error: {{0}}",
 		"catalogerRoleError": "You need cataloger role in order to use this cloud app",
 		"institutionAllowedError": "Your institution isn't allowed to use this cloud app"
+	},
+	"idrefSearch":{
+		"addToRecord": "Add to record",
+		"to902": "To 902",
+		"clear": "Clear",
+		"notImplemented": "not implemented yet"
+	},
+	"biblioRecord":{
+		"notImplemented": "not implemented yet"
 	}
 }
