@@ -1,8 +1,0 @@
-{
-  "title": "alma-cloud-app-template",
-  "subtitle": "A more or less empty CloudApp",
-  "author": "App Author",
-  "env": "https://your-inst.exlibrisgroup.com/institution/41SLSP_YOUR-INST",
-  "port": 4200,
-  "name": "alma-cloud-app-template"
-}
