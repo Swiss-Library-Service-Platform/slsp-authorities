@@ -261,15 +261,15 @@ export const MARC_STRUCTURE = new Map<
 	// Congrès
 	[
 		'111|  ',
-		{ label: 'Congrès', filters: ['conference_t'], recordtypes: ['s'] },
+		{ label: 'Congrès', filters: ['conference_t'], recordtypes: ['b'] },
 	],
 	[
 		'611|  ',
-		{ label: 'Congrès', filters: ['conference_t'], recordtypes: ['s'] },
+		{ label: 'Congrès', filters: ['conference_t'], recordtypes: ['b'] },
 	],
 	[
 		'711|  ',
-		{ label: 'Congrès', filters: ['conference_t'], recordtypes: ['s'] },
+		{ label: 'Congrès', filters: ['conference_t'], recordtypes: ['b'] },
 	],
 
 	// Famille
@@ -316,7 +316,7 @@ export const MARC_STRUCTURE = new Map<
 	// Sujet
 	[
 		'650|  ',
-		{ label: 'Sujet', filters: ['subjectheading_t'], recordtypes: ['j', 't'] },
+		{ label: 'Sujet', filters: ['subjectheading_t'], recordtypes: ['r', 'd'] },
 	],
 
 	// Nom géographique
@@ -335,7 +335,7 @@ export const MARC_STRUCTURE = new Map<
 		{
 			label: 'Forme / genre',
 			filters: ['formgenreheading_t'],
-			recordtypes: ['u', 'v'],
+			recordtypes: ['r'],
 		},
 	],
 ]);
@@ -406,10 +406,7 @@ export const recordType = new Map<string, string>([
 	['e', 'Famille'],
 	['f', 'Titre uniforme'],
 	['h', 'Auteur Titre'],
-	[
-		'j',
-		'Rameau : notice Nom commun Rameau ou notice d’autre type ayant une subdivision de sujet Rameau',
-	],
+	['j','Rameau : notice Nom commun Rameau ou notice d’autre type ayant une subdivision de sujet Rameau'],
 	['r', 'Regroupement'],
 	['t', 'FMeSH'],
 	['u', 'Forme Rameau'],

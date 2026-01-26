@@ -3,7 +3,9 @@ import { inject, Injectable } from '@angular/core';
 import {
 	AlertService,
 	CloudAppEventsService,
+	CloudAppRestService,
 	Entity,
+	HttpMethod 
 } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
 import { catchError, EMPTY, finalize, forkJoin, map, mapTo, Observable, of, shareReplay, switchMap, tap, throwError } from 'rxjs';
@@ -18,6 +20,7 @@ export class ProxyService {
 	private alert = inject(AlertService);
 	private translate = inject(TranslateService);
 	private eventsService = inject(CloudAppEventsService);
+	private restService = inject(CloudAppRestService);
 	private http = inject(HttpClient);
 
 	private httpOptions!: object;
@@ -38,9 +41,10 @@ export class ProxyService {
   /** Récupère la notice bib de la NZ pour l'entité sélectionnée */
   public getBibRecord(entity: Entity): Observable<Bib> {
     return this.ensureAccess$().pipe(
-      switchMap(() =>
+		switchMap(() => this.getNzMmsIdFromEntity(entity)),
+      switchMap((nzMmsId) =>
         this.http.get<Bib>(
-          `${this.baseUrl}/p/api-eu.hosted.exlibrisgroup.com/almaws/v1/bibs/${entity.id}`,
+          `${this.baseUrl}/p/api-eu.hosted.exlibrisgroup.com/almaws/v1/bibs/${nzMmsId}`,
           this.httpOptions,
         ),
       ),
@@ -62,6 +66,42 @@ export class ProxyService {
         this.loader.hide();
       }),
     );
+  }
+
+  /**
+   * Retrieves the NZ MMS ID from the given entity.
+   * @param entity - The entity for which to retrieve the NZ MMS ID
+   * @returns Observable of NZ MMS ID
+   */
+  private getNzMmsIdFromEntity(entity: Entity): Observable<string> {
+    const id = entity.id;
+
+    if (entity.link.indexOf("?nz_mms_id") >= 0) {
+      return of(id);
+    }
+
+    return this.restService.call({
+      method: HttpMethod.GET,
+      url: entity.link,
+      queryParams: { view: 'brief' }
+    })
+      .pipe(
+        switchMap(response => {
+          const nzMmsId: string = response?.linked_record_id?.value;
+
+          if (!nzMmsId) {
+            throw new Error('No NZ MMSID found in linked record');
+          }
+
+          return of(nzMmsId);
+        }),
+        catchError(error => {
+          console.error('Error retrieving NZ MSSID. Trying with entity ID.', error);
+
+          return of(entity.id);
+        }),
+        shareReplay(1)
+      );
   }
 
   /** Crée le flux d'initialisation (token + httpOptions), partagé entre tous les abonnés */

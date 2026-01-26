@@ -4,7 +4,6 @@ import {
 	CloudAppEventsService,
 	Entity,
 	EntityType,
-	PageInfo,
 	RefreshPageResponse,
 } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
@@ -47,9 +46,9 @@ export class MainComponent implements OnInit {
 				entities.every((entity) => entity.type === EntityType.BIB_MMS),
 			),
 			//seulement les entité présentes dans la NZ TODO: c'ets pas très propre, ça ne fonctionne que pour la NZ
-			filter((entities) =>
+			/*filter((entities) =>
 				entities.every((entity) => entity.id.endsWith("01")),
-			),
+			),*/
 			takeUntilDestroyed(this.destroyRef),
 			tap(() => this.reset()),
 			//filter((entities) => // filter by EntityType),
@@ -83,15 +82,11 @@ export class MainComponent implements OnInit {
 
 	public ngOnInit(): void {
 		this.loader.show();
-		    this.eventsService.getInitData().subscribe(
-      data => console.log('Page called by', data)
-    );
 
 		this.refresh().subscribe({
 			next: () => {
 				// ✅ Ici, on est sûr que le refresh est TERMINÉ
 				console.log('Refresh terminé, je peux continuer');
-				this.entities$.subscribe();
 			},
 			error: (err) => {
 				console.error('Erreur pendant le refresh', err);
@@ -99,10 +94,6 @@ export class MainComponent implements OnInit {
 		});
 		this.entities$.subscribe();
 	}
-	//pour voir les pageInfo des changement de page
-	public onPageLoad = (pageInfo: PageInfo) => {
-		console.log('Retrieved onPageLoad event', pageInfo.entities);
-	};
 
 	public selectEntity(entity: Entity): void {
 		this.selectedEntity = entity;

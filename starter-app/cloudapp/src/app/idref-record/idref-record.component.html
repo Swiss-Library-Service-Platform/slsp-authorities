@@ -2,7 +2,7 @@
 <div class="idrefmarc">
         @let result = idrefResult();
 		@if (result) {
-			@if (result.response.docs.length >= 1) {
+			@if (result.response.docs.length === 1) {
 				@for (key of result.response.docs[0] | keyvalue; track key) {
 					<div class="idrefmarc-row">
 						<div class="idrefmarc-column">
@@ -14,6 +14,8 @@
 					</div>
 				}
 
+			} @else if(result.response.docs.length > 1){
+				
 			} @else {
 				{{ 'main.noIdrefAuthority' | translate }}
 			}

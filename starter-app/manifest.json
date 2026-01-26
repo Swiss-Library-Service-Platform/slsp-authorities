@@ -1,5 +1,5 @@
 {
-   "id": "first-alam-cloud-app",
+   "id": "slsp-authorities",
    "title": "SLSPAuthorities",
    "subtitle": "Alma cloudapp that aims to simplify cataloguing workflows that are currently hindered by the architecture of the IdRef-integration into Alma. ",
    "author": "Ylann BASTIAN",
