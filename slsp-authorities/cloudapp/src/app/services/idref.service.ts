@@ -1,6 +1,6 @@
-import { computed, inject, Injectable, signal,effect } from '@angular/core';
+import { computed, inject, Injectable, signal, effect } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { environment } from '../environments/environment';
 import { IdrefRecords, idrefSearch } from '../models/idref-model';
 import { xmlEntry } from '../models/bib-records';
@@ -10,7 +10,8 @@ export class IdrefService {
 	// resultat de la recherche idref
 	public idrefResult = signal<IdrefRecords | undefined>(undefined);
 	public NZSelectedEntry = signal<xmlEntry | undefined>(undefined);
-	
+	public idrefPPNResult = signal<Document | undefined>(undefined);
+
 	//concaténation des strings des subfields 
 	public flattenedValue = computed(() =>
 		this.NZSelectedEntry()?.value.map((v) => `$$${v.code} ${v.value}`).join(' '),
@@ -19,13 +20,13 @@ export class IdrefService {
 	private http = inject(HttpClient);
 	private solr = '/Sru/Solr';
 
-	public constructor(){
+	public constructor() {
 		//pour logger facilement
-		effect(()=>{
+		effect(() => {
 			console.log("The current NZSelectedEntry is: ", this.NZSelectedEntry());
 		})
 
-		effect(()=>{
+		effect(() => {
 			console.log("The current idrefResult is : ", this.idrefResult());
 		})
 	}
@@ -35,6 +36,13 @@ export class IdrefService {
 		const params = {
 			q: query,
 			wt: 'json',
+			sort: "score desc",
+			version: "2.2",
+			start: "0",
+			rows: "30",
+			indent: "on",
+			fl: "ppn_z,recordtype_z,affcourt_z"
+
 
 		};
 
@@ -42,43 +50,44 @@ export class IdrefService {
 			params,
 		});
 	}
-	public searchWithPPN(ppn: string): void{
-		this.searchAuthorities(`ppn_z:${ppn}`).subscribe({next: r => this.idrefResult.set(r)})
+	public searchWithPPN(ppn: string): void {
+		//this.searchAuthorities(`ppn_z:${ppn}`).subscribe({next: r => this.idrefResult.set(r)})
+
+		this.http.get(`${environment.idrefUrl}/${ppn}.xml`, { responseType: 'text' }).pipe(
+			map(xmlString => {
+				const parser = new DOMParser();
+				const xmlDoc = parser.parseFromString(xmlString, 'application/xml');
+
+				return xmlDoc;
+			})).subscribe(
+				{
+					next: r => this.idrefPPNResult.set(r)
+				}
+			);
+
 	}
 
-	public calculatedSearch(searchParams: idrefSearch | undefined): void{
+	public calculatedSearch(searchParams: idrefSearch | undefined): void {
 		const query = this.buildQuery(searchParams);
 
-		this.searchAuthorities(query).subscribe({next: r => this.idrefResult.set(r)})
+		this.searchAuthorities(query).subscribe({ next: r => this.idrefResult.set(r) })
 	}
 
 	//fonction qui renvoie la chaine de charactere qui permettra de faire le recherche via Solr
-		private buildQuery(searchParams: idrefSearch |undefined): string {
-			let query = "";
-			const recordTypes = searchParams?.recordtypes;
-			const filter = searchParams?.filters;
-	
-			if(filter && filter.length > 1){
-				console.error("Pas encore développé")
-			}else if(filter && recordTypes){
-				query = `${filter[0]}:${this.NZSelectedEntry()?.value[0].value} AND recordtype_z:${recordTypes[0]}`;
-	
-				return query
-			}
-			console.error("il n'y a pas de filtre, il y a eu un problème")
-			
-			return query;
+	private buildQuery(searchParams: idrefSearch | undefined): string {
+		let query = "";
+		const recordTypes = searchParams?.recordtypes;
+		const filter = searchParams?.filters;
+
+		if (filter && filter.length > 1) {
+			console.error("Pas encore développé")
+		} else if (filter && recordTypes) {
+			query = `${filter[0]}:${this.NZSelectedEntry()?.value[0].value} AND recordtype_z:${recordTypes[0]}`;
+
+			return query
 		}
+		console.error("il n'y a pas de filtre, il y a eu un problème")
 
-	
-	//recherche selon le ppn de inscrit dans la notice.
-	//TODO: c'est bien dans le searchForPPN que l'on choisit le type de recherhe que l'on va faire
-	/*public searchForPPN(entry: {
-		code: string;
-		value: string;
-	}): Observable<IdrefRecords> {
-		const ppn = entry.value.replace('(IDREF)', '');
-
-		return this.searchAuthorities(`ppn_z:${ppn}`);
-	}*/
+		return query;
+	}
 }

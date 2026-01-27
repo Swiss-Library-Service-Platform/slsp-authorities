@@ -169,7 +169,7 @@ export class IdrefSearchComponent {
 					});
 				}
 				// Nouveau code
-				currentCode = item;
+				currentCode = item.replace("$$","");
 				currentValueParts = [];
 			} else {
 				// Sinon, c'est une partie de la valeur

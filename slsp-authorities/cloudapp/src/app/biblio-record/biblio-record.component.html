@@ -1,11 +1,11 @@
 <div class="marc">
-	@for (entry of marcFields; track entry.tag) {
+	@for (entry of marcFields; track $index) {
 	<!--pour les couleurs [style.background-color]="getColorForTag(entry.tag)"-->
 	<div class="marc-row">
 		<div class="marc-column marc-column-actions">
 			@if(getIdrefAllowedTags().includes(entry.tag)){
 
-			<button mat-icon-button color="primary" (click)="pushToInput(entry)">
+			<button mat-icon-button color="primary" (click)="pushToInput(entry); searchIdref(entry)">
 				<mat-icon>edit</mat-icon>
 			</button>
 			<button mat-icon-button color="primary" (click)="deleteField(entry)">
@@ -24,7 +24,7 @@
 			<span class="ind">{{ entry.ind2 }}</span>
 		</div>
 		<div class="marc-column">
-			@for (valueEntry of entry.value; track valueEntry) {
+			@for (valueEntry of entry.value; track $index) {
 			<div class="marc-column-value">
 				@if (valueEntry.code && valueEntry.code !== '') {
 				<span class="subfield">$${{ valueEntry.code }}</span>

@@ -62,7 +62,7 @@ export interface Response {
 	docs: Doc[];
 }
 
-//réponse d'une requette sur idref
+//réponse d'une requette sur idref via Solr
 export interface IdrefRecords {
 	responseHeader: ResponseHeader;
 	response: Response;
@@ -199,7 +199,7 @@ export const MARC_STRUCTURE = new Map<
 		'100|0 ',
 		{
 			label: 'Personne',
-			filters: ['persname_t', 'datenaisance_dt', 'datemort_dt'],
+			filters: ['persname_t'],
 			recordtypes: ['a'],
 		},
 	],
@@ -207,7 +207,7 @@ export const MARC_STRUCTURE = new Map<
 		'100|1 ',
 		{
 			label: 'Personne',
-			filters: ['persname_t', 'datenaisance_dt', 'datemort_dt'],
+			filters: ['persname_t'],
 			recordtypes: ['a'],
 		},
 	],
@@ -215,7 +215,7 @@ export const MARC_STRUCTURE = new Map<
 		'700|0 ',
 		{
 			label: 'Personne',
-			filters: ['persname_t', 'datenaisance_dt', 'datemort_dt'],
+			filters: ['persname_t'],
 			recordtypes: ['a'],
 		},
 	],
@@ -223,7 +223,7 @@ export const MARC_STRUCTURE = new Map<
 		'700|1 ',
 		{
 			label: 'Personne',
-			filters: ['persname_t', 'datenaisance_dt', 'datemort_dt'],
+			filters: ['persname_t'],
 			recordtypes: ['a'],
 		},
 	],
@@ -231,7 +231,7 @@ export const MARC_STRUCTURE = new Map<
 		'600|0 ',
 		{
 			label: 'Personne',
-			filters: ['persname_t', 'datenaisance_dt', 'datemort_dt'],
+			filters: ['persname_t'],
 			recordtypes: ['a'],
 		},
 	],
@@ -239,7 +239,7 @@ export const MARC_STRUCTURE = new Map<
 		'600|1 ',
 		{
 			label: 'Personne',
-			filters: ['persname_t', 'datenaisance_dt', 'datemort_dt'],
+			filters: ['persname_t'],
 			recordtypes: ['a'],
 		},
 	],

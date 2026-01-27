@@ -53,6 +53,10 @@ export class BiblioRecordComponent implements OnInit {
 		
 		this.idrefService.NZSelectedEntry.set({...entry});
 	}
+	public searchIdref(entry: xmlEntry): void {
+		
+		this.idrefService.NZSelectedEntry.set({...entry});
+	}
 
 	public deleteField(entry: xmlEntry): void {
 		this.alert.info(this.translate.instant('biblioRecord.notImplemented'), { autoClose: true });

@@ -1,17 +1,19 @@
 @if (entity()) {
-	<app-idref-search></app-idref-search>
-	<div class="selected-head">
-		<div class="entity-title">
-			<h1 class="entity-title">{{ entity()?.title }}</h1>
-			<span class="entity-subtitle">{{ entity()?.mms_id }}</span>
-		</div>
-		<!--ici on met à jour la  liste des champs à afficher lorsquon appuie sur le detail-->
-		<div class="eca-actions">
-			<button mat-flat-button color="primary" (click)="updateAllowedTags()">
-			{{ 'main.detailsButtonLabel' | translate }}
-			</button>
-		</div>
+<app-idref-search></app-idref-search>
+<div class="selected-head">
+	<div class="entity-title">
+		<h1 class="entity-title">{{ entity()?.title }}</h1>
+		<span class="entity-subtitle">{{ entity()?.mms_id }}</span>
 	</div>
-		<app-idref-record></app-idref-record>
-		<app-biblio-record [entity]="entity()"></app-biblio-record>
+	<!--ici on met à jour la  liste des champs à afficher lorsquon appuie sur le detail-->
+	<div class="eca-actions">
+		<button mat-flat-button color="primary" (click)="updateAllowedTags()">
+			{{ 'main.detailsButtonLabel' | translate }}
+		</button>
+	</div>
+</div>
+<hr class="separator">
+<app-biblio-record [entity]="entity()"></app-biblio-record>
+<hr class="separator">
+<app-idref-record></app-idref-record>
 }

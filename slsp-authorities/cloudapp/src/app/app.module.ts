@@ -25,6 +25,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { BiblioRecordComponent } from './biblio-record/biblio-record.component';
 import { IdrefRecordComponent } from './idref-record/idref-record.component';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 @NgModule({
 	declarations: [
@@ -49,7 +50,8 @@ import { IdrefRecordComponent } from './idref-record/idref-record.component';
 		CloudAppTranslateModule.forRoot(),
 		MatSelectModule,
 		MatFormFieldModule,
-		MatInputModule
+		MatInputModule,
+		MatPaginatorModule
 	],
 	providers: [
 		{
