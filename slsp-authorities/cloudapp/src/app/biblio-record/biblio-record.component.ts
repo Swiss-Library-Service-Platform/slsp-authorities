@@ -39,7 +39,7 @@ export class BiblioRecordComponent implements OnInit {
 	public title: string | null = null;
 	public mms_id: string | null = null;
 	private translate = inject(TranslateService);
-		private alert = inject(AlertService);
+	private alert = inject(AlertService);
 	private idrefService = inject(IdrefService);
 	// ✅ BehaviorSubject pour allowedTags
 	private allowedTags$ = new BehaviorSubject<string[]>(MARC_STRUCTURE_KEY);

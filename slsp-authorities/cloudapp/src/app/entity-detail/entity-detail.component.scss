@@ -30,11 +30,14 @@ pre {
 }
 
 
-.separator {
-  border: none;
-  border-top: 1px solid #ccc;
+
+.bar {
+  height: 2px;
+  background: linear-gradient(to right, #ddd, #aaa);
   margin: 20px 0;
+  border-radius: 2px;
 }
+
 
 
 

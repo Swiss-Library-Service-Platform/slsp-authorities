@@ -2,10 +2,8 @@ import { Component, inject, effect } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { IdrefService } from '../services/idref.service';
 import {
-	idrefSearch,
 	IdrefSolrIndexKeys,
-	MARC_STRUCTURE,
-	recordType,
+	INVERTED_IDREF_RECORDTYPE_MAP,
 } from '../models/idref-model';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
@@ -17,7 +15,7 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class IdrefSearchComponent {
 	public IdrefSolrIndexKeys = IdrefSolrIndexKeys;
-	public RecordTypeKeys = recordType;
+	public RecordTypeKeys = INVERTED_IDREF_RECORDTYPE_MAP;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	public results: any[] = [];
 	public loading = false;
@@ -83,20 +81,10 @@ export class IdrefSearchComponent {
 
 			this.idrefService.searchWithPPN(ppn);
 		} else {
-			const searchParams = this.getMarcStructure();
+			const searchParams = this.idrefService.getMarcStructure();
 
 			this.idrefService.calculatedSearch(searchParams);
 		}
-		/*const query = this.buildQuery(values.tag,values.ind1,values.ind2,subfieldsStr);
-		this.idrefService.searchAuthorities(query).subscribe({
-			next: (data) => {
-				this.results = data.response.docs;
-				this.loading = false;
-			},
-			error: () => {
-				this.loading = false;
-			},
-		});*/
 	}
 
 	public addrecord(): void {
@@ -111,46 +99,6 @@ export class IdrefSearchComponent {
     	this.alert.info(this.translate.instant('idrefSearch.notImplemented'), { autoClose: true });
   	}
 
-
-	//permet de récuperer la strucutre lié 
-	private getMarcStructure():idrefSearch | undefined {
-
-		const codes: string[] = [];
-		const tag= this.NZSelectedEntry()?.tag;
-		const ind1 = this.NZSelectedEntry()?.ind1;
-		const ind2 = this.NZSelectedEntry()?.ind2;
-		const value = this.NZSelectedEntry()?.value;
-
-		value?.forEach((subfield) =>
-			codes.push(subfield.code.replace('$$', '')),
-		);
-
-		const subfieldsStr = codes.sort().join(',');
-		let result = MARC_STRUCTURE.get(`${tag}|${ind1}${ind2}|${subfieldsStr}`);
-
-		if (result) {
-			console.log('result: ', result);
-
-			return result;
-		} else {
-			//si pas de subfields on regarde les indicateurs
-			result = MARC_STRUCTURE.get(`${tag}|${ind1}${ind2}`);
-
-			if (result) {
-				console.log('result: ', result);
-
-				return result;
-			} else if ((result = MARC_STRUCTURE.get(`${tag}|  `))) {
-				console.log('result: ', result);
-
-				return result;
-			} else {
-				console.error('il ny a pas de mapping associé');
-
-				return;
-			}
-		}
-	}
 
 	private parseFlattenedArray(
 		flattened: string,

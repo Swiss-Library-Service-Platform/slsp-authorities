@@ -199,7 +199,7 @@ export const MARC_STRUCTURE = new Map<
 		'100|0 ',
 		{
 			label: 'Personne',
-			filters: ['persname_t'],
+			filters: ['persname_t', 'datenaisance_dt', 'datemort_dt'],
 			recordtypes: ['a'],
 		},
 	],
@@ -207,7 +207,7 @@ export const MARC_STRUCTURE = new Map<
 		'100|1 ',
 		{
 			label: 'Personne',
-			filters: ['persname_t'],
+			filters: ['persname_t', 'datenaisance_dt', 'datemort_dt'],
 			recordtypes: ['a'],
 		},
 	],
@@ -215,7 +215,7 @@ export const MARC_STRUCTURE = new Map<
 		'700|0 ',
 		{
 			label: 'Personne',
-			filters: ['persname_t'],
+			filters: ['persname_t', 'datenaisance_dt', 'datemort_dt'],
 			recordtypes: ['a'],
 		},
 	],
@@ -223,7 +223,7 @@ export const MARC_STRUCTURE = new Map<
 		'700|1 ',
 		{
 			label: 'Personne',
-			filters: ['persname_t'],
+			filters: ['persname_t', 'datenaisance_dt', 'datemort_dt'],
 			recordtypes: ['a'],
 		},
 	],
@@ -231,7 +231,7 @@ export const MARC_STRUCTURE = new Map<
 		'600|0 ',
 		{
 			label: 'Personne',
-			filters: ['persname_t'],
+			filters: ['persname_t', 'datenaisance_dt', 'datemort_dt'],
 			recordtypes: ['a'],
 		},
 	],
@@ -239,7 +239,7 @@ export const MARC_STRUCTURE = new Map<
 		'600|1 ',
 		{
 			label: 'Personne',
-			filters: ['persname_t'],
+			filters: ['persname_t', 'datenaisance_dt', 'datemort_dt'],
 			recordtypes: ['a'],
 		},
 	],
@@ -316,7 +316,7 @@ export const MARC_STRUCTURE = new Map<
 	// Sujet
 	[
 		'650|  ',
-		{ label: 'Sujet', filters: ['subjectheading_t'], recordtypes: ['r', 'd'] },
+		{ label: 'Sujet', filters: ['subjectheading_t'], recordtypes: ['r'] },
 	],
 
 	// Nom géographique
@@ -397,20 +397,44 @@ export function getIdrefRecordsFromXmlentry(
 	}
 }
 
-export const recordType = new Map<string, string>([
-	['a', 'Personne physique'],
-	['b', 'Collectivité (sauf Congrès)'],
-	['s', 'Congrès'],
-	['c', 'Nom géographique'],
-	['d', 'Marque'],
-	['e', 'Famille'],
-	['f', 'Titre uniforme'],
-	['h', 'Auteur Titre'],
-	['j','Rameau : notice Nom commun Rameau ou notice d’autre type ayant une subdivision de sujet Rameau'],
-	['r', 'Regroupement'],
-	['t', 'FMeSH'],
-	['u', 'Forme Rameau'],
-	['v', 'Genre Rameau'],
-	['w', 'Centre de ressources (RCR) = bibliothèque Sudoc'],
-	['x', 'Descripteur chronologique Rameau (laps de temps)'],
+
+export const IDREF_FILTER_MAP = new Map<string, string>([
+  ["Personne", "persname_t"],
+  ["Collectivité", "corpname_t"],
+  ["Congrès", "conference_t"],
+  ["Famille", "famname_t"],
+  ["Titre uniforme", "uniformtitle_t"],
+  ["Auteur / titre", "nametitle_t"],
+  ["Sujet", "subjectheading_t"],
+  ["Nom de marque", "trademark_t"],
+  ["Noms géographiques", "geogname_t"],
+  ["Forme", "formgenreheading_t"]
 ]);
+
+
+export const IDREF_RECORDTYPE_MAP = new Map<string, string>([
+  ["Personne", "a"],
+  ["Collectivité", "b"],
+  ["Congrès", "b"],          // même recordtype
+  ["Famille", "e"],
+  ["Titre uniforme", "f"],
+  ["Auteur / titre", "h"],
+  ["Sujet", "r"],
+  ["Nom de marque", "d"],
+  ["Noms géographiques", "c"],
+  ["Forme", "r"]             // même recordtype que Sujet
+]);
+
+
+export const INVERTED_IDREF_RECORDTYPE_MAP = new Map<string, string>([
+  ["a", "Personne"],
+  ["b", "Collectivité"],      // "Congrès" est ignoré
+  ["e", "Famille"],
+  ["f", "Titre uniforme"],
+  ["h", "Auteur / titre"],
+  ["r", "Sujet"],             // "Forme" est ignoré
+  ["d", "Nom de marque"],
+  ["c", "Noms géographiques"]
+]);
+
+

@@ -17,6 +17,7 @@
 		}
 	},
 	"error": {
+		"httpError": "There is an error with the http request",
 		"restApiError": "REST API error: {{0}}",
 		"catalogerRoleError": "You need cataloger role in order to use this cloud app",
 		"institutionAllowedError": "Your institution isn't allowed to use this cloud app"

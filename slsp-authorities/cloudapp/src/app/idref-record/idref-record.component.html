@@ -1,6 +1,14 @@
 <div class="idrefmarc">
 	<h2>idref search</h2>
-	
+	<form [formGroup]="searchForm">
+		
+		<input placeholder="search index" formControlName="searchIndex" />
+
+		<input placeholder="query" formControlName="constructedQuery">
+
+		<mat-icon color="primary" fontIcon="search" (click)="onSearch()"></mat-icon>
+	</form>
+
   @if (idrefResult()) {
     @if (numFound() > 0) {
 
