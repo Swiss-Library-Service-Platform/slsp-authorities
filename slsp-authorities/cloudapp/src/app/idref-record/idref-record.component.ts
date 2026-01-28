@@ -9,7 +9,7 @@ import {
   effect
 } from '@angular/core';
 import { IdrefService } from '../services/idref.service';
-import { Doc, IDREF_FILTER_MAP, IDREF_RECORDTYPE_MAP } from '../models/idref-model';
+import { Doc, IDREF_FILTER_MAP, IDREF_RECORDTYPE_MAP, IDREF_RECORDTYPE_TO_ICON_MAP } from '../models/idref-model';
 import { MatPaginator } from '@angular/material/paginator';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
@@ -25,6 +25,7 @@ export class IdrefRecordComponent {
 
   public idrefResult = this.idrefService.idrefResult;
   public NZSelectedEntry = this.idrefService.NZSelectedEntry;
+  public iconMap = IDREF_RECORDTYPE_TO_ICON_MAP;
 
   public numFound: Signal<number> = computed(
     () => this.idrefResult()?.response.numFound ?? 0

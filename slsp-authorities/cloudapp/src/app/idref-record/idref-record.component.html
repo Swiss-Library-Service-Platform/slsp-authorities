@@ -14,6 +14,9 @@
 
       @for (doc of paginatedDocs(); track $index) {
         <div class="idrefmarc-row">
+			<div class="idrefmarc-column">
+				<mat-icon color="primary" [fontIcon]="iconMap.get(doc.recordtype_z) ?? 'broken_image'"></mat-icon>
+          </div>
           <div class="idrefmarc-column">
             <span class="tag">{{ doc.ppn_z }}</span>
           </div>

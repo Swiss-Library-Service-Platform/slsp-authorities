@@ -438,3 +438,13 @@ export const INVERTED_IDREF_RECORDTYPE_MAP = new Map<string, string>([
 ]);
 
 
+export const IDREF_RECORDTYPE_TO_ICON_MAP = new Map<string, string>([
+  ["a", "person"],
+  ["b", "groups"],      // "Congrès" est ignoré
+  ["e", "groups"],
+  ["f", "title"],
+  ["h", "person"],
+  ["r", "subject"],             // "Forme" est ignoré
+  ["d", "title"],
+  ["c", "globe_location_pin"]
+]);
