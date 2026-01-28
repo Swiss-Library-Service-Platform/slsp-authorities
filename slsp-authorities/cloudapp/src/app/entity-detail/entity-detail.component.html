@@ -1,19 +1,37 @@
 @if (entity()) {
-<app-idref-search></app-idref-search>
-<div class="selected-head">
-	<div class="entity-title">
-		<h1 class="entity-title">{{ entity()?.title }}</h1>
-		<span class="entity-subtitle">{{ entity()?.mms_id }}</span>
-	</div>
-	<!--ici on met à jour la  liste des champs à afficher lorsquon appuie sur le detail-->
-	<div class="eca-actions">
-		<button mat-flat-button color="primary" (click)="updateAllowedTags()">
-			{{ 'main.detailsButtonLabel' | translate }}
-		</button>
-	</div>
-</div>
-<div class="bar"></div>
-<app-biblio-record [entity]="entity()"></app-biblio-record>
-<div class="bar"></div>
-<app-idref-record></app-idref-record>
+  <app-idref-search></app-idref-search>
+
+  <div class="selected-head">
+    <div class="entity-title">
+      <h1 class="entity-title">{{ entity()?.title }}</h1>
+      <span class="entity-subtitle">{{ entity()?.mms_id }}</span>
+    </div>
+
+    <div class="eca-actions">
+      <button mat-flat-button color="primary" (click)="updateAllowedTags()">
+        {{ 'main.detailsButtonLabel' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <div class="bar"></div>
+
+  <!-- CONTENEUR QUI GÈRE LE MODE COLONNES -->
+  <div class="records-grid">
+    <div class="records-column">
+      <app-biblio-record [entity]="entity()"></app-biblio-record>
+    </div>
+
+    <div class="records-column">
+      <app-idref-record></app-idref-record>
+    </div>
+
+
+    <!-- tu peux en ajouter d'autres si besoin -->
+    <!--
+    <div class="records-column">
+      <app-yet-another-record></app-yet-another-record>
+    </div>
+    -->
+  </div>
 }

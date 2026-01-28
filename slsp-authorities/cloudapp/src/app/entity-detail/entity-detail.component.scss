@@ -1,14 +1,14 @@
 pre {
-	font-size: smaller;
-	color: var(--mat-mdc-foreground-text);
-	background-color: var(--mat-mdc-background);
-	padding: 20px;
-	text-wrap: stable;
-	border-radius: 3px;
-	border: 1px solid #eee;
+  font-size: smaller;
+  color: var(--mat-mdc-foreground-text);
+  background-color: var(--mat-mdc-background);
+  padding: 20px;
+  text-wrap: stable;
+  border-radius: 3px;
+  border: 1px solid #eee;
 }
 
-  .selected-head {
+.selected-head {
   display: flex;
   margin-top: 10px;
   margin-bottom: 20px;
@@ -17,6 +17,7 @@ pre {
     margin-right: 0.5rem;
   }
 }
+
 .entity-title {
   margin: 0;
   line-height: 20px;
@@ -29,8 +30,6 @@ pre {
   color: #999;
 }
 
-
-
 .bar {
   height: 2px;
   background: linear-gradient(to right, #ddd, #aaa);
@@ -38,9 +37,7 @@ pre {
   border-radius: 2px;
 }
 
-
-
-
+/* tags */
 .tag-author {
   background-color: #e3f2fd; /* bleu clair */
   color: #0d47a1;
@@ -69,4 +66,39 @@ pre {
 .tag-default {
   background-color: #f5f5f5;
   color: #424242;
+}
+
+/* ====== LAYOUT MULTI-COLONNES ====== */
+
+/* Conteneur des colonnes */
+.records-grid {
+  display: grid;
+  grid-template-columns: 1fr;      // par défaut : une seule colonne (mode "étroit")
+  gap: 0;                          // pas de gap horizontal, on gère avec les bordures
+  margin-top: 16px;
+  border: 1px solid #ddd;          // cadre global (optionnel)
+  border-radius: 4px;
+  overflow: hidden;                // pour que les bordures restent propres
+  background-color: #fff;
+}
+
+/* Chaque colonne */
+.records-column {
+  padding: 8px 12px;
+}
+
+/* Séparateurs verticaux entre colonnes */
+.records-column:not(:last-child) {
+  border-right: 1px solid #ddd;
+}
+
+/* Mode ÉTENDU : plusieurs colonnes côte à côte
+   - minmax(280px, 1fr) : chaque colonne fait min 280px, puis prend l’espace disponible
+   - auto-fit : le navigateur décide combien de colonnes il peut afficher selon la largeur
+*/
+@media (min-width: 900px) {
+  .records-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
 }
