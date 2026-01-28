@@ -73,7 +73,6 @@ export class IdrefService {
 
 	public searchFromQuery(query: string): void {
 
-
 		this.searchAuthorities(query).subscribe({ next: r => this.idrefResult.set(r),error: e => this.alert.error(this.translate.instant('error.httpError'), { autoClose: true })})
 	}
 

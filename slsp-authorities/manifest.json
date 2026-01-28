@@ -3,6 +3,7 @@
    "title": "SLSPAuthorities (BETA)",
    "subtitle": "Alma cloudapp that aims to simplify cataloguing workflows that are currently hindered by the architecture of the IdRef-integration into Alma. ",
    "author": "Ylann BASTIAN",
+   "relevantForInst": ["41SLSP_HPH"],
    "contentSecurity": {
       "connectSrc": [
          "https://catalog.hathitrust.org/",
