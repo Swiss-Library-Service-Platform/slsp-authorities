@@ -204,6 +204,9 @@ export class IdrefRecordComponent {
     this.idrefService.searchFromQuery(query);
   }
 
+  public showDetails(ppn: string):void {
+    this.idrefService.searchWithPPN(ppn).subscribe(e => this.idrefService.idrefAuthorityDetail.set(e));
+  }
 
   @ViewChild(MatPaginator)
   public set paginator(p: MatPaginator | undefined) {

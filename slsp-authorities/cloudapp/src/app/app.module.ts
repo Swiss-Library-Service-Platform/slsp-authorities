@@ -26,6 +26,7 @@ import { MatInputModule } from '@angular/material/input';
 import { BiblioRecordComponent } from './biblio-record/biblio-record.component';
 import { IdrefRecordComponent } from './idref-record/idref-record.component';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { IdrefEntryDetailsComponent } from "./idref-entry-details/idref-entry-details.component";
 
 @NgModule({
 	declarations: [
@@ -37,22 +38,23 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 		IdrefSearchComponent,
 		BiblioRecordComponent,
 		IdrefRecordComponent,
+		IdrefEntryDetailsComponent
 	],
 	bootstrap: [AppComponent],
 	imports: [
-		MaterialModule,
-		BrowserModule,
-		BrowserAnimationsModule,
-		AppRoutingModule,
-		AlertModule,
-		FormsModule,
-		ReactiveFormsModule,
-		CloudAppTranslateModule.forRoot(),
-		MatSelectModule,
-		MatFormFieldModule,
-		MatInputModule,
-		MatPaginatorModule
-	],
+    MaterialModule,
+    BrowserModule,
+    BrowserAnimationsModule,
+    AppRoutingModule,
+    AlertModule,
+    FormsModule,
+    ReactiveFormsModule,
+    CloudAppTranslateModule.forRoot(),
+    MatSelectModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatPaginatorModule
+],
 	providers: [
 		{
 			provide: APP_INITIALIZER,

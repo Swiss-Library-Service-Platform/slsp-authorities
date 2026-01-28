@@ -12,7 +12,7 @@ export class IdrefService {
 	// resultat de la recherche idref
 	public idrefResult = signal<IdrefRecords | undefined>(undefined);
 	public NZSelectedEntry = signal<xmlEntry | undefined>(undefined);
-	public idrefPPNResult = signal<Document | undefined>(undefined);
+	public idrefAuthorityDetail = signal<Document| undefined>(undefined)
 
 	//concaténation des strings des subfields 
 	public flattenedValue = computed(() =>
@@ -54,20 +54,16 @@ export class IdrefService {
 			params,
 		});
 	}
-	public searchWithPPN(ppn: string): void {
+	public searchWithPPN(ppn: string): Observable<Document> {
 		//this.searchAuthorities(`ppn_z:${ppn}`).subscribe({next: r => this.idrefResult.set(r)})
 
-		this.http.get(`${environment.idrefUrl}/${ppn}.xml`, { responseType: 'text' }).pipe(
+		return this.http.get(`${environment.idrefUrl}/${ppn}.xml`, { responseType: 'text' }).pipe(
 			map(xmlString => {
 				const parser = new DOMParser();
 				const xmlDoc = parser.parseFromString(xmlString, 'application/xml');
 
 				return xmlDoc;
-			})).subscribe(
-				{
-					next: r => this.idrefPPNResult.set(r)
-				}
-			);
+			}))
 
 	}
 

@@ -1,5 +1,5 @@
 <div class="idrefmarc">
-	<h2>idref search</h2>
+	<h2>{{"idrefRecord.title" | translate}}</h2>
 	<form [formGroup]="searchForm">
 		
 		<input placeholder="search index" formControlName="searchIndex" />
@@ -13,7 +13,7 @@
     @if (numFound() > 0) {
 
       @for (doc of paginatedDocs(); track $index) {
-        <div class="idrefmarc-row">
+        <div class="idrefmarc-row" (click)="showDetails(doc.ppn_z)" aria-hidden="true">
 			<div class="idrefmarc-column">
 				<mat-icon color="primary" [fontIcon]="iconMap.get(doc.recordtype_z) ?? 'broken_image'"></mat-icon>
           </div>
