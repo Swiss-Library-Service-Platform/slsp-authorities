@@ -24,7 +24,8 @@
             <span class="value">{{ doc.affcourt_z }}</span>
           </div>
           <div class="idrefmarc-column">
-            <mat-icon color="primary" fontIcon="task_alt"></mat-icon>
+           <button color="primary" (click)="pushTobiblioRecordForm(doc.ppn_z)">
+			        {{ 'idrefRecord.select' | translate }}</button>
           </div>
         </div>
       }

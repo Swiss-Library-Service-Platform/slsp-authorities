@@ -158,6 +158,48 @@ export class IdrefRecordComponent {
     });
   }
 
+
+public pushTobiblioRecordForm(ppn_z: string): void {
+  const selectedEntry = this.idrefService.NZSelectedEntry();
+
+  if (!selectedEntry) {
+    console.warn('NZSelectedEntry est undefined, impossible de mettre à jour $$0');
+
+    return;
+  }
+
+  // On clone le tableau pour rester "immutable"
+  const newValues = [...selectedEntry.value];
+  const currentPPNIndex = newValues.findIndex(
+    (subfield) => subfield.code === '0'   // <== IMPORTANT : sans "$$"
+  );
+
+  if (currentPPNIndex !== -1) {
+    // Mise à jour de la valeur existante
+    newValues[currentPPNIndex] = {
+      ...newValues[currentPPNIndex],
+      value: `(IDREF)${ppn_z}`,
+    };
+  } else {
+    // Ajout d'un nouveau sous-champ $$0
+    newValues.push({
+      code: '0',      // <== IMPORTANT : "0" et pas "$$0"
+      value: ppn_z,
+    });
+  }
+
+  const newEntry = {
+    ...selectedEntry,
+    value: newValues,
+  };
+
+  console.log('new selected entry: ', newEntry);
+
+  // Et là, on met à jour le signal
+  this.idrefService.NZSelectedEntry.set(newEntry);
+}
+
+
   public onSearch(): void {
     const values = this.searchForm.value as {
       searchIndex: string;

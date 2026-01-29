@@ -109,6 +109,8 @@ export class ProxyService {
    */
   private getNzMmsIdFromEntity(entity: Entity): Observable<string> {
     const id = entity.id;
+    
+    console.log("entity: ",entity)
 
     if (entity.link.indexOf('?nz_mms_id') >= 0) {
       return of(id);

@@ -13,7 +13,7 @@ import { TranslateService } from '@ngx-translate/core';
 	templateUrl: './idref-search.component.html',
 	styleUrls: ['./idref-search.component.scss'],
 })
-export class IdrefSearchComponent {
+export class IdrefSearchComponent{
 	public IdrefSolrIndexKeys = IdrefSolrIndexKeys;
 	public RecordTypeKeys = INVERTED_IDREF_RECORDTYPE_MAP;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
