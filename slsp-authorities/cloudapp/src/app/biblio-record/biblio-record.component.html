@@ -1,8 +1,24 @@
+  <app-idref-search></app-idref-search>
+
+  <div class="selected-head">
+    <div class="entity-title">
+      <h1 class="entity-title">{{ entity()?.title }}</h1>
+      <span class="entity-subtitle">{{ entity()?.mms_id }}</span>
+	  <button color="primary" (click)="updateAllowedTags()">
+        {{ 'main.detailsButtonLabel' | translate }}
+      </button>
+    </div>
+
+    <div class="eca-actions">
+    </div>
+  </div>
+
+  <div class="bar"></div>
 <h2>{{"biblioRecord.title" | translate}}</h2>
 <div class="marc">
 	@for (entry of marcFields; track $index) {
 	<!--pour les couleurs [style.background-color]="getColorForTag(entry.tag)"-->
-	<div class="marc-row">
+	<div class="marc-row" [class.marc-row--active]="entry === selectedEntry">
 		<div class="marc-column marc-column-actions">
 			@if(getIdrefAllowedTags().includes(entry.tag)){
 

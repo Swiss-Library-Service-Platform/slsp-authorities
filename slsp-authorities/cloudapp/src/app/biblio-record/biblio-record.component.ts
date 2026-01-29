@@ -19,7 +19,7 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class BiblioRecordComponent implements OnInit {
 	public marcFields: xmlEntry[] = [];
-
+	public selectedEntry: xmlEntry | null = null;
 	public entity = input.required<Bib | null>();
 	public entity$ = toObservable(this.entity);
 
@@ -50,7 +50,7 @@ export class BiblioRecordComponent implements OnInit {
 	}
 
 	public pushToInput(entry: xmlEntry): void {
-		
+		this.selectedEntry = entry;
 		this.idrefService.NZSelectedEntry.set({...entry});
 	}
 	public searchIdref(entry: xmlEntry): void {

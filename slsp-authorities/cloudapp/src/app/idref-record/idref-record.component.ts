@@ -20,7 +20,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
   styleUrl: './idref-record.component.scss'
 })
 export class IdrefRecordComponent {
-
+  public selectedDoc: Doc |null = null;
   private idrefService = inject(IdrefService);
 
   public idrefResult = this.idrefService.idrefResult;

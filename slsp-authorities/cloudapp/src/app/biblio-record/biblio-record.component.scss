@@ -51,6 +51,14 @@
     background: rgb(243, 245, 244);
   }
 
+  
+  .marc-row.marc-row--active {
+    background-color: #e3f2fd;   // bleu léger type Material
+    // optionnel : bordure ou autre
+    // border-left: 4px solid #1976d2;
+  }
+
+
   .tag {
     color: rgb(128, 0, 128);
     width: 30px;

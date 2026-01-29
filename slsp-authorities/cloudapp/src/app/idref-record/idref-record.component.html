@@ -13,7 +13,7 @@
     @if (numFound() > 0) {
 
       @for (doc of paginatedDocs(); track $index) {
-        <div class="idrefmarc-row" (click)="showDetails(doc.ppn_z)" aria-hidden="true">
+        <div class="idrefmarc-row" [class.idrefmarc-row--active]="doc === selectedDoc" (click)="showDetails(doc.ppn_z); selectedDoc=doc" aria-hidden="true">
 			<div class="idrefmarc-column">
 				<mat-icon color="primary" [fontIcon]="iconMap.get(doc.recordtype_z) ?? 'broken_image'"></mat-icon>
           </div>
@@ -22,6 +22,9 @@
           </div>
           <div class="idrefmarc-column">
             <span class="value">{{ doc.affcourt_z }}</span>
+          </div>
+          <div class="idrefmarc-column">
+            <mat-icon color="primary" fontIcon="task_alt"></mat-icon>
           </div>
         </div>
       }

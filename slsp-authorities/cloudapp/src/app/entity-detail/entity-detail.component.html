@@ -1,21 +1,4 @@
 @if (entity()) {
-  <app-idref-search></app-idref-search>
-
-  <div class="selected-head">
-    <div class="entity-title">
-      <h1 class="entity-title">{{ entity()?.title }}</h1>
-      <span class="entity-subtitle">{{ entity()?.mms_id }}</span>
-    </div>
-
-    <div class="eca-actions">
-      <button mat-flat-button color="primary" (click)="updateAllowedTags()">
-        {{ 'main.detailsButtonLabel' | translate }}
-      </button>
-    </div>
-  </div>
-
-  <div class="bar"></div>
-
   <!-- CONTENEUR QUI GÈRE LE MODE COLONNES -->
   <div class="records-grid">
     <div class="records-column">
