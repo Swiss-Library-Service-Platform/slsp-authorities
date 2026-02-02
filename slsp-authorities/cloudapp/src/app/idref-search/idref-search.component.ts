@@ -1,4 +1,4 @@
-import { Component, inject, effect } from '@angular/core';
+import { Component, inject, effect, input } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { IdrefService } from '../services/idref.service';
 import {
@@ -7,6 +7,8 @@ import {
 } from '../models/idref-model';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
+import { ProxyService } from '../services/proxy.service';
+import { Bib, DataField } from '../models/bib-records';
 
 @Component({
 	selector: 'app-idref-search',
@@ -16,12 +18,14 @@ import { TranslateService } from '@ngx-translate/core';
 export class IdrefSearchComponent{
 	public IdrefSolrIndexKeys = IdrefSolrIndexKeys;
 	public RecordTypeKeys = INVERTED_IDREF_RECORDTYPE_MAP;
+	public entity = input.required<Bib | null>();
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	public results: any[] = [];
 	public loading = false;
 	public recordTypeSelected!: string;
 	public searchForm: FormGroup;
 	private idrefService = inject(IdrefService);
+	private proxyService = inject(ProxyService);
 	private translate = inject(TranslateService);
 	private alert = inject(AlertService);
 	// eslint-disable-next-line @typescript-eslint/member-ordering
@@ -87,9 +91,23 @@ export class IdrefSearchComponent{
 		}
 	}
 
+	//méthode qui va modifier le record bibliographique en fonction des valeur du formulaire principale
 	public addrecord(): void {
-    	this.alert.info(this.translate.instant('idrefSearch.notImplemented'), { autoClose: true });
-  	}
+		const values = this.searchForm.value as DataField;
+		const selectedEntry = this.NZSelectedEntry();
+
+		
+	if (!selectedEntry) {
+  		// À adapter à ton cas : message utilisateur, throw, return, etc.
+  		console.error('Aucune entrée sélectionnée');
+		
+  		return;
+	}
+
+
+		this.proxyService.updateBibRecord(selectedEntry,values).subscribe(bib => console.log(bib));
+		
+	}
 
 	public to902(): void {
     	this.alert.info(this.translate.instant('idrefSearch.notImplemented'), { autoClose: true });

@@ -62,3 +62,27 @@ export interface xmlEntry{
     value: { code: string; value: string }[],
 }
 
+
+export interface ControlField {
+  tag: string;
+  value: string;
+}
+
+export interface SubField {
+  code: string;
+  value: string;
+}
+
+export interface DataField {
+  tag: string;
+  ind1: string;
+  ind2: string;
+  subfields: SubField[];
+}
+
+export interface MarcRecord {
+  leader: string;
+  controlFields: ControlField[];
+  dataFields: DataField[];
+}
+

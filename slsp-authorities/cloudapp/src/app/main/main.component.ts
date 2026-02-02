@@ -95,6 +95,7 @@ export class MainComponent implements OnInit {
     this.selectedEntity = entity;
     this.loader.show();
     console.log(entity);
+    this.proxyService.setEntity(entity)
     this.selectedEntityDetails$ = this.proxyService.getBibRecord(entity);
   }
 

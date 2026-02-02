@@ -1,7 +1,7 @@
 
 // proxy.service.ts
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import {
   AlertService,
   CloudAppEventsService,
@@ -15,8 +15,9 @@ import {
   shareReplay, switchMap, tap, throwError, take
 } from 'rxjs';
 import { LoadingIndicatorService } from './loading-indicator.service';
-import { Bib } from '../models/bib-records';
+import { Bib, DataField, xmlEntry } from '../models/bib-records';
 import { environment } from '../environments/environment';
+import { areDataFieldsEqual, marcRecordToXml, xmlEntryToDataField, xmlToMarcRecord } from '../utils/stringUtils';
 
 @Injectable({ providedIn: 'root' })
 export class ProxyService {
@@ -28,6 +29,7 @@ export class ProxyService {
   private eventsService = inject(CloudAppEventsService);
   private restService = inject(CloudAppRestService);
   private http = inject(HttpClient);
+  private entity = signal<Entity | undefined>(undefined);
 
   private httpOptions!: { headers: HttpHeaders; params: { isProdEnvironment: boolean } };
   private baseUrl = environment.proxyUrl;
@@ -35,10 +37,17 @@ export class ProxyService {
   /** 🔁 Initialisation (token + httpOptions), faite une seule fois */
   private init$: Observable<void>;
 
-
   public constructor() {
     this.init$ = this.createInit$();
     this.ready$ = this.init$.pipe(take(1)); // garantit 1 seule émission
+  }
+
+  public setEntity(entity: Entity): void {
+    this.entity.set(entity);
+  }
+
+  public getEntity(): Entity | undefined {
+    return this.entity();
   }
 
   // ---------------------------
@@ -60,6 +69,76 @@ export class ProxyService {
         const errorMsg = (error as any)?.message || (error as any)?.statusText || 'Unknown error';
 
         this.alert.error(this.translate.instant('error.restApiError', [errorMsg]), { autoClose: false });
+
+        return EMPTY;
+      }),
+      finalize(() => this.loader.hide()),
+    );
+  }
+
+  /** Récupère la notice bib de la NZ pour l'entité sélectionnée
+   *  puis fait une deuxième requête basée sur ce résultat
+   */
+  public updateBibRecord(selectedEntry: xmlEntry, updatedDataField: DataField): Observable<Bib> {
+    return this.ensureAccess$().pipe(
+      switchMap(() => {
+        const entity = this.entity();
+
+        if (!entity) {
+          return throwError(() => new Error('Aucune entité sélectionnée.'));
+        }
+
+        return this.getNzMmsIdFromEntity(entity);
+      }),
+      switchMap((nzMmsId) => {
+        console.log(nzMmsId)
+
+        // 1ère requête : récupérer l'entité la plus à jour
+        return this.http.get<Bib>(
+          `${this.baseUrl}/p/api-eu.hosted.exlibrisgroup.com/almaws/v1/bibs/${nzMmsId}`,
+          this.httpOptions,
+        ).pipe(
+          // 2ème requête : utiliser le Bib (ou nzMmsId) pour un nouvel appel
+          switchMap((bib) => {
+
+            const marcRecord = xmlToMarcRecord(bib.anies[0]);
+            const index = marcRecord.dataFields.findIndex(field =>
+              areDataFieldsEqual(field, xmlEntryToDataField(selectedEntry))
+            );
+
+
+            console.log(marcRecord)
+            
+            
+            if (index !== -1) {
+              // Mise à jour
+              marcRecord.dataFields[index] = updatedDataField;
+            } else {
+              // Ajout si non trouvé
+              marcRecord.dataFields.push(updatedDataField);
+            }
+
+            console.log(marcRecord)
+
+
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            return this.http.get<any>(
+              `${this.baseUrl}/some/other/endpoint/${marcRecord}`,
+              this.httpOptions,
+            );
+          }),
+        );
+      }),
+      catchError((error) => {
+        const errorMsg =
+          (error)?.message ||
+          (error)?.statusText ||
+          'Unknown error';
+
+        this.alert.error(
+          this.translate.instant('error.restApiError', [errorMsg]),
+          { autoClose: false },
+        );
 
         return EMPTY;
       }),
@@ -109,8 +188,8 @@ export class ProxyService {
    */
   private getNzMmsIdFromEntity(entity: Entity): Observable<string> {
     const id = entity.id;
-    
-    console.log("entity: ",entity)
+
+    console.log("entity: ", entity)
 
     if (entity.link.indexOf('?nz_mms_id') >= 0) {
       return of(id);
