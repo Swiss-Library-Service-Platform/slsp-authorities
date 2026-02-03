@@ -1,119 +1,114 @@
+# Sample Cloud App
 
-# SLSPAuthorities CloudApp — Documentation
+A minimal Ex Libris Alma Cloud App template. This can be used as starting point for new Cloud App projects.
 
-⚠️**Attention**, pour le moment cette cloudapp est en développement et toutes les fonctionnalités ne sont pas encore implémentées.
+## What's Included
 
-## 1. Introduction
+This sample demonstrates:
 
-### 1.1. Description  
-La CloudApp *SLSPAuthorities* vise à simplifier les workflows de catalogage, actuellement rendus complexes par l’intégration IdRef dans Alma.  
-La version de base permet :  
-- la recherche directe dans IdRef pour effectuer des liens d’autorité,  
-- la possibilité pour des catalogueurs *sans accès IdRef* de demander la création ou modification d’autorités IdRef,  
-- la liaison facilitée entre notices bibliographiques et autorités IdRef.
+**Cloud App Basics**
 
-### 1.2. Nom de la CloudApp  
-**SLSPAuthorities** est proposé comme nom centralisant tous les services liés aux autorités, afin d’éviter la multiplication des CloudApps dans le futur.
+- Loading and displaying entities via the event service
+- Fetching entity details from the Alma API using the rest service
+- Basic error handling and memory management in RxJS pipes
 
-⚠️**Actuellement** la cloudapp utilise uniquement les notices liés à Idref.
----
+**Modern Angular Patterns**
 
-## 2. Prérequis
+- Dependency injection using `inject()` function
+- Proper cleanup with `takeUntilDestroyed()`
+- Modern template control flow (`@if`, `@for`)
 
-L’utilisateur typique est un catalogueur Alma qui veut pouvoir modifier les liens vers les notices d'authorités d'une notice bibliographique.
+**Internationalization**
 
----
+- Translation service usage in components
+- Translation pipe usage in templates
+- Pre-configured English and German translations
 
-## 3. Architecture
+**Code Quality**
 
-Le CloudApp doit :  
-- interroger IdRef pour récupérer les autorités ;  
-- lire et modifier les notices bibliographiques de l’Alma NZ.
+- ESLint configuration with Angular-specific rules
+- Prettier for code formatting
+- NPM scripts for linting, formatting, and development
 
-⚠️ **Un NZ API key est requis**. L’API CloudApp standard **ne permet pas d’accéder aux données NZ**.  
-→ Un **proxy** est nécessaire pour stocker la clé et transmettre les requêtes vers Alma NZ.  
+## Prerequisites
 
-Côté IdRef, aucun proxy n’est requis (pas d’authentification).
+- Node.js 22.x (see `.nvmrc`)
+- Ex Libris Cloud App CLI: `npm install -g @exlibris/exl-cloudapp-cli`
+- Access to an Alma sandbox instance
 
----
+## Setup
 
-## 4. CloudApp
+1. Copy all files (including hidden files) to your new project directory
 
-### 4.1. Ouverture de la CloudApp
-La CloudApp doit être ouverte avec une ou plusieurs notices actives dans Alma  
-Sinon → message d’erreur : **No active record, please open a bibliographical record in the Metadata editor**.
+1. Install dependencies:
 
+   ```bash
+   npm install
+   ```
 
-Cas possibles :  
-- une seule notice → ouverture directe,  
-- plusieurs notices → affichage d’une liste.
+1. Edit `manifest.json` with your app details:
 
----
+   ```json
+   {
+     "id": "your-app-id",
+     "title": "Your App Title",
+     "subtitle": "Short description",
+     "author": "Your Name"
+   }
+   ```
 
-### 4.2. Affichage de la notice courante
+1. Copy and edit the config file:
 
-Fonctionnalités :  
-- **Affichage par défaut** → uniquement les champs pertinents (100, 110, 650, 651, 655, …)  
-- **Affichage étendu** → bouton permettant de voir la notice complète  
-- Codes couleur :  
-  - **Jaune** → champ pertinent sans autorité IdRef (modifiable)  
-  - **Gris** → autorité non-IdRef (non modifiable)  
-  - **Vert** → autorité IdRef (modifiable)  
-- Affichage du titre (champ 245 ou autre logique à tester)  
-- Bouton « Enregistrer & actualiser »  
-- Barre de recherche IdRef
+   ```bash
+   cp config.template.json config.json
+   ```
 
----
+   Update `config.json` with your institution details:
 
-### 4.3. modification des notices bibliographique
+   ```json
+   {
+     "env": "https://your-institution.exlibrisgroup.com/institution/41SLSP_YOUR-CODE",
+     "port": 4200
+   }
+   ```
 
-⚠️**Pas encore implémenté**
+## Development
 
----
+Start the development server:
 
-### 4.4. Recherche dans IdRef
+```bash
+eca start
+```
 
-⚠️**Pas encore implémenté**
+The app runs at `http://localhost:4200` and proxies to your configured Alma instance.
 
----
+### Common Commands
 
-### 4.5. Création/modification du champs 902
+- `eca start` - Start development server
+- `eca build` - Build for production
+- `npm run lint` - Check code with ESLint
+- `npm run lint:fix` - Auto-fix linting issues
+- `npm run format` - Format code with Prettier
+- `npm test` - Run tests
 
+## Troubleshooting
 
-⚠️**Pas encore implémenté**
+**Port in use**: Change the `port` value in `config.json`
 
----
+**ECA command not found**: Install the CLI globally:
 
-## 5. IdRef
+```bash
+npm install -g @exlibris/exl-cloudapp-cli
+```
 
-### 5.1. API Solr
+**Node version mismatch**: Use the version from `.nvmrc`:
 
-**Endpoint :**  
-`https://www.idref.fr/Sru/Solr`
+```bash
+nvm use
+```
 
-Pour effectuer des recherches dans Idref, la cloudapp utilise l'API munie du moteur de recherche Solr de Idre.
+## Resources
 
-documentation: https://documentation.abes.fr/aideidrefdeveloppeur/index.html
-
----
-
-### 5.2. Afficher le detail d'une notice d'authorité
-
-Pour récupérer le detail d'une notice d'authorité, la cloudapp utilise l'endpoint suivant:
-`https://www.idref.fr/{PPN}.xml`
-
----
-
-## 6. NZ et proxy SLSP
-
-Le proxy doit :  
-- vérifier les rôles utilisateur (l'utilisateur doit avoir le rôle catalogueur, id=204)
-- vérifier l’IZ et l’environnement (SLSP uniquement)  
-
----
-
-
-## Documentation
-
-- API IdRef : https://documentation.abes.fr/aideidrefdeveloppeur/index.html#UtiliserApiSolr  
-- Autres CloudApps similaires : *(à compléter)*
+- [Ex Libris Cloud Apps Documentation](https://developers.exlibrisgroup.com/cloudapps/)
+- [Ex Libris Developer Network](https://developers.exlibrisgroup.com/)
+- [Angular Documentation](https://angular.dev/)
