@@ -131,6 +131,9 @@ export function areDataFieldsEqual(a: DataField, b: DataField): boolean {
 }
 
 export function xmlEntryToDataField(entry: xmlEntry): DataField {
+  console.log('xmlEntryToDataField entry = ', entry);
+  console.log('xmlEntryToDataField entry.value = ', entry.value);
+
   return {
     tag: entry.tag,
     ind1: entry.ind1,
@@ -140,4 +143,21 @@ export function xmlEntryToDataField(entry: xmlEntry): DataField {
       value: v.value,
     })),
   };
+}
+
+export 
+function parseSubfieldsString(subfieldsStr: string): SubField[] {
+  if (!subfieldsStr) return [];
+
+  // On découpe sur `$$` et on enlève le premier éventuel chunk vide
+  return subfieldsStr
+    .split('$$')
+    .map(part => part.trim())
+    .filter(part => part.length > 0)
+    .map(part => {
+      const code = part.charAt(0);           // ex : 'a'
+      const value = part.slice(1).trim();    // ex : ' Videau, Valérie' -> 'Videau, Valérie'
+      
+      return { code, value };
+    });
 }

@@ -22,7 +22,7 @@
 		<div class="marc-column marc-column-actions">
 			@if(getIdrefAllowedTags().includes(entry.tag)){
 
-			<button mat-icon-button color="primary" (click)="pushToInput(entry); searchIdref(entry)">
+			<button mat-icon-button color="primary" (click)="saveCurrentEntry(entry);pushToInput(entry); searchIdref(entry)">
 				<mat-icon>edit</mat-icon>
 			</button>
 			<button mat-icon-button color="primary" (click)="deleteField(entry)">

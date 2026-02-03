@@ -19,6 +19,7 @@ import { Bib, DataField, xmlEntry } from '../models/bib-records';
 import { environment } from '../environments/environment';
 import { areDataFieldsEqual, marcRecordToXml, xmlEntryToDataField, xmlToMarcRecord } from '../utils/stringUtils';
 
+
 @Injectable({ providedIn: 'root' })
 export class ProxyService {
   /** ✅ Émet 1 fois quand init$ est prêt */
@@ -32,6 +33,7 @@ export class ProxyService {
   private entity = signal<Entity | undefined>(undefined);
 
   private httpOptions!: { headers: HttpHeaders; params: { isProdEnvironment: boolean } };
+  private xmlHttpOptions!: { headers: HttpHeaders; params: { isProdEnvironment: boolean } };
   private baseUrl = environment.proxyUrl;
 
   /** 🔁 Initialisation (token + httpOptions), faite une seule fois */
@@ -102,29 +104,41 @@ export class ProxyService {
           switchMap((bib) => {
 
             const marcRecord = xmlToMarcRecord(bib.anies[0]);
+
+            console.log(marcRecordToXml(marcRecord))
+
             const index = marcRecord.dataFields.findIndex(field =>
               areDataFieldsEqual(field, xmlEntryToDataField(selectedEntry))
             );
 
+            console.log(bib.anies[0]) 
+            console.log("updateted data: ",updatedDataField)           
 
-            console.log(marcRecord)
-            
-            
+
             if (index !== -1) {
               // Mise à jour
               marcRecord.dataFields[index] = updatedDataField;
+              console.log("add")
             } else {
               // Ajout si non trouvé
               marcRecord.dataFields.push(updatedDataField);
+              console.log("push")
             }
 
-            console.log(marcRecord)
 
+           /* const newBib: Bib= {
+              ...bib,
+              anies: [marcRecordToXml(marcRecord)]
+            }*/
+
+            console.log(marcRecord)
+            console.log(marcRecordToXml(marcRecord))
 
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            return this.http.get<any>(
-              `${this.baseUrl}/some/other/endpoint/${marcRecord}`,
-              this.httpOptions,
+            return this.http.put<any>(
+              `${this.baseUrl}/p/api-eu.hosted.exlibrisgroup.com/almaws/v1/bibs/${nzMmsId}`,
+              `<bib>${marcRecordToXml(marcRecord)}</bib>`,
+              this.xmlHttpOptions
             );
           }),
         );
@@ -233,6 +247,16 @@ export class ProxyService {
             'Content-Type': 'application/json',
           }),
         };
+
+        this.xmlHttpOptions = {
+          params: { isProdEnvironment },
+          headers: new HttpHeaders({
+            Authorization: `Bearer ${authToken}`,
+            'Content-Type': 'application/xml',
+          }),
+        };
+
+
       }),
       mapTo(void 0),
       shareReplay({ bufferSize: 1, refCount: false }),

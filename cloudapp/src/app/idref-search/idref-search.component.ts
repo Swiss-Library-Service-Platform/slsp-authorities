@@ -9,6 +9,8 @@ import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
 import { ProxyService } from '../services/proxy.service';
 import { Bib, DataField } from '../models/bib-records';
+import { BiblioReferencedEntryService } from '../services/biblio-referenced-entry.service';
+import { parseSubfieldsString } from '../utils/stringUtils';
 
 @Component({
 	selector: 'app-idref-search',
@@ -28,6 +30,8 @@ export class IdrefSearchComponent{
 	private proxyService = inject(ProxyService);
 	private translate = inject(TranslateService);
 	private alert = inject(AlertService);
+	private referenceCurrentField = inject(BiblioReferencedEntryService);
+
 	// eslint-disable-next-line @typescript-eslint/member-ordering
 	public NZSelectedEntry = this.idrefService.NZSelectedEntry;
 	// eslint-disable-next-line @typescript-eslint/member-ordering
@@ -93,19 +97,23 @@ export class IdrefSearchComponent{
 
 	//méthode qui va modifier le record bibliographique en fonction des valeur du formulaire principale
 	public addrecord(): void {
-		const values = this.searchForm.value as DataField;
-		const selectedEntry = this.NZSelectedEntry();
-
+		const values = this.searchForm.value;
+		//const selectedEntry = this.NZSelectedEntry();
+		const reference = this.referenceCurrentField.getSavedCurrentEntry();
 		
-	if (!selectedEntry) {
+	if (!reference) {
   		// À adapter à ton cas : message utilisateur, throw, return, etc.
   		console.error('Aucune entrée sélectionnée');
 		
   		return;
 	}
 
+	const formatedValues = {
+		...values,
+		subfields: parseSubfieldsString(values.subfields),
+	} as DataField
 
-		this.proxyService.updateBibRecord(selectedEntry,values).subscribe(bib => console.log(bib));
+		this.proxyService.updateBibRecord(reference,formatedValues).subscribe(bib => console.log(bib));
 		
 	}
 

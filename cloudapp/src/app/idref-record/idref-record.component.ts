@@ -183,7 +183,7 @@ public pushTobiblioRecordForm(ppn_z: string): void {
   } else {
     // Ajout d'un nouveau sous-champ $$0
     newValues.push({
-      code: '0',      // <== IMPORTANT : "0" et pas "$$0"
+      code: '0',     
       value: ppn_z,
     });
   }
