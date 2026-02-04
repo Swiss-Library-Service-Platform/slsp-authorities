@@ -9,9 +9,9 @@ import {
 	BehaviorSubject,
 } from 'rxjs';
 import { IdrefService } from '../services/idref.service';
-import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
-import { TranslateService } from '@ngx-translate/core';
 import { BiblioReferencedEntryService } from '../services/biblio-referenced-entry.service';
+import { MatDialog } from '@angular/material/dialog';
+import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
 //Composant pour afficher les notices bibliographique provenant de la NZ
 @Component({
 	selector: 'app-biblio-record',
@@ -39,8 +39,7 @@ export class BiblioRecordComponent implements OnInit {
 
 	public title: string | null = null;
 	public mms_id: string | null = null;
-	private translate = inject(TranslateService);
-	private alert = inject(AlertService);
+	public dialog = inject(MatDialog);
 	private idrefService = inject(IdrefService);
 	private referenceCurrentField = inject(BiblioReferencedEntryService);
 	// ✅ BehaviorSubject pour allowedTags
@@ -67,8 +66,16 @@ export class BiblioRecordComponent implements OnInit {
 	}
 
 	public deleteField(entry: xmlEntry): void {
-		this.alert.info(this.translate.instant('biblioRecord.notImplemented'), { autoClose: true });
-	}
+		const dialogRef = this.dialog.open(DeleteDialogComponent, {
+      width: '500px',
+	  data: {entry}
+    });
+
+    dialogRef.afterClosed().subscribe(() => {
+      console.log('The dialog was closed');
+    });
+  }
+	
 
 	public ngOnInit(): void {
 		// Combine xmlString et allowedTags pour recalculer marcFields

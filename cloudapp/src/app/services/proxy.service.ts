@@ -81,8 +81,14 @@ export class ProxyService {
   /** Récupère la notice bib de la NZ pour l'entité sélectionnée
    *  puis fait une deuxième requête basée sur ce résultat
    */
-  public updateBibRecord(selectedEntry: xmlEntry, updatedDataField: DataField): Observable<Bib> {
+  public updateBibRecord(
+    selectedEntry: xmlEntry,
+    updatedDataField: DataField
+  ): Observable<Bib> {
+    this.loader.show();
+
     return this.ensureAccess$().pipe(
+      // 1. Récupérer l'ID Alma (nzMmsId) depuis l'entité
       switchMap(() => {
         const entity = this.entity();
 
@@ -92,61 +98,36 @@ export class ProxyService {
 
         return this.getNzMmsIdFromEntity(entity);
       }),
-      switchMap((nzMmsId) => {
-        console.log(nzMmsId)
 
-        // 1ère requête : récupérer l'entité la plus à jour
-        return this.http.get<Bib>(
-          `${this.baseUrl}/p/api-eu.hosted.exlibrisgroup.com/almaws/v1/bibs/${nzMmsId}`,
-          this.httpOptions,
+      // 2. Récupérer le Bib le plus à jour
+      switchMap((nzMmsId) =>
+        this.http.get<Bib>(
+          this.buildBibUrl(nzMmsId),
+          this.httpOptions
         ).pipe(
-          // 2ème requête : utiliser le Bib (ou nzMmsId) pour un nouvel appel
+          // 3. Mettre à jour le Bib et faire le PUT
           switchMap((bib) => {
-
-            const marcRecord = xmlToMarcRecord(bib.anies[0]);
-
-            console.log(marcRecordToXml(marcRecord))
-
-            const index = marcRecord.dataFields.findIndex(field =>
-              areDataFieldsEqual(field, xmlEntryToDataField(selectedEntry))
+            const updatedMarcXml = this.buildUpdatedMarcXml(
+              bib,
+              selectedEntry,
+              updatedDataField
             );
 
-            console.log(bib.anies[0]) 
-            console.log("updateted data: ",updatedDataField)           
-
-
-            if (index !== -1) {
-              // Mise à jour
-              marcRecord.dataFields[index] = updatedDataField;
-              console.log("add")
-            } else {
-              // Ajout si non trouvé
-              marcRecord.dataFields.push(updatedDataField);
-              console.log("push")
-            }
-
-
-           /* const newBib: Bib= {
-              ...bib,
-              anies: [marcRecordToXml(marcRecord)]
-            }*/
-
-            console.log(marcRecord)
-            console.log(marcRecordToXml(marcRecord))
-
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            return this.http.put<any>(
-              `${this.baseUrl}/p/api-eu.hosted.exlibrisgroup.com/almaws/v1/bibs/${nzMmsId}`,
-              `<bib>${marcRecordToXml(marcRecord)}</bib>`,
+            // On suppose que l'API renvoie un Bib à jour ici
+            return this.http.put<Bib>(
+              this.buildBibUrl(nzMmsId),
+              `<bib>${updatedMarcXml}</bib>`,
               this.xmlHttpOptions
             );
           }),
-        );
-      }),
+        )
+      ),
+
+      // 4. Gestion d’erreur globale
       catchError((error) => {
         const errorMsg =
-          (error)?.message ||
-          (error)?.statusText ||
+          error?.message ||
+          error?.statusText ||
           'Unknown error';
 
         this.alert.error(
@@ -156,9 +137,74 @@ export class ProxyService {
 
         return EMPTY;
       }),
+
+      // 5. Masquer le loader dans tous les cas
       finalize(() => this.loader.hide()),
     );
   }
+
+  public deleteBibRecord(selectedEntry: xmlEntry):Observable<Bib> {
+    this.loader.show();
+
+    return this.ensureAccess$().pipe(
+      // 1. Récupérer l'ID Alma (nzMmsId) depuis l'entité
+      switchMap(() => {
+        const entity = this.entity();
+
+        if (!entity) {
+          return throwError(() => new Error('Aucune entité sélectionnée.'));
+        }
+
+        return this.getNzMmsIdFromEntity(entity);
+      }),
+
+      // 2. Récupérer le Bib le plus à jour
+      switchMap((nzMmsId) =>
+        this.http.get<Bib>(
+          this.buildBibUrl(nzMmsId),
+          this.httpOptions
+        ).pipe(
+          // 3. Mettre à jour le Bib et faire le PUT
+          switchMap((bib) => {
+            const updatedMarcXml = this.buildDeletedMarcXml(
+              bib,
+              selectedEntry
+            );
+
+
+            return this.http.put<Bib>(
+              this.buildBibUrl(nzMmsId),
+              `<bib>${updatedMarcXml}</bib>`,
+              this.xmlHttpOptions
+            );
+          }),
+        )
+      ),
+
+      // 4. Gestion d’erreur globale
+      catchError((error) => {
+        const errorMsg =
+          error?.message ||
+          error?.statusText ||
+          'Unknown error';
+
+        this.alert.error(
+          this.translate.instant('error.restApiError', [errorMsg]),
+          { autoClose: false },
+        );
+
+        return EMPTY;
+      }),
+
+      // 5. Masquer le loader dans tous les cas
+      finalize(() => {
+        this.eventsService.refreshPage().subscribe()
+        this.loader.hide();
+        this.alert.info(this.translate.instant("proxyService.deleteSuccess"))
+      }),
+    );
+  }
+
 
   // ---------------------------
   // 🔐 Vérifications d'accès
@@ -196,6 +242,58 @@ export class ProxyService {
       shareReplay({ bufferSize: 1, refCount: false }),
     );
   }
+
+  /**
+ * Construit l'URL d'accès à un Bib via son nzMmsId.
+ */
+  private buildBibUrl(nzMmsId: string): string {
+    return `${this.baseUrl}/p/api-eu.hosted.exlibrisgroup.com/almaws/v1/bibs/${nzMmsId}`;
+  }
+
+  /**
+   * À partir d'un Bib existant, met à jour/ajoute le DataField
+   * et renvoie le MARC XML prêt à être envoyé.
+   */
+  private buildUpdatedMarcXml(
+    bib: Bib,
+    selectedEntry: xmlEntry,
+    updatedDataField: DataField
+  ): string {
+    const marcRecord = xmlToMarcRecord(bib.anies[0]); 
+    const targetDataField = xmlEntryToDataField(selectedEntry); 
+    const index = marcRecord.dataFields.findIndex(field =>
+      areDataFieldsEqual(field, targetDataField)
+    );
+
+    if (index !== -1) {
+      // Mise à jour
+      marcRecord.dataFields[index] = updatedDataField;
+    } else {
+      // Ajout si non trouvé
+      marcRecord.dataFields.push(updatedDataField);
+    }
+
+    return marcRecordToXml(marcRecord);
+  }
+
+  private buildDeletedMarcXml(
+  bib: Bib,
+  selectedEntry: xmlEntry
+): string {
+  const marcRecord = xmlToMarcRecord(bib.anies[0]);
+  const targetDataField = xmlEntryToDataField(selectedEntry);
+  // Trouver l'index du champ à supprimer
+  const index = marcRecord.dataFields.findIndex(field =>
+    areDataFieldsEqual(field, targetDataField)
+  );
+
+  if (index !== -1) {
+    // Suppression du DataField correspondant
+    marcRecord.dataFields.splice(index, 1);
+  }
+
+  return marcRecordToXml(marcRecord);
+}
 
   /**
    * Retrieves the NZ MMS ID from the given entity.

@@ -5,19 +5,20 @@ import {
 	IdrefSolrIndexKeys,
 	INVERTED_IDREF_RECORDTYPE_MAP,
 } from '../models/idref-model';
-import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
+import { AlertService, CloudAppEventsService } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
 import { ProxyService } from '../services/proxy.service';
 import { Bib, DataField } from '../models/bib-records';
 import { BiblioReferencedEntryService } from '../services/biblio-referenced-entry.service';
 import { parseSubfieldsString } from '../utils/stringUtils';
+import { catchError, of, switchMap, tap } from 'rxjs';
 
 @Component({
 	selector: 'app-idref-search',
 	templateUrl: './idref-search.component.html',
 	styleUrls: ['./idref-search.component.scss'],
 })
-export class IdrefSearchComponent{
+export class IdrefSearchComponent {
 	public IdrefSolrIndexKeys = IdrefSolrIndexKeys;
 	public RecordTypeKeys = INVERTED_IDREF_RECORDTYPE_MAP;
 	public entity = input.required<Bib | null>();
@@ -28,6 +29,7 @@ export class IdrefSearchComponent{
 	public searchForm: FormGroup;
 	private idrefService = inject(IdrefService);
 	private proxyService = inject(ProxyService);
+	private eventsService = inject(CloudAppEventsService);
 	private translate = inject(TranslateService);
 	private alert = inject(AlertService);
 	private referenceCurrentField = inject(BiblioReferencedEntryService);
@@ -67,7 +69,7 @@ export class IdrefSearchComponent{
 
 	public onSearch(): void {
 		this.loading = true;
-		
+
 		//on met à jour les signaux du service idref pour modifier la source de données
 		this.setNZSelectedEntry();
 
@@ -100,30 +102,41 @@ export class IdrefSearchComponent{
 		const values = this.searchForm.value;
 		//const selectedEntry = this.NZSelectedEntry();
 		const reference = this.referenceCurrentField.getSavedCurrentEntry();
-		
-	if (!reference) {
-  		// À adapter à ton cas : message utilisateur, throw, return, etc.
-  		console.error('Aucune entrée sélectionnée');
-		
-  		return;
-	}
 
-	const formatedValues = {
-		...values,
-		subfields: parseSubfieldsString(values.subfields),
-	} as DataField
+		if (!reference) {
+			// À adapter à ton cas : message utilisateur, throw, return, etc.
+			console.error('Aucune entrée sélectionnée');
 
-		this.proxyService.updateBibRecord(reference,formatedValues).subscribe(bib => console.log(bib));
-		
+			return;
+		}
+
+		const formatedValues = {
+			...values,
+			subfields: parseSubfieldsString(values.subfields),
+		} as DataField
+
+		this.proxyService.updateBibRecord(reference, formatedValues)
+			.pipe(
+				tap(bib => console.log('bib:', bib)),
+				switchMap(() => this.eventsService.refreshPage()),
+				tap(() => console.log('reload success')),
+				catchError(err => {
+					console.error("Erreur refreshPage:", err);
+
+					return of(null);
+				})
+			).subscribe();
+
+
 	}
 
 	public to902(): void {
-    	this.alert.info(this.translate.instant('idrefSearch.notImplemented'), { autoClose: true });
-  	}
+		this.alert.info(this.translate.instant('idrefSearch.notImplemented'), { autoClose: true });
+	}
 
 	public clear(): void {
-    	this.alert.info(this.translate.instant('idrefSearch.notImplemented'), { autoClose: true });
-  	}
+		this.alert.info(this.translate.instant('idrefSearch.notImplemented'), { autoClose: true });
+	}
 
 
 	private parseFlattenedArray(
@@ -143,7 +156,7 @@ export class IdrefSearchComponent{
 					});
 				}
 				// Nouveau code
-				currentCode = item.replace("$$","");
+				currentCode = item.replace("$$", "");
 				currentValueParts = [];
 			} else {
 				// Sinon, c'est une partie de la valeur
@@ -159,7 +172,7 @@ export class IdrefSearchComponent{
 		return result;
 	}
 
-	private setNZSelectedEntry(): void{
+	private setNZSelectedEntry(): void {
 
 		const values = this.searchForm.value as {
 			tag: string;
@@ -169,11 +182,11 @@ export class IdrefSearchComponent{
 		};
 
 		this.NZSelectedEntry.set({
-				change : "",
-				tag: values.tag,
-				ind1: values.ind1,
-				ind2: values.ind2,
-				value: this.parseFlattenedArray(values.subfields)
-			});
+			change: "",
+			tag: values.tag,
+			ind1: values.ind1,
+			ind2: values.ind2,
+			value: this.parseFlattenedArray(values.subfields)
+		});
 	}
 }

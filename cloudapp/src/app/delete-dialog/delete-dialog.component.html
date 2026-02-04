@@ -1,0 +1,31 @@
+<h1 mat-dialog-title>{{"deleteDialog.title" | translate}}</h1>
+<div mat-dialog-content>
+  <p>{{"deleteDialog.content" | translate}}</p>
+  <div class="marc">
+  <div class="marc-row">
+		<div class="marc-column">
+			<span class="tag">{{ data.entry.tag }}</span>
+		</div>
+		<div class="marc-column">
+			<span class="ind">{{ data.entry.ind1 }}</span>
+		</div>
+		<div class="marc-column">
+			<span class="ind">{{ data.entry.ind2 }}</span>
+		</div>
+		<div class="marc-column">
+			@for (valueEntry of data.entry.value; track $index) {
+			<div class="marc-column-value">
+				@if (valueEntry.code && valueEntry.code !== '') {
+				<span class="subfield">$${{ valueEntry.code }}</span>
+				}
+				<span class="value">{{ valueEntry.value }} </span>
+			</div>
+			}
+		</div>
+	</div>
+    </div>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">{{"deleteDialog.no" | translate}}</button>
+  <button mat-button (click)="onDelete()" cdkFocusInitial>{{"deleteDialog.ok" | translate}}</button>
+</div>
