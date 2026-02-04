@@ -4,18 +4,18 @@
 		mat-flat-button
 		color="secondary"
 		(click)="reset()"
-		[disabled]="!selectedEntity || (loader.isLoading | async)"
+		[disabled]="!selectedEntity() || (loader.isLoading | async)"
 	>
 		<mat-icon>arrow_back</mat-icon>{{ 'main.resetButtonLabel' | translate }}
 	</button>
 </div>
 
-@if (entities.length && !selectedEntity) {
+@if (entities.length && !selectedEntity()) {
 	<app-entity-list
 		[entities]="entities"
 		(selectedEntity)="selectEntity($event)"
 	/>
-} @else if (selectedEntity) {
+} @else if (selectedEntity()) {
 	<app-entity-detail [entity]="selectedEntityDetails$ | async" />
 } @else {
 	<p>{{ 'main.noActiveRecordInMetadataEditor' | translate }}</p>

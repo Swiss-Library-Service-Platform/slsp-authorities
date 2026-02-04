@@ -18,6 +18,7 @@ import { LoadingIndicatorService } from './loading-indicator.service';
 import { Bib, DataField, xmlEntry } from '../models/bib-records';
 import { environment } from '../environments/environment';
 import { areDataFieldsEqual, marcRecordToXml, xmlEntryToDataField, xmlToMarcRecord } from '../utils/stringUtils';
+import { RecordService } from './record.service';
 
 
 @Injectable({ providedIn: 'root' })
@@ -29,6 +30,7 @@ export class ProxyService {
   private translate = inject(TranslateService);
   private eventsService = inject(CloudAppEventsService);
   private restService = inject(CloudAppRestService);
+  private recordService = inject(RecordService);
   private http = inject(HttpClient);
   private entity = signal<Entity | undefined>(undefined);
 
@@ -199,6 +201,7 @@ export class ProxyService {
       // 5. Masquer le loader dans tous les cas
       finalize(() => {
         this.eventsService.refreshPage().subscribe()
+        this.recordService.resetSelecedEntity()
         this.loader.hide();
         this.alert.info(this.translate.instant("proxyService.deleteSuccess"))
       }),

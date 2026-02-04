@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 // main.component.ts
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { Component, computed, DestroyRef, inject, OnInit } from '@angular/core';
 import {
   AlertService,
   CloudAppEventsService,
@@ -15,7 +15,8 @@ import { catchError, filter, finalize, switchMap, tap } from 'rxjs/operators';
 import { LoadingIndicatorService } from '../services/loading-indicator.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Bib } from '../models/bib-records';
-import { ProxyService } from '../services/proxy.service';
+import { ProxyService } from '../services/proxy.service';;
+import { RecordService } from '../services/record.service';
 
 @Component({
   selector: 'app-main',
@@ -24,11 +25,12 @@ import { ProxyService } from '../services/proxy.service';
 })
 export class MainComponent implements OnInit {
   public entities: Entity[] = [];
-  public selectedEntity: Entity | null = null;
   public selectedEntityDetails$: Observable<Bib> = EMPTY;
   public loader = inject(LoadingIndicatorService);
   public hasCatalogerRole = false;
   public isInstitutionAllowed = false;
+  public recordService = inject(RecordService)
+  public selectedEntity = computed(() => this.recordService.selectedEntity())
 
   private eventsService = inject(CloudAppEventsService);
   private alert = inject(AlertService);
@@ -92,7 +94,7 @@ export class MainComponent implements OnInit {
   }
 
   public selectEntity(entity: Entity): void {
-    this.selectedEntity = entity;
+    this.recordService.setSelectedEntity(entity)
     this.loader.show();
     console.log(entity);
     this.proxyService.setEntity(entity)
@@ -100,7 +102,7 @@ export class MainComponent implements OnInit {
   }
 
   public reset(): void {
-    this.selectedEntity = null;
+    this.recordService.resetSelecedEntity()
   }
 
   public refresh(): Observable<RefreshPageResponse> {
