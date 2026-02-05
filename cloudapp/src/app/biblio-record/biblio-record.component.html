@@ -17,7 +17,7 @@
 <h2>{{"biblioRecord.title" | translate}}</h2>
 <div class="marc">
 	@for (entry of marcFields; track $index) {
-	<!--pour les couleurs [style.background-color]="getColorForTag(entry.tag)"-->
+	<!--Pour les couleurs [style.background-color]="getColorForTag(entry.tag)"-->
 	<div class="marc-row" [class.marc-row--active]="entry === selectedEntry">
 		<div class="marc-column marc-column-actions">
 			@if(getIdrefAllowedTags().includes(entry.tag)){

@@ -105,7 +105,7 @@ export class IdrefSearchComponent {
 
 		if (!reference) {
 			
-			this.alert.error(this.translate.instant("idrefSearch.noSelectedEntry"))
+			this.alert.error(this.translate.instant("idrefSearch.noSelectedEntry"),{delay: 1000})
 
 			return;
 		}
@@ -117,11 +117,11 @@ export class IdrefSearchComponent {
 
 		this.proxyService.updateBibRecord(reference, formatedValues)
 			.pipe(
-				tap(() => this.alert.success(this.translate.instant("idrefSearch.recordAdded"))),
+				tap(() => this.alert.success(this.translate.instant("idrefSearch.recordAdded"),{delay: 1000})),
 				switchMap(() => this.eventsService.refreshPage()),
 				tap(() => console.log('reload success')),
 				catchError(err => {
-					this.alert.warn(this.translate.instant("idrefSearch.acceptRefreshModal"))
+					this.alert.warn(this.translate.instant("idrefSearch.acceptRefreshModal"),{delay: 1000})
 					console.error("Erreur refreshPage:", err);
 
 					return of(null);
@@ -132,11 +132,11 @@ export class IdrefSearchComponent {
 	}
 
 	public to902(): void {
-		this.alert.info(this.translate.instant('idrefSearch.notImplemented'), { autoClose: true });
+		this.alert.info(this.translate.instant('idrefSearch.notImplemented'),{delay: 1000});
 	}
 
 	public clear(): void {
-		this.alert.info(this.translate.instant('idrefSearch.notImplemented'), { autoClose: true });
+		this.alert.info(this.translate.instant('idrefSearch.notImplemented'),{delay: 1000});
 	}
 
 

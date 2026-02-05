@@ -163,7 +163,7 @@ public pushTobiblioRecordForm(ppn_z: string): void {
   const selectedEntry = this.idrefService.NZSelectedEntry();
 
   if (!selectedEntry) {
-    console.warn('NZSelectedEntry est undefined, impossible de mettre à jour $$0');
+    console.warn('NZSelectedEntry est undefined, impossible de mettre à jour $$0',{delay: 1000});
 
     return;
   }
