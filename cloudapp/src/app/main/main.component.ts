@@ -8,6 +8,7 @@ import {
   Entity,
   EntityType,
   RefreshPageResponse,
+
 } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
 import { EMPTY, Observable, forkJoin, of } from 'rxjs';
@@ -100,6 +101,7 @@ export class MainComponent implements OnInit {
     this.proxyService.setEntity(entity)
     this.selectedEntityDetails$ = this.proxyService.getBibRecord(entity);
   }
+  
 
   public reset(): void {
     this.recordService.resetSelecedEntity()

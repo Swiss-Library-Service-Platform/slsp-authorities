@@ -1,11 +1,18 @@
 @if(isInstitutionAllowed && hasCatalogerRole){
 <div class="eca-actions">
+	
+	<a href="https://www.idref.fr/" target="_blank" rel="noopener noreferrer">
+  	<img
+    src="https://www.idref.fr/img/logo.png"
+    alt="logo of idref"
+    style="width: 80px; height: auto; cursor: pointer;" />
+	</a>
+
 	<button
 		mat-flat-button
 		color="secondary"
 		(click)="reset()"
-		[disabled]="!selectedEntity() || (loader.isLoading | async)"
-	>
+		[disabled]="!selectedEntity() || (loader.isLoading | async)">
 		<mat-icon>arrow_back</mat-icon>{{ 'main.resetButtonLabel' | translate }}
 	</button>
 </div>
