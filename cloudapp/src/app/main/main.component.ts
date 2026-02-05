@@ -83,6 +83,7 @@ export class MainComponent implements OnInit {
       tap(() => console.log('Refresh terminé, je peux continuer')),
       catchError((err) => {
         console.error('Erreur pendant l’initialisation/refresh', err);
+        this.alert.warn(this.translate.instant("main.acceptRefreshModal"));
 
         return of<RefreshPageResponse>({} as any);
       }),

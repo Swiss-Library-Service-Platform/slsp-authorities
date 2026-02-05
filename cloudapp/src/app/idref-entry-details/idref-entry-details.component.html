@@ -1,5 +1,7 @@
-<h2>{{ 'idrefEntryDetail.title' | translate }}</h2>
+<h2>{{ 'idrefEntryDetails.title' | translate }}</h2>
 
 @if (xmlAsString()) {
   <pre>{{ xmlAsString() }}</pre>
+}@else {
+  <p>{{'idrefEntryDetails.NoCurrentDetails' | translate}}</p>
 }

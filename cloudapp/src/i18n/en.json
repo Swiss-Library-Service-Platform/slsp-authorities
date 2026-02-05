@@ -1,12 +1,11 @@
 {
 	"main": {
-		"rightIssue": "you didn't have rights in order to use this cloud app",
+		"rightIssue": "You didn't have rights in order to use this cloud app",
 		"actionMessage": "Demo",
 		"actionButtonLabel": "Primary-Action",
 		"detailsButtonLabel": "Details",
 		"resetButtonLabel": "Reset",
 		"noEntities": "No entities",
-		"noIdrefAuthority": "There is no authority record linked to this PPN.",
 		"idrefSearchButtonLabel": "Idref search",
 		"noActiveRecordInMetadataEditor": "No active record, please open a bibliographical record in the Metadata editor",
 		"entity": {
@@ -14,21 +13,47 @@
 			"id": "Id",
 			"type": "Type",
 			"link": "Link"
-		}
+		},
+		"acceptRefreshModal": "Warning ! Don't forget to click on the accept refresh."
 	},
 	"error": {
 		"httpError": "There is an error with the http request",
 		"restApiError": "REST API error: {{0}}",
 		"catalogerRoleError": "You need cataloger role in order to use this cloud app",
-		"institutionAllowedError": "Your institution isn't allowed to use this cloud app"
+		"institutionAllowedError": "Your institution isn't allowed to use this cloud app",
+		"noSelectedEntry": "There is no selected entry"
 	},
 	"idrefSearch":{
 		"addToRecord": "Add to record",
 		"to902": "To 902",
 		"clear": "Clear",
-		"notImplemented": "not implemented yet"
+		"notImplemented": "Not implemented yet",
+		"noSelectedEntry": "There is no selected entry",
+		"recordAdded": "The record has been updated.",
+		"acceptRefreshModal": "Warning ! Don't forget to click on the accept refresh."
 	},
 	"biblioRecord":{
-		"notImplemented": "not implemented yet"
+		"title": "Authority related fields",
+		"notImplemented": "Not implemented yet"
+	},
+	"idrefRecord":{
+		"title": "Idref search",
+		"select": "Select",
+		"noIdrefAuthority": "There is no authority record linked to this PPN.",
+		"paginatorNext": "next page",
+		"NoCurrentSearch": "There are no search results yet."
+	},
+	"idrefEntryDetails": {
+		"title": "Details of Idref entry",
+		"NoCurrentDetails": "Search to view details"
+	},
+	"deleteDialog": {
+		"title": "Validate delete",
+		"content": "Are you sure you want to delete this record?",
+		"no": "Cancel",
+		"ok": "Delete"
+	},
+	"proxyService": {
+		"deleteSuccess": "Delete with sucess"
 	}
 }

@@ -95,6 +95,8 @@ export class ProxyService {
         const entity = this.entity();
 
         if (!entity) {
+          this.alert.error(this.translate.instant('error.noSelectedEntry'));
+
           return throwError(() => new Error('Aucune entité sélectionnée.'));
         }
 

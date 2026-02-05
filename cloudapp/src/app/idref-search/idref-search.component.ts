@@ -104,8 +104,8 @@ export class IdrefSearchComponent {
 		const reference = this.referenceCurrentField.getSavedCurrentEntry();
 
 		if (!reference) {
-			// À adapter à ton cas : message utilisateur, throw, return, etc.
-			console.error('Aucune entrée sélectionnée');
+			
+			this.alert.error(this.translate.instant("idrefSearch.noSelectedEntry"))
 
 			return;
 		}
@@ -117,10 +117,11 @@ export class IdrefSearchComponent {
 
 		this.proxyService.updateBibRecord(reference, formatedValues)
 			.pipe(
-				tap(bib => console.log('bib:', bib)),
+				tap(() => this.alert.success(this.translate.instant("idrefSearch.recordAdded"))),
 				switchMap(() => this.eventsService.refreshPage()),
 				tap(() => console.log('reload success')),
 				catchError(err => {
+					this.alert.warn(this.translate.instant("idrefSearch.acceptRefreshModal"))
 					console.error("Erreur refreshPage:", err);
 
 					return of(null);

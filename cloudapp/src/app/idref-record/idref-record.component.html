@@ -1,44 +1,43 @@
+<h2>{{"idrefRecord.title" | translate}}</h2>
+<form [formGroup]="searchForm">
+
+  <input placeholder="search index" formControlName="searchIndex" />
+
+  <input placeholder="query" formControlName="constructedQuery">
+
+  <mat-icon color="primary" fontIcon="search" (click)="onSearch()"></mat-icon>
+</form>
+
+@if (idrefResult()) {
 <div class="idrefmarc">
-	<h2>{{"idrefRecord.title" | translate}}</h2>
-	<form [formGroup]="searchForm">
-		
-		<input placeholder="search index" formControlName="searchIndex" />
+  @if (numFound() > 0) {
 
-		<input placeholder="query" formControlName="constructedQuery">
+  @for (doc of paginatedDocs(); track $index) {
+  <div class="idrefmarc-row" [class.idrefmarc-row--active]="doc === selectedDoc"
+    (click)="showDetails(doc.ppn_z); selectedDoc=doc" aria-hidden="true">
+    <div class="idrefmarc-column">
+      <mat-icon color="primary" [fontIcon]="iconMap.get(doc.recordtype_z) ?? 'broken_image'"></mat-icon>
+    </div>
+    <div class="idrefmarc-column">
+      <span class="tag">{{ doc.ppn_z }}</span>
+    </div>
+    <div class="idrefmarc-column">
+      <span class="value">{{ doc.affcourt_z }}</span>
+    </div>
+    <div class="idrefmarc-column">
+      <button class="button" color="primary" (click)="pushTobiblioRecordForm(doc.ppn_z)">
+        {{ 'idrefRecord.select' | translate }}</button>
+    </div>
+  </div>
+  }
 
-		<mat-icon color="primary" fontIcon="search" (click)="onSearch()"></mat-icon>
-	</form>
+  <mat-paginator [length]="docs().length" [pageSize]="10" [pageSizeOptions]="[5, 10, 50, 100]" aria-label="Select page">
+  </mat-paginator><!--in order tout add translation on the button the paginator need a custom class-->
 
-  @if (idrefResult()) {
-    @if (numFound() > 0) {
-
-      @for (doc of paginatedDocs(); track $index) {
-        <div class="idrefmarc-row" [class.idrefmarc-row--active]="doc === selectedDoc" (click)="showDetails(doc.ppn_z); selectedDoc=doc" aria-hidden="true">
-			<div class="idrefmarc-column">
-				<mat-icon color="primary" [fontIcon]="iconMap.get(doc.recordtype_z) ?? 'broken_image'"></mat-icon>
-          </div>
-          <div class="idrefmarc-column">
-            <span class="tag">{{ doc.ppn_z }}</span>
-          </div>
-          <div class="idrefmarc-column">
-            <span class="value">{{ doc.affcourt_z }}</span>
-          </div>
-          <div class="idrefmarc-column">
-           <button color="primary" (click)="pushTobiblioRecordForm(doc.ppn_z)">
-			        {{ 'idrefRecord.select' | translate }}</button>
-          </div>
-        </div>
-      }
-
-      <mat-paginator
-        [length]="docs().length"  
-        [pageSize]="5"
-        [pageSizeOptions]="[5, 10, 50, 100]"
-        aria-label="Select page">
-      </mat-paginator>
-
-    } @else {
-      {{ 'main.noIdrefAuthority' | translate }}
-    }
+  } @else {
+  {{ 'idrefRecord.noIdrefAuthority' | translate }}
   }
 </div>
+}@else {
+<p>{{'idrefRecord.NoCurrentSearch' | translate}}</p>
+}
