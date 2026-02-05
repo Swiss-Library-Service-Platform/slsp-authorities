@@ -15,9 +15,9 @@ import { EMPTY, Observable, forkJoin, of } from 'rxjs';
 import { catchError, filter, finalize, switchMap, tap } from 'rxjs/operators';
 import { LoadingIndicatorService } from '../services/loading-indicator.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Bib } from '../models/bib-records';
-import { ProxyService } from '../services/proxy.service';;
 import { RecordService } from '../services/record.service';
+import { AuthenticationService } from '../services/authentication.service';
+import { NZQueryService } from '../services/nzquery.service';
 
 @Component({
   selector: 'app-main',
@@ -26,7 +26,6 @@ import { RecordService } from '../services/record.service';
 })
 export class MainComponent implements OnInit {
   public entities: Entity[] = [];
-  public selectedEntityDetails$: Observable<Bib> = EMPTY;
   public loader = inject(LoadingIndicatorService);
   public hasCatalogerRole = false;
   public isInstitutionAllowed = false;
@@ -37,7 +36,8 @@ export class MainComponent implements OnInit {
   private alert = inject(AlertService);
   private translate = inject(TranslateService);
   private destroyRef = inject(DestroyRef);
-  private proxyService = inject(ProxyService);
+  private authenticationService = inject(AuthenticationService);
+  private nzQueryService = inject(NZQueryService);
 
   private entities$: Observable<Entity[]>;
 
@@ -61,10 +61,9 @@ export class MainComponent implements OnInit {
   public ngOnInit(): void {
     this.loader.show();
 
-    // ✅ Attend implicitement ready$ via les méthodes publiques du service
     forkJoin({
-      hasRole: this.proxyService.checkUserRoles$(),
-      allowed: this.proxyService.isInstitutionAllowed$(),
+      hasRole: this.authenticationService.checkUserRoles$(),
+      allowed: this.authenticationService.isInstitutionAllowed$(),
     }).pipe(
       tap(({ hasRole, allowed }) => {
         this.hasCatalogerRole = hasRole;
@@ -96,11 +95,9 @@ export class MainComponent implements OnInit {
   }
 
   public selectEntity(entity: Entity): void {
-    this.recordService.setSelectedEntity(entity)
+    this.recordService.selectedEntity.set(entity)
     this.loader.show();
-    console.log(entity);
-    this.proxyService.setEntity(entity)
-    this.selectedEntityDetails$ = this.proxyService.getBibRecord(entity);
+    this.nzQueryService.getBibRecord(entity).subscribe((bib) => this.recordService.selectedEntityDetails.set(bib));
   }
   
 

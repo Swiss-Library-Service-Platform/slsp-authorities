@@ -7,11 +7,11 @@ import {
 } from '../models/idref-model';
 import { AlertService, CloudAppEventsService } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
-import { ProxyService } from '../services/proxy.service';
 import { Bib, DataField } from '../models/bib-records';
 import { BiblioReferencedEntryService } from '../services/biblio-referenced-entry.service';
-import { parseSubfieldsString } from '../utils/stringUtils';
 import { catchError, of, switchMap, tap } from 'rxjs';
+import { NZQueryService } from '../services/nzquery.service';
+import { StringUtils } from '../utils/stringUtils';
 
 @Component({
 	selector: 'app-idref-search',
@@ -21,14 +21,14 @@ import { catchError, of, switchMap, tap } from 'rxjs';
 export class IdrefSearchComponent {
 	public IdrefSolrIndexKeys = IdrefSolrIndexKeys;
 	public RecordTypeKeys = INVERTED_IDREF_RECORDTYPE_MAP;
-	public entity = input.required<Bib | null>();
+	public entity = input.required<Bib | undefined>();
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	public results: any[] = [];
 	public loading = false;
 	public recordTypeSelected!: string;
 	public searchForm: FormGroup;
 	private idrefService = inject(IdrefService);
-	private proxyService = inject(ProxyService);
+	private nzQueryService = inject(NZQueryService);
 	private eventsService = inject(CloudAppEventsService);
 	private translate = inject(TranslateService);
 	private alert = inject(AlertService);
@@ -112,10 +112,10 @@ export class IdrefSearchComponent {
 
 		const formatedValues = {
 			...values,
-			subfields: parseSubfieldsString(values.subfields),
+			subfields: StringUtils.parseSubfieldsString(values.subfields),
 		} as DataField
 
-		this.proxyService.updateBibRecord(reference, formatedValues)
+		this.nzQueryService.updateBibRecord(reference, formatedValues)
 			.pipe(
 				tap(() => this.alert.success(this.translate.instant("idrefSearch.recordAdded"),{delay: 1000})),
 				switchMap(() => this.eventsService.refreshPage()),

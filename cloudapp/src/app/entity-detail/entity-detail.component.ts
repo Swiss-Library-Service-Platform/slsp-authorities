@@ -11,7 +11,7 @@ import { BiblioRecordComponent } from '../biblio-record/biblio-record.component'
 })
 export class EntityDetailComponent {
 	@ViewChild(BiblioRecordComponent) public bibRecord!: BiblioRecordComponent
-	public entity = input.required<Bib | null>();
+	public entity = input.required<Bib | undefined>();
 
 	public reset(): void{
 		//TODO: trouver un moyen de mettre l'entité à nullpour que le composant main n'affiche plus celui ci

@@ -12,6 +12,7 @@ import { IdrefService } from '../services/idref.service';
 import { BiblioReferencedEntryService } from '../services/biblio-referenced-entry.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
+
 //Composant pour afficher les notices bibliographique provenant de la NZ
 @Component({
 	selector: 'app-biblio-record',
@@ -21,24 +22,13 @@ import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component'
 export class BiblioRecordComponent implements OnInit {
 	public marcFields: xmlEntry[] = [];
 	public selectedEntry: xmlEntry | null = null;
-	public entity = input.required<Bib | null>();
+	public entity = input.required<Bib | undefined>();
 	public entity$ = toObservable(this.entity);
 
 	public entityAnnies$ = this.entity$.pipe(
 		map((e) => e?.anies[0] ?? null),
 		distinctUntilChanged(),
 	);
-	public entityTitle$ = this.entity$.pipe(
-		map((e) => e?.title ?? null),
-		distinctUntilChanged(),
-	);
-	public entityMms_id$ = this.entity$.pipe(
-		map((e) => e?.mms_id ?? null),
-		distinctUntilChanged(),
-	);
-
-	public title: string | null = null;
-	public mms_id: string | null = null;
 	public dialog = inject(MatDialog);
 	private idrefService = inject(IdrefService);
 	private referenceCurrentField = inject(BiblioReferencedEntryService);
@@ -67,7 +57,7 @@ export class BiblioRecordComponent implements OnInit {
 
 	public deleteField(entry: xmlEntry): void {
 		const dialogRef = this.dialog.open(DeleteDialogComponent, {
-      width: '500px',
+      width: '50px',
 	  data: {entry}
     });
 
@@ -90,10 +80,6 @@ export class BiblioRecordComponent implements OnInit {
 				this.updateMarcFields(xmlString, allowedTagsArray);
 			},
 		);
-
-		// Souscriptions pour title et mms_id
-		this.entityTitle$.subscribe((title) => (this.title = title));
-		this.entityMms_id$.subscribe((mms_id) => (this.mms_id = mms_id));
 	}
 
 	// ✅ Méthode pour mettre à jour allowedTags

@@ -23,7 +23,7 @@
 		(selectedEntity)="selectEntity($event)"
 	/>
 } @else if (selectedEntity()) {
-	<app-entity-detail [entity]="selectedEntityDetails$ | async" />
+	<app-entity-detail [entity]="recordService.selectedEntityDetails()" />
 } @else {
 	<p>{{ 'main.noActiveRecordInMetadataEditor' | translate }}</p>
 }
