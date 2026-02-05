@@ -6,7 +6,7 @@ import { Entity } from '@exlibris/exl-cloudapp-angular-lib';
 	templateUrl: './entity-list.component.html',
 })
 export class EntityListComponent {
-	public entities = input.required<Entity[]>();
+	public entities = input.required<Entity[] | undefined>();
 	public selectedEntity = output<Entity>();
 
 	public selectEntity(entity: Entity): void {

@@ -1,23 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 // main.component.ts
-import { Component, computed, DestroyRef, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import {
-  AlertService,
-  CloudAppEventsService,
   Entity,
-  EntityType,
-  RefreshPageResponse,
 
 } from '@exlibris/exl-cloudapp-angular-lib';
-import { TranslateService } from '@ngx-translate/core';
-import { EMPTY, Observable, forkJoin, of } from 'rxjs';
-import { catchError, filter, finalize, switchMap, tap } from 'rxjs/operators';
+import { MainFacadeService } from '../services/main-facade.service';
 import { LoadingIndicatorService } from '../services/loading-indicator.service';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { RecordService } from '../services/record.service';
-import { AuthenticationService } from '../services/authentication.service';
-import { NZQueryService } from '../services/nzquery.service';
 
 @Component({
   selector: 'app-main',
@@ -25,87 +15,20 @@ import { NZQueryService } from '../services/nzquery.service';
   styleUrls: ['./main.component.scss'],
 })
 export class MainComponent implements OnInit {
-  public entities: Entity[] = [];
+
   public loader = inject(LoadingIndicatorService);
-  public hasCatalogerRole = false;
-  public isInstitutionAllowed = false;
-  public recordService = inject(RecordService)
-  public selectedEntity = computed(() => this.recordService.selectedEntity())
+  public facade = inject(MainFacadeService);
 
-  private eventsService = inject(CloudAppEventsService);
-  private alert = inject(AlertService);
-  private translate = inject(TranslateService);
-  private destroyRef = inject(DestroyRef);
-  private authenticationService = inject(AuthenticationService);
-  private nzQueryService = inject(NZQueryService);
-
-  private entities$: Observable<Entity[]>;
-
-  public constructor() {
-    this.entities$ = this.eventsService.entities$.pipe(
-      filter((entities) => entities.every((e) => e.type === EntityType.BIB_MMS)),
-      takeUntilDestroyed(this.destroyRef),
-      tap(() => this.reset()),
-      tap((entities) => (this.entities = entities)),
-      tap((entities) => { if (entities.length === 1) this.selectEntity(entities[0]); }),
-      catchError((error) => {
-        const errorMsg = (error as Error).message;
-
-        this.alert.error(this.translate.instant('error.restApiError', [errorMsg]), { autoClose: false });
-
-        return EMPTY;
-      }),
-    );
+  public ngOnInit():void {
+    this.facade.init();
   }
 
-  public ngOnInit(): void {
-    this.loader.show();
-
-    forkJoin({
-      hasRole: this.authenticationService.checkUserRoles$(),
-      allowed: this.authenticationService.isInstitutionAllowed$(),
-    }).pipe(
-      tap(({ hasRole, allowed }) => {
-        this.hasCatalogerRole = hasRole;
-        this.isInstitutionAllowed = allowed;
-
-        if (!hasRole) {
-          this.alert.error(this.translate.instant('error.catalogerRoleError'), { autoClose: false });
-        }
-
-        if (!allowed) {
-          this.alert.error(this.translate.instant('error.institutionAllowedError'), { autoClose: false });
-        }
-      }),
-      // Ensuite seulement, on déclenche le refresh de la page
-      switchMap(() => this.refresh()),
-      tap(() => console.log('Refresh terminé, je peux continuer')),
-      catchError((err) => {
-        console.error('Erreur pendant l’initialisation/refresh', err);
-        this.alert.warn(this.translate.instant("main.acceptRefreshModal"));
-
-        return of<RefreshPageResponse>({} as any);
-      }),
-      finalize(() => this.loader.hide()),
-      takeUntilDestroyed(this.destroyRef),
-    ).subscribe();
-
-    // Abonnement aux entités
-    this.entities$.subscribe();
-  }
-
-  public selectEntity(entity: Entity): void {
-    this.recordService.selectedEntity.set(entity)
-    this.loader.show();
-    this.nzQueryService.getBibRecord(entity).subscribe((bib) => this.recordService.selectedEntityDetails.set(bib));
+  public onSelectEntity(entity: Entity):void {
+    this.facade.selectEntity(entity);
   }
   
-
   public reset(): void {
-    this.recordService.resetSelecedEntity()
+    this.facade.reset();
   }
 
-  public refresh(): Observable<RefreshPageResponse> {
-    return this.eventsService.refreshPage();
-  }
 }

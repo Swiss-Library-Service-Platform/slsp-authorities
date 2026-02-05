@@ -2,6 +2,9 @@ import { Component, Inject, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { xmlEntry } from '../models/bib-records';
 import { NZQueryService } from '../services/nzquery.service';
+import { AlertService, CloudAppEventsService } from '@exlibris/exl-cloudapp-angular-lib';
+import { RecordService } from '../services/record.service';
+import { TranslateService } from '@ngx-translate/core';
 
 
 @Component({
@@ -14,6 +17,10 @@ export class DeleteDialogComponent {
   
   public dialogRef= inject(MatDialogRef<DeleteDialogComponent>);
   private nzQueryService = inject(NZQueryService);
+  private eventsService = inject(CloudAppEventsService);
+  private recordService = inject(RecordService);
+  private alert = inject(AlertService);
+  private translate = inject(TranslateService);
   
   // eslint-disable-next-line @angular-eslint/prefer-inject
   public constructor(@Inject(MAT_DIALOG_DATA) public data: {entry: xmlEntry}) {}
@@ -24,7 +31,13 @@ export class DeleteDialogComponent {
   }
 
   public onDelete(): void {
-    this.nzQueryService.deleteBibRecord(this.data.entry).subscribe()
+    this.nzQueryService.deleteBibRecord(this.data.entry).subscribe({
+      next: () => {
+        this.eventsService.refreshPage().subscribe();
+        this.recordService.resetSelectedEntity();
+        this.alert.info(this.translate.instant("proxyService.deleteSuccess"));
+      }
+    })
     this.dialogRef.close();
   }
 }

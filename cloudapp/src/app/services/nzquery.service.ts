@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
-import { AlertService, CloudAppEventsService, CloudAppRestService, Entity, HttpMethod } from '@exlibris/exl-cloudapp-angular-lib';
-import { Observable, switchMap, catchError, EMPTY, finalize, of, shareReplay, throwError } from 'rxjs';
+import { AlertService, CloudAppRestService, Entity, HttpMethod } from '@exlibris/exl-cloudapp-angular-lib';
+import { Observable, switchMap, catchError, EMPTY, finalize, of, throwError } from 'rxjs';
 import { Bib, DataField, xmlEntry } from '../models/bib-records';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthenticationService } from './authentication.service';
@@ -25,7 +25,7 @@ export class NZQueryService {
   private restService = inject(CloudAppRestService);
   private http = inject(HttpClient);
   private recordService = inject(RecordService);
-  private eventsService = inject(CloudAppEventsService);
+  
 
     // ---------------------------
     // 📚 Appel NZ : Bib record
@@ -33,6 +33,8 @@ export class NZQueryService {
   
     /** Récupère la notice bib de la NZ pour l'entité sélectionnée */
     public getBibRecord(entity: Entity): Observable<Bib> {
+      this.loader.show();
+      
       return this.authenticationService.ensureAccess$().pipe(
         switchMap(() => this.getNzMmsIdFromEntity(entity)),
         switchMap((nzMmsId) =>
@@ -175,10 +177,7 @@ export class NZQueryService {
 
       // 5. Masquer le loader dans tous les cas
       finalize(() => {
-        this.eventsService.refreshPage().subscribe()
-        this.recordService.resetSelecedEntity()
         this.loader.hide();
-        this.alert.info(this.translate.instant("proxyService.deleteSuccess"))
       }),
     );
   }
@@ -265,8 +264,7 @@ export class NZQueryService {
         console.error('Error retrieving NZ MSSID. Trying with entity ID.', error);
 
         return of(entity.id);
-      }),
-      shareReplay(1)
+      })
     );
   }
 }

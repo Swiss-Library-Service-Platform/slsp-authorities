@@ -9,7 +9,8 @@ export class RecordService {
 	public selectedEntity = signal<Entity | null>(null);
 	public selectedEntityDetails = signal<Bib | undefined>(undefined);
 
-	public resetSelecedEntity(): void {
+	
+  public resetSelectedEntity(): void {
 		this.selectedEntity.set(null);
 	}
 }
