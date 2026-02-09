@@ -1,10 +1,10 @@
 import { Component, Inject, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { xmlEntry } from '../models/bib-records';
-import { NZQueryService } from '../services/nzquery.service';
-import { AlertService, CloudAppEventsService } from '@exlibris/exl-cloudapp-angular-lib';
-import { RecordService } from '../services/record.service';
+import { CloudAppEventsService, AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
+import { xmlEntry } from '../../../models/bib-records';
+import { NZQueryService } from '../../../services/nzquery.service';
+import { RecordService } from '../../../services/record.service';
 
 
 @Component({

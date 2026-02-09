@@ -5,7 +5,7 @@ import { Bib, DataField, xmlEntry } from '../models/bib-records';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthenticationService } from './authentication.service';
 import { LoadingIndicatorService } from './loading-indicator.service';
-import { environment } from '../environments/environment';
+import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { RecordService } from './record.service';
 import { StringUtils } from '../utils/stringUtils';

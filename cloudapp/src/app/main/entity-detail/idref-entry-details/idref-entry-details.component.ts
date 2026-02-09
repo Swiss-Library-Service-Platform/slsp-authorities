@@ -1,8 +1,7 @@
 import { Component, computed, inject } from '@angular/core';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
-import { IdrefService } from '../services/idref.service';
-
+import { IdrefService } from '../../../services/idref.service';
 @Component({
   selector: 'app-idref-entry-details',
   templateUrl: './idref-entry-details.component.html',

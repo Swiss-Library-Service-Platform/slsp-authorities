@@ -6,13 +6,12 @@ import {
   Entity,
 
 } from '@exlibris/exl-cloudapp-angular-lib';
-import { MainFacadeService } from '../services/main-facade.service';
+import { MainFacadeService } from './main-facade.service';
 import { LoadingIndicatorService } from '../services/loading-indicator.service';
 
 @Component({
   selector: 'app-main',
   templateUrl: './main.component.html',
-  styleUrls: ['./main.component.scss'],
 })
 export class MainComponent implements OnInit {
 

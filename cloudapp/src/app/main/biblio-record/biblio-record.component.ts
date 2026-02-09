@@ -1,6 +1,6 @@
 import { Component, inject, input, OnInit } from '@angular/core';
-import { Bib, xmlEntry } from '../models/bib-records';
-import { MARC_STRUCTURE_KEY } from '../models/idref-model';
+
+
 import { toObservable } from '@angular/core/rxjs-interop';
 import {
 	map,
@@ -8,10 +8,13 @@ import {
 	combineLatest,
 	BehaviorSubject,
 } from 'rxjs';
-import { IdrefService } from '../services/idref.service';
-import { BiblioReferencedEntryService } from '../services/biblio-referenced-entry.service';
+
 import { MatDialog } from '@angular/material/dialog';
-import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
+import { DeleteDialogComponent } from './delete-dialog/delete-dialog.component';
+import { xmlEntry, Bib } from '../../models/bib-records';
+import { MARC_STRUCTURE_KEY } from '../../models/idref-model';
+import { BiblioReferencedEntryService } from '../../services/biblio-referenced-entry.service';
+import { IdrefService } from '../../services/idref.service';
 
 //Composant pour afficher les notices bibliographique provenant de la NZ
 @Component({

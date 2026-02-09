@@ -2,13 +2,15 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { CloudAppEventsService, AlertService, Entity, EntityType, RefreshPageResponse } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
-import { AuthenticationService } from './authentication.service';
-import { LoadingIndicatorService } from './loading-indicator.service';
-import { NZQueryService } from './nzquery.service';
-import { RecordService } from './record.service';
+
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, tap, catchError, EMPTY, forkJoin, switchMap, of, finalize, Observable } from 'rxjs';
-import { IdrefService } from './idref.service';
+import { AuthenticationService } from '../services/authentication.service';
+import { IdrefService } from '../services/idref.service';
+import { LoadingIndicatorService } from '../services/loading-indicator.service';
+import { NZQueryService } from '../services/nzquery.service';
+import { RecordService } from '../services/record.service';
+
 
 @Injectable({
   providedIn: 'root'

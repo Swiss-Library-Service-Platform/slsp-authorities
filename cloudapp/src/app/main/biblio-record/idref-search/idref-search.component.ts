@@ -1,17 +1,16 @@
 import { Component, inject, effect, input } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { IdrefService } from '../services/idref.service';
-import {
-	IdrefSolrIndexKeys,
-	INVERTED_IDREF_RECORDTYPE_MAP,
-} from '../models/idref-model';
 import { AlertService, CloudAppEventsService } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
-import { Bib, DataField } from '../models/bib-records';
-import { BiblioReferencedEntryService } from '../services/biblio-referenced-entry.service';
+
 import { catchError, of, switchMap, tap } from 'rxjs';
-import { NZQueryService } from '../services/nzquery.service';
-import { StringUtils } from '../utils/stringUtils';
+import { Bib, DataField } from '../../../models/bib-records';
+import { IdrefSolrIndexKeys, INVERTED_IDREF_RECORDTYPE_MAP } from '../../../models/idref-model';
+import { BiblioReferencedEntryService } from '../../../services/biblio-referenced-entry.service';
+import { IdrefService } from '../../../services/idref.service';
+import { NZQueryService } from '../../../services/nzquery.service';
+import { StringUtils } from '../../../utils/stringUtils';
+
 
 @Component({
 	selector: 'app-idref-search',

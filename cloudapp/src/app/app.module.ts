@@ -17,17 +17,19 @@ import {
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { MainComponent } from './main/main.component';
-import { EntityListComponent } from './entity-list/entity-list.component';
-import { EntityDetailComponent } from './entity-detail/entity-detail.component';
-import { ExternalComponent } from './external/external.component';
-import { IdrefSearchComponent } from './idref-search/idref-search.component';
+import { EntityListComponent } from './main/entity-list/entity-list.component';
+
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
-import { BiblioRecordComponent } from './biblio-record/biblio-record.component';
-import { IdrefRecordComponent } from './idref-record/idref-record.component';
+
 import { MatPaginatorModule } from '@angular/material/paginator';
-import { IdrefEntryDetailsComponent } from "./idref-entry-details/idref-entry-details.component";
-import { DeleteDialogComponent } from './delete-dialog/delete-dialog.component';
+import { BiblioRecordComponent } from './main/biblio-record/biblio-record.component';
+import { DeleteDialogComponent } from './main/biblio-record/delete-dialog/delete-dialog.component';
+import { IdrefSearchComponent } from './main/biblio-record/idref-search/idref-search.component';
+import { EntityDetailComponent } from './main/entity-detail/entity-detail.component';
+import { IdrefEntryDetailsComponent } from './main/entity-detail/idref-entry-details/idref-entry-details.component';
+import { IdrefRecordComponent } from './main/entity-detail/idref-record/idref-record.component';
+
 
 @NgModule({
 	declarations: [
@@ -35,7 +37,6 @@ import { DeleteDialogComponent } from './delete-dialog/delete-dialog.component';
 		MainComponent,
 		EntityListComponent,
 		EntityDetailComponent,
-		ExternalComponent,
 		IdrefSearchComponent,
 		BiblioRecordComponent,
 		IdrefRecordComponent,

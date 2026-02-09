@@ -1,7 +1,7 @@
 import { Component, input, ViewChild} from '@angular/core';
-import { tagGroups } from '../models/idref-model';
-import { Bib } from '../models/bib-records';
 import { BiblioRecordComponent } from '../biblio-record/biblio-record.component';
+import { Bib } from '../../models/bib-records';
+import { tagGroups } from '../../models/idref-model';
 
 //Composant central de la cloudapp, il affiche le composant de recherche sur idref, le composant d'affichage des notices bibliographique de la NZ et le composant d'affichage des notices d'authorité de idref
 @Component({

@@ -1,7 +1,7 @@
 import { computed, inject, Injectable, signal, effect } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
-import { environment } from '../environments/environment';
+import { environment } from '../../environments/environment';
 import { IdrefRecords, idrefSearch, MARC_STRUCTURE } from '../models/idref-model';
 import { xmlEntry } from '../models/bib-records';
 import { TranslateService } from '@ngx-translate/core';

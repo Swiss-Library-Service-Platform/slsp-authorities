@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { CloudAppEventsService } from '@exlibris/exl-cloudapp-angular-lib';
 import { catchError, forkJoin, map, mapTo, Observable, of, shareReplay, switchMap, take, tap, throwError } from 'rxjs';
-import { environment } from '../environments/environment';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
