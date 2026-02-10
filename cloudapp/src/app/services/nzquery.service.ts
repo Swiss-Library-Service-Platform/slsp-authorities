@@ -58,7 +58,7 @@ export class NZQueryService {
     /** Récupère la notice bib de la NZ pour l'entité sélectionnée
        *  puis fait une deuxième requête basée sur ce résultat
        */
-      public updateBibRecord(
+      public updateFieldInBibRecord(
         selectedEntry: xmlEntry,
         updatedDataField: DataField
       ): Observable<Bib> {
@@ -119,6 +119,123 @@ export class NZQueryService {
     
           // 5. Masquer le loader dans tous les cas
           finalize(() => this.loader.hide()),
+        );
+      }
+      
+      /**
+       * Met à jour un champ uniquement si il existe.
+       * Renvoie une erreur si le champ n'est pas trouvé.
+       */
+      public updateFieldIfExists(
+        selectedEntry: xmlEntry,
+        updatedDataField: DataField
+      ): Observable<Bib> {
+        this.loader.show();
+
+        return this.authenticationService.ensureAccess$().pipe(
+          switchMap(() => {
+            const entity = this.recordService.selectedEntity();
+
+            if (!entity) {
+              this.alert.error(this.translate.instant('error.noSelectedEntry'));
+
+              return throwError(() => new Error('Aucune entité sélectionnée.'));
+            }
+
+            return this.getNzMmsIdFromEntity(entity);
+          }),
+          switchMap((nzMmsId) =>
+            this.http.get<Bib>(this.buildBibUrl(nzMmsId), this.authenticationService.getHttpOptions()).pipe(
+              switchMap((bib) => {
+                const marcRecord = StringUtils.xmlToMarcRecord(bib.anies[0]);
+                const targetDataField = StringUtils.xmlEntryToDataField(selectedEntry);
+                const index = marcRecord.dataFields.findIndex(field =>
+                  StringUtils.areDataFieldsEqual(field, targetDataField)
+                );
+
+                if (index === -1) {
+                  return throwError(() => new Error('FIELD_NOT_FOUND'));
+                }
+
+                marcRecord.dataFields[index] = updatedDataField;
+
+                const updatedMarcXml = StringUtils.marcRecordToXml(marcRecord);
+
+                return this.http.put<Bib>(this.buildBibUrl(nzMmsId), `<bib>${updatedMarcXml}</bib>`, this.authenticationService.getXmlHttpOptions());
+              })
+            )
+          ),
+          catchError((error) => {
+            const errorMsg = error?.message || error?.statusText || 'Unknown error';
+
+            // Propagate our specific control errors so callers can react
+            if (error?.message === 'FIELD_NOT_FOUND' || error?.message === 'FIELD_ALREADY_EXISTS') {
+              return throwError(() => error);
+            }
+
+            this.alert.error(this.translate.instant('error.restApiError', [errorMsg]), { autoClose: false });
+
+            return EMPTY;
+          }),
+          finalize(() => this.loader.hide())
+        );
+      }
+
+      /**
+       * Crée un champ uniquement si il n'existe pas encore.
+       * Renvoie une erreur si le champ existe déjà.
+       */
+      public createFieldIfNotExists(
+        selectedEntry: xmlEntry,
+        updatedDataField: DataField
+      ): Observable<Bib> {
+        this.loader.show();
+
+        return this.authenticationService.ensureAccess$().pipe(
+          switchMap(() => {
+            const entity = this.recordService.selectedEntity();
+
+            if (!entity) {
+              this.alert.error(this.translate.instant('error.noSelectedEntry'));
+
+              return throwError(() => new Error('Aucune entité sélectionnée.'));
+            }
+
+            return this.getNzMmsIdFromEntity(entity);
+          }),
+          switchMap((nzMmsId) =>
+            this.http.get<Bib>(this.buildBibUrl(nzMmsId), this.authenticationService.getHttpOptions()).pipe(
+              switchMap((bib) => {
+                const marcRecord = StringUtils.xmlToMarcRecord(bib.anies[0]);
+                const targetDataField = StringUtils.xmlEntryToDataField(selectedEntry);
+                const index = marcRecord.dataFields.findIndex(field =>
+                  StringUtils.areDataFieldsEqual(field, targetDataField)
+                );
+
+                if (index !== -1) {
+                  return throwError(() => new Error('FIELD_ALREADY_EXISTS'));
+                }
+
+                marcRecord.dataFields.push(updatedDataField);
+
+                const updatedMarcXml = StringUtils.marcRecordToXml(marcRecord);
+
+                return this.http.put<Bib>(this.buildBibUrl(nzMmsId), `<bib>${updatedMarcXml}</bib>`, this.authenticationService.getXmlHttpOptions());
+              })
+            )
+          ),
+          catchError((error) => {
+            const errorMsg = error?.message || error?.statusText || 'Unknown error';
+
+            if (error?.message === 'FIELD_NOT_FOUND' || error?.message === 'FIELD_ALREADY_EXISTS') {
+              return throwError(() => error);
+            }
+
+            this.alert.error(this.translate.instant('error.restApiError', [errorMsg]), { autoClose: false });
+
+            return EMPTY;
+          }),
+          finalize(() => this.loader.hide())
         );
       }
 

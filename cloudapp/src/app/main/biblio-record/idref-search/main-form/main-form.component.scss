@@ -43,19 +43,22 @@
 }
 
 .indInput {
-    width: calc(1ch + 16px);
+    width: calc(1ch + 26px);
     text-align: center;
-    padding: 6px 8px;
-    height: 36px;
+    padding: 4px 8px;
+    height: 28px;
     box-sizing: border-box;
+    line-height: 1;
+    min-width: 32px;
 }
 
 .tagInput {
     width: calc(3ch + 16px);
     text-align: center;
-    padding: 6px 8px;
-    height: 36px;
+    padding: 4px 8px;
+    height: 28px;
     box-sizing: border-box;
+    line-height: 1;
 }
 
 .search-icon {
@@ -64,20 +67,21 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    height: 36px;
-    width: 36px;
+    height: 28px;
+    width: 28px;
     padding: 0;
 }
 
 .input-section input,
 .input-section .tagInput,
 .input-section .indInput {
-    height: 36px;
-    padding: 6px 8px;
+    height: 28px;
+    padding: 4px 8px;
     box-sizing: border-box;
     display: inline-block;
-    line-height: 1.2;
+    line-height: 1;
     font-size: 14px;
+    vertical-align: middle;
 }
 
 .input-section > * {

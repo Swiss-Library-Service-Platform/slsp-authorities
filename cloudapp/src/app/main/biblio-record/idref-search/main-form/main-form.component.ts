@@ -103,24 +103,95 @@ export class MainFormComponent {
 			subfields: StringUtils.parseSubfieldsString(values.subfields),
 		} as DataField;
 
+		// Premièrement, tenter de mettre à jour si le champ existe.
+		// Si le champ n'est pas trouvé, on tente de le créer.
 		this.nzQueryService
-			.updateBibRecord(reference, formatedValues)
+			.updateFieldIfExists(reference, formatedValues)
 			.pipe(
-				tap(() =>
-					this.alert.success(this.translate.instant('idrefSearch.recordAdded'), { delay: 1000 }),
-				),
+				tap(() => this.alert.success(this.translate.instant('idrefSearch.recordAdded'), { delay: 1000 })),
 				switchMap(() => this.eventsService.refreshPage()),
-				tap(() => console.log('reload success')),
 				catchError((err) => {
-					this.alert.warn(this.translate.instant('idrefSearch.acceptRefreshModal'), {
-						delay: 1000,
-					});
-					console.error('Erreur refreshPage:', err);
+					if (err?.message === 'FIELD_NOT_FOUND') {
+						// Champ non trouvé -> créer
+						/*return this.nzQueryService.createFieldIfNotExists(reference, formatedValues).pipe(
+							tap(() => this.alert.success(this.translate.instant('idrefSearch.recordAdded'), { delay: 1000 })),
+							switchMap(() => this.eventsService.refreshPage()),
+							catchError((err2) => {
+								this.alert.warn(this.translate.instant('idrefSearch.acceptRefreshModal'), { delay: 1000 });
+								console.error('Erreur lors de la création du champ:', err2);
+
+								return of(null);
+							}),
+						);*/
+					}
+
+					this.alert.warn(this.translate.instant('idrefSearch.acceptRefreshModal'), { delay: 1000 });
+					console.error('Erreur updateFieldIfExists:', err);
 
 					return of(null);
 				}),
 			)
 			.subscribe();
+	}
+
+	/**
+	 * Expose une méthode publique qui met à jour le champ uniquement s'il existe.
+	 */
+	public updateFieldIfFound(): void {
+		const values = this.searchForm.value;
+		const reference = this.referenceCurrentField.getSavedCurrentEntry();
+
+		if (!reference) {
+			this.alert.error(this.translate.instant('idrefSearch.noSelectedEntry'), { delay: 1000 });
+
+			return;
+		}
+
+		const formatedValues = {
+			...values,
+			subfields: StringUtils.parseSubfieldsString(values.subfields),
+		} as DataField;
+
+		this.nzQueryService.updateFieldIfExists(reference, formatedValues).pipe(
+			tap(() => this.alert.success(this.translate.instant('idrefSearch.recordAdded'), { delay: 1000 })),
+			switchMap(() => this.eventsService.refreshPage()),
+			catchError((err) => {
+				this.alert.warn(this.translate.instant('idrefSearch.acceptRefreshModal'), { delay: 1000 });
+				console.error('Erreur updateFieldIfExists:', err);
+
+				return of(null);
+			}),
+		).subscribe();
+	}
+
+	/**
+	 * Expose une méthode publique qui crée le champ uniquement s'il n'existe pas.
+	 */
+	public createFieldIfNotFound(): void {
+		const values = this.searchForm.value;
+		const reference = this.referenceCurrentField.getSavedCurrentEntry();
+
+		if (!reference) {
+			this.alert.error(this.translate.instant('idrefSearch.noSelectedEntry'), { delay: 1000 });
+
+			return;
+		}
+
+		const formatedValues = {
+			...values,
+			subfields: StringUtils.parseSubfieldsString(values.subfields),
+		} as DataField;
+
+		this.nzQueryService.createFieldIfNotExists(reference, formatedValues).pipe(
+			tap(() => this.alert.success(this.translate.instant('idrefSearch.recordAdded'), { delay: 1000 })),
+			switchMap(() => this.eventsService.refreshPage()),
+			catchError((err) => {
+				this.alert.warn(this.translate.instant('idrefSearch.acceptRefreshModal'), { delay: 1000 });
+				console.error('Erreur createFieldIfNotExists:', err);
+
+				return of(null);
+			}),
+		).subscribe();
 	}
 
 	public to902(): void {

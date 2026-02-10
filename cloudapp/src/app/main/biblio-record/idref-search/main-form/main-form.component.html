@@ -15,12 +15,12 @@
 
 		<div class="button-section">
 			@if(this.searchMode() === 'addField') {
-				<button color="primary" (click)="addrecord()">
+				<button color="primary" (click)="createFieldIfNotFound()">
 					{{ 'idrefSearch.addToRecord' | translate }}
 				</button>
 			}
 			@else if(this.searchMode() === 'update') {
-				<button color="primary" (click)="addrecord()">
+				<button color="primary" (click)="updateFieldIfFound()">
 					{{ 'idrefSearch.updateRecord' | translate }}
 				</button>
 			}
