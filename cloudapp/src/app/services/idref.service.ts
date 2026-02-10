@@ -27,11 +27,11 @@ export class IdrefService {
 	public constructor() {
 		//pour logger facilement
 		effect(() => {
-			console.log("The current NZSelectedEntry is: ", this.NZSelectedEntry());
+			// debug effect removed
 		})
 
 		effect(() => {
-			console.log("The current idrefResult is : ", this.idrefResult());
+			// debug effect removed
 		})
 	}
 
@@ -95,26 +95,14 @@ export class IdrefService {
 		let result = MARC_STRUCTURE.get(`${tag}|${ind1}${ind2}|${subfieldsStr}`);
 
 		if (result) {
-			console.log('result: ', result);
-
 			return result;
 		} else {
 			//si pas de subfields on regarde les indicateurs
 			result = MARC_STRUCTURE.get(`${tag}|${ind1}${ind2}`);
 
-			if (result) {
-				console.log('result: ', result);
-
-				return result;
-			} else if ((result = MARC_STRUCTURE.get(`${tag}|  `))) {
-				console.log('result: ', result);
-
-				return result;
-			} else {
-				console.error('il ny a pas de mapping associé');
-
-				return;
-			}
+			if (result) return result;
+			if ((result = MARC_STRUCTURE.get(`${tag}|  `))) return result;
+			return;
 		}
 	}
 

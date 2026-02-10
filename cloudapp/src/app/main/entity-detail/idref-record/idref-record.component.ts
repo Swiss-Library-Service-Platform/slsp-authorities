@@ -89,10 +89,10 @@ export class IdrefRecordComponent {
           } else if (dates && dates.length > 8) {
             query = `${query} AND datenaissance_dt:${dates.substring(0,4)} AND datemort_dt:${dates.substring(dates.length-4,dates.length)}`
           } else {
-            console.log("la date est étrange: ",dates)
+            // date format unexpected — ignore
           }
         } else {
-          console.log("pour le moment le seul cas géré est le persname + datenaissance + datemort")
+          // unsupported filter combination for now
         }
       }
     query = `${query})`
@@ -152,10 +152,7 @@ export class IdrefRecordComponent {
     });
 
     effect(() => {
-      console.log('--- Effect ---');
-      console.log('pageIndex :', this.pageIndex());
-      console.log('pageSize  :', this.pageSize());
-      console.log('docs paginés :', this.paginatedDocs());
+      // internal pagination effect (no-op logging)
     });
   }
 
@@ -164,8 +161,6 @@ public pushTobiblioRecordForm(ppn_z: string): void {
   const selectedEntry = this.idrefService.NZSelectedEntry();
 
   if (!selectedEntry) {
-    console.warn('NZSelectedEntry est undefined, impossible de mettre à jour $$0',{delay: 1000});
-
     return;
   }
 
@@ -194,7 +189,7 @@ public pushTobiblioRecordForm(ppn_z: string): void {
     value: newValues,
   };
 
-  console.log('new selected entry: ', newEntry);
+  // update selected entry
 
   // Et là, on met à jour le signal
   this.idrefService.NZSelectedEntry.set(newEntry);
@@ -207,8 +202,7 @@ public pushTobiblioRecordForm(ppn_z: string): void {
       constructedQuery: string;
     };
 
-    console.log("constructedQuery: ", values.constructedQuery);
-    console.log("searchIndex: ", values.searchIndex);
+    // constructedQuery / searchIndex
 
     const queryValues = values.constructedQuery.split(",");
     let dateNaissance ="";
@@ -236,14 +230,10 @@ public pushTobiblioRecordForm(ppn_z: string): void {
     const recordTypeCharac = IDREF_RECORDTYPE_MAP.get(values.searchIndex);
 
     if(recordTypeCharac){
-      console.log("searchIndex: ",values.searchIndex)
-      console.log("IDREF_RECORDTYPE_MAP: ",recordTypeCharac)
       query = `${IDREF_FILTER_MAP.get(values.searchIndex)}:${query} AND recordtype_z:${recordTypeCharac}`
-    }else{
+    } else {
       query = `all:${query}`
     }
-
-    console.log("final query: ",query)
     this.idrefService.searchFromQuery(query);
   }
 

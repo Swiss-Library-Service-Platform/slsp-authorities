@@ -11,6 +11,8 @@ import { BiblioReferencedEntryService } from '../../../../services/biblio-refere
 import { NZQueryService } from '../../../../services/nzquery.service';
 import { StringUtils } from '../../../../utils/stringUtils';
 import { SearchMode } from '../model';
+import { RecordService } from '../../../../services/record.service';
+import { LoadingIndicatorService } from '../../../../services/loading-indicator.service';
 
 @Component({
 	selector: 'app-main-form',
@@ -20,7 +22,6 @@ import { SearchMode } from '../model';
 export class MainFormComponent {
 	public entity = input.required<Bib | undefined>();
 
-	public loading = false;
 	public searchForm: FormGroup;
 
 	private idrefService = inject(IdrefService);
@@ -31,9 +32,10 @@ export class MainFormComponent {
 	private alert = inject(AlertService);
 	private referenceCurrentField = inject(BiblioReferencedEntryService);
 	private fb = inject(FormBuilder);
+	private recordService = inject(RecordService);
+	private loader = inject(LoadingIndicatorService);
 
-
-  public readonly searchMode = this.idrefSearchService.searchMode;
+	public readonly searchMode = this.idrefSearchService.searchMode;
 	public readonly NZSelectedEntry = this.idrefSearchService.NZSelectedEntry;
 	public readonly flattenedValue = this.idrefSearchService.flattenedValue;
 
@@ -56,14 +58,13 @@ export class MainFormComponent {
 						ind2: entry.ind2,
 						subfields: this.flattenedValue(),
 					},
-					{ emitEvent: false },
+					{ emitEvent: false }
 				);
 			}
 		});
 	}
 
 	public onSearch(): void {
-		this.loading = true;
 		this.idrefSearchService.setNZSelectedEntry(this.searchForm.value);
 
 		const values = this.searchForm.value as {
@@ -72,7 +73,8 @@ export class MainFormComponent {
 			ind2: string;
 			subfields: string;
 		};
-		const subfields = values.subfields;		const regex = /\$\$0 \(IDREF\)(\d+)/;
+		const subfields = values.subfields;
+		const regex = /\$\$0 \(IDREF\)(\d+)/;
 		const match = subfields.match(regex);
 
 		if (match) {
@@ -84,8 +86,6 @@ export class MainFormComponent {
 
 			this.idrefService.calculatedSearch(searchParams);
 		}
-
-		this.loading = false;
 	}
 
 	public addrecord(): void {
@@ -108,7 +108,9 @@ export class MainFormComponent {
 		this.nzQueryService
 			.updateFieldIfExists(reference, formatedValues)
 			.pipe(
-				tap(() => this.alert.success(this.translate.instant('idrefSearch.recordAdded'), { delay: 1000 })),
+				tap(() =>
+					this.alert.success(this.translate.instant('idrefSearch.recordAdded'), { delay: 1000 })
+				),
 				switchMap(() => this.eventsService.refreshPage()),
 				catchError((err) => {
 					if (err?.message === 'FIELD_NOT_FOUND') {
@@ -125,13 +127,18 @@ export class MainFormComponent {
 						);*/
 					}
 
-					this.alert.warn(this.translate.instant('idrefSearch.acceptRefreshModal'), { delay: 1000 });
+					this.alert.warn(this.translate.instant('idrefSearch.acceptRefreshModal'), {
+						delay: 1000,
+					});
 					console.error('Erreur updateFieldIfExists:', err);
 
 					return of(null);
-				}),
+				})
 			)
-			.subscribe();
+			.subscribe(() => {
+				this.recordService.resetSelectedEntity();
+				this.loader.hide();
+			});
 	}
 
 	/**
@@ -152,46 +159,64 @@ export class MainFormComponent {
 			subfields: StringUtils.parseSubfieldsString(values.subfields),
 		} as DataField;
 
-		this.nzQueryService.updateFieldIfExists(reference, formatedValues).pipe(
-			tap(() => this.alert.success(this.translate.instant('idrefSearch.recordAdded'), { delay: 1000 })),
-			switchMap(() => this.eventsService.refreshPage()),
-			catchError((err) => {
-				this.alert.warn(this.translate.instant('idrefSearch.acceptRefreshModal'), { delay: 1000 });
-				console.error('Erreur updateFieldIfExists:', err);
+		this.nzQueryService
+			.updateFieldIfExists(reference, formatedValues)
+			.pipe(
+				tap(() =>
+					this.alert.success(this.translate.instant('idrefSearch.recordAdded'), { delay: 1000 })
+				),
+				switchMap(() => this.eventsService.refreshPage()),
+				catchError((err) => {
+					this.alert.warn(this.translate.instant('idrefSearch.acceptRefreshModal'), {
+						delay: 1000,
+					});
+					console.error('Erreur updateFieldIfExists:', err);
 
-				return of(null);
-			}),
-		).subscribe();
+					return of(null);
+				})
+			)
+			.subscribe(() => {
+				this.recordService.resetSelectedEntity();
+				this.loader.hide();
+			});
 	}
 
 	/**
 	 * Expose une méthode publique qui crée le champ uniquement s'il n'existe pas.
+	 * No need to verify reference existence — we're creating a new field, not updating an existing one.
 	 */
 	public createFieldIfNotFound(): void {
 		const values = this.searchForm.value;
-		const reference = this.referenceCurrentField.getSavedCurrentEntry();
-
-		if (!reference) {
-			this.alert.error(this.translate.instant('idrefSearch.noSelectedEntry'), { delay: 1000 });
-
-			return;
-		}
-
+		// Use a dummy reference just for the API signature; it's not used in createFieldIfNotExists
+		const dummyReference = this.referenceCurrentField.getSavedCurrentEntry() || {
+			change: '',
+			tag: '',
+			ind1: '',
+			ind2: '',
+			value: [],
+		};
 		const formatedValues = {
 			...values,
 			subfields: StringUtils.parseSubfieldsString(values.subfields),
 		} as DataField;
 
-		this.nzQueryService.createFieldIfNotExists(reference, formatedValues).pipe(
-			tap(() => this.alert.success(this.translate.instant('idrefSearch.recordAdded'), { delay: 1000 })),
-			switchMap(() => this.eventsService.refreshPage()),
-			catchError((err) => {
-				this.alert.warn(this.translate.instant('idrefSearch.acceptRefreshModal'), { delay: 1000 });
-				console.error('Erreur createFieldIfNotExists:', err);
+		this.nzQueryService
+			.createFieldIfNotExists(dummyReference, formatedValues)
+			.pipe(
+				tap(() =>
+					this.alert.success(this.translate.instant('idrefSearch.recordAdded'), { delay: 1000 })
+				),
+				switchMap(() => this.eventsService.refreshPage()),
+				catchError((err) => {
+					this.alert.warn(this.translate.instant('idrefSearch.acceptRefreshModal'), {
+						delay: 1000,
+					});
+					console.error('Erreur createFieldIfNotExists:', err);
 
-				return of(null);
-			}),
-		).subscribe();
+					return of(null);
+				})
+			)
+			.subscribe();
 	}
 
 	public to902(): void {

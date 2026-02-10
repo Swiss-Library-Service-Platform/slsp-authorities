@@ -108,8 +108,7 @@ export class StringUtils {
   }
 
   public static xmlEntryToDataField(entry: xmlEntry): DataField {
-    console.log('xmlEntryToDataField entry = ', entry);
-    console.log('xmlEntryToDataField entry.value = ', entry.value);
+    // Convert xmlEntry to DataField
 
     return {
       tag: entry.tag,

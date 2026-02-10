@@ -26,7 +26,6 @@ export class DeleteDialogComponent {
   public constructor(@Inject(MAT_DIALOG_DATA) public data: {entry: xmlEntry}) {}
 
   public onNoClick(): void {
-    console.log(this.data)
     this.dialogRef.close();
   }
 

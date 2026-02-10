@@ -68,9 +68,9 @@ export class BiblioRecordComponent implements OnInit {
 	  data: {entry}
     });
 
-    dialogRef.afterClosed().subscribe(() => {
-      console.log('The dialog was closed');
-    });
+
+	// no action required after dialog close
+		dialogRef.afterClosed().subscribe();
   }
 	
 

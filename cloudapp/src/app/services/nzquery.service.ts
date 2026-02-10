@@ -9,6 +9,7 @@ import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { RecordService } from './record.service';
 import { StringUtils } from '../utils/stringUtils';
+import { tap } from 'lodash';
 
 @Injectable({
   providedIn: 'root'
@@ -54,73 +55,6 @@ export class NZQueryService {
         finalize(() => this.loader.hide()),
       );
     }
-
-    /** Récupère la notice bib de la NZ pour l'entité sélectionnée
-       *  puis fait une deuxième requête basée sur ce résultat
-       */
-      public updateFieldInBibRecord(
-        selectedEntry: xmlEntry,
-        updatedDataField: DataField
-      ): Observable<Bib> {
-        this.loader.show();
-    
-        return this.authenticationService.ensureAccess$().pipe(
-          // 1. Récupérer l'ID Alma (nzMmsId) depuis l'entité
-          switchMap(() => {
-            const entity = this.recordService.selectedEntity();
-    
-            if (!entity) {
-              this.alert.error(this.translate.instant('error.noSelectedEntry'));
-    
-              return throwError(() => new Error('Aucune entité sélectionnée.'));
-            }
-    
-            return this.getNzMmsIdFromEntity(entity);
-          }),
-    
-          // 2. Récupérer le Bib le plus à jour
-          switchMap((nzMmsId) =>
-            this.http.get<Bib>(
-              this.buildBibUrl(nzMmsId),
-              this.authenticationService.getHttpOptions()
-            ).pipe(
-              // 3. Mettre à jour le Bib et faire le PUT
-              switchMap((bib) => {
-                const updatedMarcXml = this.buildUpdatedMarcXml(
-                  bib,
-                  selectedEntry,
-                  updatedDataField
-                );
-    
-                // On suppose que l'API renvoie un Bib à jour ici
-                return this.http.put<Bib>(
-                  this.buildBibUrl(nzMmsId),
-                  `<bib>${updatedMarcXml}</bib>`,
-                  this.authenticationService.getXmlHttpOptions()
-                );
-              }),
-            )
-          ),
-    
-          // 4. Gestion d’erreur globale
-          catchError((error) => {
-            const errorMsg =
-              error?.message ||
-              error?.statusText ||
-              'Unknown error';
-    
-            this.alert.error(
-              this.translate.instant('error.restApiError', [errorMsg]),
-              { autoClose: false },
-            );
-    
-            return EMPTY;
-          }),
-    
-          // 5. Masquer le loader dans tous les cas
-          finalize(() => this.loader.hide()),
-        );
-      }
       
       /**
        * Met à jour un champ uniquement si il existe.
@@ -206,34 +140,23 @@ export class NZQueryService {
           switchMap((nzMmsId) =>
             this.http.get<Bib>(this.buildBibUrl(nzMmsId), this.authenticationService.getHttpOptions()).pipe(
               switchMap((bib) => {
-                const marcRecord = StringUtils.xmlToMarcRecord(bib.anies[0]);
-                const targetDataField = StringUtils.xmlEntryToDataField(selectedEntry);
-                const index = marcRecord.dataFields.findIndex(field =>
-                  StringUtils.areDataFieldsEqual(field, targetDataField)
-                );
+                    // Always add the new DataField, even if a similar one already exists
+                    const marcRecord = StringUtils.xmlToMarcRecord(bib.anies[0]);
 
-                if (index !== -1) {
-                  return throwError(() => new Error('FIELD_ALREADY_EXISTS'));
-                }
+                    marcRecord.dataFields.push(updatedDataField);
 
-                marcRecord.dataFields.push(updatedDataField);
+                    const updatedMarcXml = StringUtils.marcRecordToXml(marcRecord);
 
-                const updatedMarcXml = StringUtils.marcRecordToXml(marcRecord);
-
-                return this.http.put<Bib>(this.buildBibUrl(nzMmsId), `<bib>${updatedMarcXml}</bib>`, this.authenticationService.getXmlHttpOptions());
+                    return this.http.put<Bib>(this.buildBibUrl(nzMmsId), `<bib>${updatedMarcXml}</bib>`, this.authenticationService.getXmlHttpOptions());
               })
             )
           ),
           catchError((error) => {
-            const errorMsg = error?.message || error?.statusText || 'Unknown error';
+                const errorMsg = error?.message || error?.statusText || 'Unknown error';
 
-            if (error?.message === 'FIELD_NOT_FOUND' || error?.message === 'FIELD_ALREADY_EXISTS') {
-              return throwError(() => error);
-            }
+                this.alert.error(this.translate.instant('error.restApiError', [errorMsg]), { autoClose: false });
 
-            this.alert.error(this.translate.instant('error.restApiError', [errorMsg]), { autoClose: false });
-
-            return EMPTY;
+                return EMPTY;
           }),
           finalize(() => this.loader.hide())
         );
@@ -359,8 +282,6 @@ export class NZQueryService {
   private getNzMmsIdFromEntity(entity: Entity): Observable<string> {
     const id = entity.id;
 
-    console.log("entity: ", entity)
-
     if (entity.link.indexOf('?nz_mms_id') >= 0) {
       return of(id);
     }
@@ -377,11 +298,7 @@ export class NZQueryService {
 
         return of(nzMmsId);
       }),
-      catchError(error => {
-        console.error('Error retrieving NZ MSSID. Trying with entity ID.', error);
-
-        return of(entity.id);
-      })
+      catchError(() => of(entity.id))
     );
   }
 }
