@@ -1,0 +1,127 @@
+.eca-actions {
+    position: relative;
+    padding: 16px 16px 16px 16px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+    display: block !important;
+}
+
+.eca-actions.search-mode-addField {
+    background-color: #e3f2fd;
+}
+
+.eca-actions.search-mode-update {
+    background-color: #fff3e0;
+}
+
+.eca-actions.search-mode-add902 {
+    background-color: #f3e5f5;
+}
+
+.eca-actions.search-mode-modify902 {
+    background-color: #e8f5e9;
+}
+
+.search-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+    width: 100% !important;
+    margin: 0 !important;
+    text-align: left;
+}
+
+.input-section {
+    display: flex;
+    gap: 2px;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    margin: 0 !important;
+    padding-left: 0 !important;
+}
+
+.indInput {
+    width: calc(1ch + 16px);
+    text-align: center;
+    padding: 6px 8px;
+    height: 36px;
+    box-sizing: border-box;
+}
+
+.tagInput {
+    width: calc(3ch + 16px);
+    text-align: center;
+    padding: 6px 8px;
+    height: 36px;
+    box-sizing: border-box;
+}
+
+.search-icon {
+    cursor: pointer;
+    margin-left: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 36px;
+    width: 36px;
+    padding: 0;
+}
+
+.input-section input,
+.input-section .tagInput,
+.input-section .indInput {
+    height: 36px;
+    padding: 6px 8px;
+    box-sizing: border-box;
+    display: inline-block;
+    line-height: 1.2;
+    font-size: 14px;
+}
+
+.input-section > * {
+    margin: 0;
+    vertical-align: middle;
+}
+
+.mode-label {
+    font-weight: 600;
+    text-transform: capitalize;
+    background: rgba(255,255,255,0.6);
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 12px;
+    margin-bottom: 8px;
+    display: inline-block;
+}
+
+.subfieldsInput {
+    flex: 1 1 auto;
+    min-width: 140px;
+    min-height: 48px;
+    padding: 6px 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.2;
+    box-sizing: border-box;
+    resize: vertical;
+    align-self: center;
+}
+
+.button-section {
+    display: flex;
+    gap: 8px;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    margin: 0 !important;
+    text-align: left;
+}
+
+.eca-actions, .eca-actions * {
+    text-align: left !important;
+}

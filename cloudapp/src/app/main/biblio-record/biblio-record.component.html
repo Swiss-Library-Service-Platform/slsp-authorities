@@ -12,7 +12,7 @@
     <div class="eca-actions">
     </div>
   </div>
-
+  
   <div class="bar"></div>
 <h2>{{"biblioRecord.title" | translate}}</h2>
 <div class="marc">
@@ -22,13 +22,12 @@
 		<div class="marc-column marc-column-actions">
 			@if(getIdrefAllowedTags().includes(entry.tag)){
 
-			<button mat-icon-button color="primary" (click)="saveCurrentEntry(entry);pushToInput(entry); searchIdref(entry)">
+			<button mat-icon-button color="primary" (click)="saveCurrentEntry(entry);pushToInput(entry); searchIdref(entry)" >
 				<mat-icon>edit</mat-icon>
 			</button>
 			<button mat-icon-button color="primary" (click)="deleteField(entry)">
 				<mat-icon>delete</mat-icon>
 			</button>
-
 			}
 		</div>
 		<div class="marc-column">

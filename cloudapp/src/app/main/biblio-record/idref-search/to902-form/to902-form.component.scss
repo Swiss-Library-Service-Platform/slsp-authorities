@@ -1,0 +1,29 @@
+.to902-container {
+    margin-top: 20px;
+}
+
+.to902-box {
+    padding: 16px;
+    background-color: #f3e5f5;
+    border-radius: 4px;
+    border-left: 4px solid #ab47bc;
+    text-align: left;
+}
+
+.to902-box h3 {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.to902-box p {
+    margin: 0 0 16px 0;
+    color: #666;
+    font-size: 14px;
+}
+
+.button-section {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-start;
+}

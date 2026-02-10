@@ -1,25 +1,7 @@
-<div class="eca-actions">
-	<form [formGroup]="searchForm">
-		<input class="tagInput" placeholder="tag" formControlName="tag" />
+<div class="idref-search-container">
+	<app-main-form [entity]="entity()"></app-main-form>
 
-		<input class="indInput" formControlName="ind1" />
-
-		<input class="indInput" formControlName="ind2" />
-
-		<input placeholder="subfields" formControlName="subfields">
-
-		<mat-icon color="primary" fontIcon="search" (click)="onSearch()"></mat-icon>
-
-		<button color="primary" (click)="addrecord()">
-			{{ 'idrefSearch.addToRecord' | translate }}
-		</button>
-
-		<button color="primary" (click)="to902()">
-			{{ 'idrefSearch.to902' | translate }}
-		</button>
-		<button color="primary" (click)="clear()">
-			{{ 'idrefSearch.clear' | translate }}
-		</button>
-
-	</form>
+	@if(showTo902Form()) {
+	<app-to902-form [entity]="entity()"></app-to902-form>
+	}
 </div>

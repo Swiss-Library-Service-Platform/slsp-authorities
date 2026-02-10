@@ -1,0 +1,36 @@
+<div class="eca-actions" [ngClass]="'search-mode-' + searchMode()">
+	<div class="mode-label">{{ searchMode() }}</div>
+	<form [formGroup]="searchForm" class="search-form">
+		<div class="input-section">
+			<input class="tagInput" placeholder="tag" formControlName="tag" />
+
+			<input class="indInput" formControlName="ind1" />
+
+			<input class="indInput" formControlName="ind2" />
+
+			<textarea class="subfieldsInput" placeholder="subfields" formControlName="subfields" rows="2"></textarea>
+
+			<mat-icon color="primary" fontIcon="search" (click)="onSearch()" class="search-icon"></mat-icon>
+		</div>
+
+		<div class="button-section">
+			@if(this.searchMode() === 'addField') {
+				<button color="primary" (click)="addrecord()">
+					{{ 'idrefSearch.addToRecord' | translate }}
+				</button>
+			}
+			@else if(this.searchMode() === 'update') {
+				<button color="primary" (click)="addrecord()">
+					{{ 'idrefSearch.updateRecord' | translate }}
+				</button>
+			}
+
+			<button color="primary" (click)="to902()">
+				{{ 'idrefSearch.to902' | translate }}
+			</button>
+			<button color="primary" (click)="clear()">
+				{{ 'idrefSearch.clear' | translate }}
+			</button>
+		</div>
+	</form>
+</div>

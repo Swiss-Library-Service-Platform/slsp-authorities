@@ -25,10 +25,12 @@ import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { BiblioRecordComponent } from './main/biblio-record/biblio-record.component';
 import { DeleteDialogComponent } from './main/biblio-record/delete-dialog/delete-dialog.component';
-import { IdrefSearchComponent } from './main/biblio-record/idref-search/idref-search.component';
 import { EntityDetailComponent } from './main/entity-detail/entity-detail.component';
 import { IdrefEntryDetailsComponent } from './main/entity-detail/idref-entry-details/idref-entry-details.component';
 import { IdrefRecordComponent } from './main/entity-detail/idref-record/idref-record.component';
+import { IdrefSearchComponent } from './main/biblio-record/idref-search/idref-search.component';
+import { To902FormComponent } from './main/biblio-record/idref-search/to902-form/to902-form.component';
+import { MainFormComponent } from './main/biblio-record/idref-search/main-form/main-form.component';
 
 
 @NgModule({
@@ -41,7 +43,9 @@ import { IdrefRecordComponent } from './main/entity-detail/idref-record/idref-re
 		BiblioRecordComponent,
 		IdrefRecordComponent,
 		IdrefEntryDetailsComponent,
-		DeleteDialogComponent
+		DeleteDialogComponent,
+		To902FormComponent,
+		MainFormComponent
 	],
 	bootstrap: [AppComponent],
 	imports: [
