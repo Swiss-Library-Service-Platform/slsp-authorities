@@ -1,12 +1,42 @@
-<div class="to902-container">
-	<div class="to902-box">
-		<h3>{{ 'idrefSearch.to902' | translate }}</h3>
-		<p>{{ 'idrefSearch.notImplemented' | translate }}</p>
-		
-		<div class="button-section">
-			<button mat-raised-button color="primary" (click)="goBack()">
-				{{ 'idrefSearch.back' | translate }}
-			</button>
+
+	<div class="to902-container">
+		<div class="to902-box">
+			<h3>{{ 'idrefSearch.to902' | translate }}</h3>
+			<form [formGroup]="searchForm" class="search-form">
+				<div class="input-section">
+					<input class="tagInput" placeholder="tag" formControlName="tag" />
+
+					<input class="indInput" formControlName="ind1" />
+
+					<input class="indInput" formControlName="ind2" />
+
+					<textarea
+						class="subfieldsInput"
+						placeholder="subfields"
+						formControlName="subfields"
+						rows="2"
+					></textarea>
+				</div>
+
+				<div class="button-section">
+					@if (this.searchMode() === 'add902') {
+						<button color="primary" (click)="createFieldIfNotFound()">
+							{{ 'idrefSearch.addToRecord' | translate }}
+						</button>
+					} @else if (this.searchMode() === 'modify902') {
+						<button color="primary" (click)="updateFieldIfFound()">
+							{{ 'idrefSearch.updateRecord' | translate }}
+						</button>
+					}
+
+					<button color="primary" (click)="to902()">
+						{{ 'idrefSearch.to902' | translate }}
+					</button>
+					<button color="primary" (click)="clear()">
+						{{ 'idrefSearch.clear' | translate }}
+					</button>
+				</div>
+			</form>
 		</div>
 	</div>
-</div>
+

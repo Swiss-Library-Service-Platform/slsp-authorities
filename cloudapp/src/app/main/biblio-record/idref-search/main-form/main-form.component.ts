@@ -1,18 +1,9 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 import { Component, inject, effect, input } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { TranslateService } from '@ngx-translate/core';
-import { AlertService, CloudAppEventsService } from '@exlibris/exl-cloudapp-angular-lib';
-import { catchError, of, switchMap, tap } from 'rxjs';
-import { Bib, DataField } from '../../../../models/bib-records';
+import { Bib } from '../../../../models/bib-records';
 import { IdrefService } from '../../../../services/idref.service';
 import { IdrefSearchService } from '../idref-search.service';
-import { BiblioReferencedEntryService } from '../../../../services/biblio-referenced-entry.service';
-import { NZQueryService } from '../../../../services/nzquery.service';
-import { StringUtils } from '../../../../utils/stringUtils';
-import { SearchMode } from '../model';
-import { LoadingIndicatorService } from '../../../../services/loading-indicator.service';
-import { RecordService } from '../../../../services/record.service';
 
 @Component({
 	selector: 'app-main-form',
@@ -26,14 +17,7 @@ export class MainFormComponent {
 
 	private idrefService = inject(IdrefService);
 	private idrefSearchService = inject(IdrefSearchService);
-	private nzQueryService = inject(NZQueryService);
-	private eventsService = inject(CloudAppEventsService);
-	private translate = inject(TranslateService);
-	private alert = inject(AlertService);
-	private referenceCurrentField = inject(BiblioReferencedEntryService);
 	private fb = inject(FormBuilder);
-	private loader = inject(LoadingIndicatorService);
-	private recordService = inject(RecordService);
 
 	public readonly searchMode = this.idrefSearchService.searchMode;
 	public readonly NZSelectedEntry = this.idrefSearchService.NZSelectedEntry;
@@ -89,163 +73,22 @@ export class MainFormComponent {
 	}
 
 	public addrecord(): void {
-		this.loader.show();
-
-		const values = this.searchForm.value;
-		const reference = this.referenceCurrentField.getSavedCurrentEntry();
-
-		if (!reference) {
-			this.alert.error(this.translate.instant('idrefSearch.noSelectedEntry'), { delay: 1000 });
-
-			return;
-		}
-
-		const formatedValues = {
-			...values,
-			subfields: StringUtils.parseSubfieldsString(values.subfields),
-		} as DataField;
-
-		// Premièrement, tenter de mettre à jour si le champ existe.
-		// Si le champ n'est pas trouvé, on tente de le créer.
-		this.nzQueryService
-			.updateFieldIfExists(reference, formatedValues)
-			.pipe(
-				switchMap(() => this.eventsService.refreshPage()),
-				catchError((err) => {
-					if (err?.message === 'FIELD_NOT_FOUND') {
-						// Champ non trouvé -> créer
-						return this.nzQueryService.createFieldIfNotExists(reference, formatedValues).pipe(
-							tap(() => this.alert.success(this.translate.instant('idrefSearch.recordAdded'), { delay: 1000 })),
-							switchMap(() => this.eventsService.refreshPage()),
-							catchError((err2) => {
-								this.alert.warn(this.translate.instant('idrefSearch.acceptRefreshModal'), { delay: 1000 });
-								console.error('Erreur lors de la création du champ:', err2);
-
-								return of(null);
-							}),
-						);
-					}
-
-					this.alert.warn(this.translate.instant('idrefSearch.acceptRefreshModal'), {
-						delay: 1000,
-					});
-					console.error('Erreur updateFieldIfExists:', err);
-
-					return of(null);
-				})
-			).subscribe({
-				complete: () => {
-					this.reset();
-					this.loader.hide();
-					this.alert.success(this.translate.instant('idrefSearch.recordAdded'), { delay: 1000 });
-					console.log('complete updateFieldIfExists');
-				}
-			});
+		this.idrefSearchService.addrecord(this.searchForm.value);
 	}
 
-	/**
-	 * Expose une méthode publique qui met à jour le champ uniquement s'il existe.
-	 */
 	public updateFieldIfFound(): void {
-		this.loader.show();
-
-		const values = this.searchForm.value;
-		const reference = this.referenceCurrentField.getSavedCurrentEntry();
-
-		if (!reference) {
-			this.alert.error(this.translate.instant('idrefSearch.noSelectedEntry'), { delay: 1000 });
-
-			return;
-		}
-
-		const formatedValues = {
-			...values,
-			subfields: StringUtils.parseSubfieldsString(values.subfields),
-		} as DataField;
-
-		this.nzQueryService
-			.updateFieldIfExists(reference, formatedValues)
-			.pipe(
-				switchMap(() => this.eventsService.refreshPage()),
-				catchError((err) => {
-					this.alert.warn(this.translate.instant('idrefSearch.acceptRefreshModal'), {
-						delay: 1000,
-					});
-					console.error('Erreur updateFieldIfExists:', err);
-
-					return of(null);
-				})
-			).subscribe({
-				complete: () => {
-					this.reset();
-					this.loader.hide();
-					this.alert.success(this.translate.instant('idrefSearch.recordAdded'), { delay: 1000 });
-					console.log('complete updateFieldIfExists');
-				}
-			});
+		this.idrefSearchService.updateFieldIfFound(this.searchForm.value);
 	}
 
-	/**
-	 * Expose une méthode publique qui crée le champ uniquement s'il n'existe pas.
-	 * No need to verify reference existence — we're creating a new field, not updating an existing one.
-	 */
 	public createFieldIfNotFound(): void {
-		this.loader.show();
-
-		const values = this.searchForm.value;
-		// Use a dummy reference just for the API signature; it's not used in createFieldIfNotExists
-		const dummyReference = this.referenceCurrentField.getSavedCurrentEntry() || {
-			change: '',
-			tag: '',
-			ind1: '',
-			ind2: '',
-			value: [],
-		};
-		const formatedValues = {
-			...values,
-			subfields: StringUtils.parseSubfieldsString(values.subfields),
-		} as DataField;
-
-		this.nzQueryService
-			.createFieldIfNotExists(dummyReference, formatedValues)
-			.pipe(
-				switchMap(() => this.eventsService.refreshPage()),
-				catchError((err) => {
-					this.alert.warn(this.translate.instant('idrefSearch.acceptRefreshModal'), {
-						delay: 1000,
-					});
-					console.error('Erreur createFieldIfNotExists:', err);
-
-					return of(null);
-				})
-			).subscribe({
-				complete: () => {
-					this.reset();
-					this.loader.hide();
-					this.alert.success(this.translate.instant('idrefSearch.recordAdded'), { delay: 1000 });
-					console.log('complete updateFieldIfExists');
-				}
-			});
+		this.idrefSearchService.createFieldIfNotFound(this.searchForm.value);
 	}
 
 	public to902(): void {
-		this.setSearchMode(SearchMode.Add902);
+		this.idrefSearchService.to902();
 	}
 
 	public clear(): void {
-		this.setSearchMode(SearchMode.AddField);
-		this.NZSelectedEntry.set(undefined);
-		this.searchForm.reset();
-		this.alert.info(this.translate.instant('idrefSearch.notImplemented'), { delay: 1000 });
-	}
-
-	public setSearchMode(mode: SearchMode): void {
-		this.idrefSearchService.searchMode.set(mode);
-	}
-
-	public reset(): void {
-		this.searchMode.set(SearchMode.AddField);
-		this.idrefService.NZSelectedEntry.set(undefined);
-		this.recordService.resetSelectedEntity();
+		this.idrefSearchService.clear(() => this.searchForm.reset());
 	}
 }

@@ -111,7 +111,7 @@ export class IdrefRecordComponent {
 
   // Pagination state
   private pageIndex = signal(0);
-  private pageSize = signal(5);
+  private pageSize = signal(10);
 
 
   // Slice côté client
@@ -201,9 +201,7 @@ public pushTobiblioRecordForm(ppn_z: string): void {
       searchIndex: string;
       constructedQuery: string;
     };
-
     // constructedQuery / searchIndex
-
     const queryValues = values.constructedQuery.split(",");
     let dateNaissance ="";
     let dateMort ="";
