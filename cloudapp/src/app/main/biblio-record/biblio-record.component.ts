@@ -17,6 +17,7 @@ import { BiblioReferencedEntryService } from '../../services/biblio-referenced-e
 import { IdrefService } from '../../services/idref.service';
 import { IdrefSearchService } from './idref-search/idref-search.service';
 import { SearchMode, SearchMode902 } from './idref-search/model';
+import { IdrefRecordService } from '../entity-detail/idref-record/idref-record.service';
 
 //Composant pour afficher les notices bibliographique provenant de la NZ
 @Component({
@@ -38,6 +39,7 @@ export class BiblioRecordComponent implements OnInit {
 	private idrefSearchService = inject(IdrefSearchService);
 	private idrefService = inject(IdrefService);
 	private referenceCurrentField = inject(BiblioReferencedEntryService);
+	private idrefRecordService = inject(IdrefRecordService);
 	// ✅ BehaviorSubject pour allowedTags
 	private allowedTags$ = new BehaviorSubject<string[]>(MARC_STRUCTURE_KEY);
 
@@ -64,8 +66,7 @@ export class BiblioRecordComponent implements OnInit {
 	}
 
 	public searchIdref(entry: xmlEntry): void {
-		
-		this.idrefService.NZSelectedEntry.set({...entry});
+		this.idrefRecordService.setFormValuesFromEntry(entry);
 	}
 
 	public deleteField(entry: xmlEntry): void {

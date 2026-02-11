@@ -5,6 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { xmlEntry } from '../../../models/bib-records';
 import { NZQueryService } from '../../../services/nzquery.service';
 import { RecordService } from '../../../services/record.service';
+import { LoadingIndicatorService } from '../../../services/loading-indicator.service';
 
 
 @Component({
@@ -21,6 +22,7 @@ export class DeleteDialogComponent {
   private recordService = inject(RecordService);
   private alert = inject(AlertService);
   private translate = inject(TranslateService);
+  private loader = inject(LoadingIndicatorService);
   
   // eslint-disable-next-line @angular-eslint/prefer-inject
   public constructor(@Inject(MAT_DIALOG_DATA) public data: {entry: xmlEntry}) {}
@@ -30,11 +32,15 @@ export class DeleteDialogComponent {
   }
 
   public onDelete(): void {
+    this.loader.show();
     this.nzQueryService.deleteBibRecord(this.data.entry).subscribe({
       next: () => {
         this.eventsService.refreshPage().subscribe();
         this.recordService.resetSelectedEntity();
         this.alert.info(this.translate.instant("proxyService.deleteSuccess"));
+      },
+      complete: () => {
+        this.loader.hide();
       }
     })
     this.dialogRef.close();

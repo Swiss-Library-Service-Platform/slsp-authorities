@@ -102,8 +102,15 @@ export class IdrefService {
 
 			if (result) return result;
 			if ((result = MARC_STRUCTURE.get(`${tag}|  `))) return result;
+			
 			return;
 		}
+	}
+
+	public reset(): void {
+		this.idrefResult.set(undefined);
+		this.NZSelectedEntry.set(undefined);
+		this.idrefAuthorityDetail.set(undefined);
 	}
 
 	//fonction qui renvoie la chaine de charactere qui permettra de faire le recherche via Solr

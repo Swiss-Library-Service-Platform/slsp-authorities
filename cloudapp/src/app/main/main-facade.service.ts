@@ -10,6 +10,8 @@ import { IdrefService } from '../services/idref.service';
 import { LoadingIndicatorService } from '../services/loading-indicator.service';
 import { NZQueryService } from '../services/nzquery.service';
 import { RecordService } from '../services/record.service';
+import { IdrefRecordService } from './entity-detail/idref-record/idref-record.service';
+import { IdrefSearchService } from './biblio-record/idref-search/idref-search.service';
 
 
 @Injectable({
@@ -28,6 +30,8 @@ export class MainFacadeService {
   private recordService = inject(RecordService);
   private idrefService = inject(IdrefService);
   private nzQuery = inject(NZQueryService);
+  private idrefRecordService = inject(IdrefRecordService);
+  private idrefSearchService = inject(IdrefSearchService);
   
 
 public entities = toSignal<Entity[]>(
@@ -112,8 +116,8 @@ public entities = toSignal<Entity[]>(
   }
 
   public reset(): void {
-    this.recordService.resetSelectedEntity();
-    this.idrefService.NZSelectedEntry.set(undefined);
+    this.idrefSearchService.reset();
+    this.idrefRecordService.reset();
   }
 
 }

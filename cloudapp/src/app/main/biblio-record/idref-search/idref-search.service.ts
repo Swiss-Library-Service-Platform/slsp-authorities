@@ -274,7 +274,8 @@ export class IdrefSearchService {
    */
   public reset(): void {
     this.isTo902FormVisible.set(false);
-    this.idrefService.NZSelectedEntry.set(undefined);
+    this.searchMode.set(SearchMode.AddField);
+    this.idrefService.reset();
     this.recordService.resetSelectedEntity();
   }
 }
