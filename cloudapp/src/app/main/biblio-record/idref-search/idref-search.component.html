@@ -1,7 +1,8 @@
 <div class="idref-search-container">
-	<app-main-form [entity]="entity()"></app-main-form>
-
-	@if(showTo902Form()) {
+	@if (!(this.searchMode902() === 'update902')) {
+		<app-main-form [entity]="entity()"></app-main-form>
+	}
+	@if(isTo902FormVisible()) {
 	<app-to902-form [entity]="entity()"></app-to902-form>
 	}
 </div>

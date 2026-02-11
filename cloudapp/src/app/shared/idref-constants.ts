@@ -95,6 +95,7 @@ export const MARC_STRUCTURE = new Map<string, idrefSearch>([
 	['751|  ', { label: 'Nom géographique', filters: ['geoname_t'], recordtypes: ['c'] }],
 
 	['655|  ', { label: 'Forme / genre', filters: ['formgenreheading_t'], recordtypes: ['r'] }],
+	['902|  ', { label: '', filters: [''], recordtypes: ['']}],
 ]);
 
 function getMarStructureKey(): string[] {

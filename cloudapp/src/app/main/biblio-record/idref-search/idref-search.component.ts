@@ -11,5 +11,6 @@ import { IdrefSearchService } from './idref-search.service';
 export class IdrefSearchComponent {
 
 	public entity = input.required<Bib | undefined>();
-	public showTo902Form = inject(IdrefSearchService).showTo902Form;
+	public isTo902FormVisible = inject(IdrefSearchService).isTo902FormVisible;
+	public searchMode902 = inject(IdrefSearchService).searchMode902;
 }

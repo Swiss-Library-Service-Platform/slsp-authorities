@@ -20,6 +20,7 @@ export class MainFormComponent {
 	private fb = inject(FormBuilder);
 
 	public readonly searchMode = this.idrefSearchService.searchMode;
+	public readonly isTo902FormVisible = this.idrefSearchService.isTo902FormVisible;
 	public readonly NZSelectedEntry = this.idrefSearchService.NZSelectedEntry;
 	public readonly flattenedValue = this.idrefSearchService.flattenedValue;
 
@@ -84,8 +85,8 @@ export class MainFormComponent {
 		this.idrefSearchService.createFieldIfNotFound(this.searchForm.value);
 	}
 
-	public to902(): void {
-		this.idrefSearchService.to902();
+	public showTo902(): void {
+		this.idrefSearchService.showTo902();
 	}
 
 	public clear(): void {

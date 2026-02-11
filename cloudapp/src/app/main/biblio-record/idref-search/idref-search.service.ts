@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/member-ordering */
-import { Injectable, computed, inject, signal } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { AlertService, CloudAppEventsService } from '@exlibris/exl-cloudapp-angular-lib';
 import { catchError, of, switchMap, tap } from 'rxjs';
 import { IdrefService } from '../../../services/idref.service';
-import { SearchMode } from './model';
+import { SearchMode, SearchMode902 } from './model';
 import { DataField } from '../../../models/bib-records';
 import { NZQueryService } from '../../../services/nzquery.service';
 import { BiblioReferencedEntryService } from '../../../services/biblio-referenced-entry.service';
@@ -19,6 +19,8 @@ export class IdrefSearchService {
 
 
   public searchMode = signal<SearchMode>(SearchMode.AddField);
+  public searchMode902 = signal<SearchMode902>(SearchMode902.Add902);
+
   private idrefService = inject(IdrefService);
   private nzQueryService = inject(NZQueryService);
   private eventsService = inject(CloudAppEventsService);
@@ -30,11 +32,7 @@ export class IdrefSearchService {
 
   public NZSelectedEntry = this.idrefService.NZSelectedEntry;
   public flattenedValue = this.idrefService.flattenedValue;
-  public showTo902Form = computed(() => {
-    const mode = this.searchMode();
-    
-    return mode === SearchMode.Add902 || mode === SearchMode.Modify902;
-  }); 
+  public isTo902FormVisible = signal(false);
 
 
   /**
@@ -248,28 +246,34 @@ export class IdrefSearchService {
   /**
    * Bascule vers le mode Add902.
    */
-  public to902(): void {
-    this.searchMode.set(SearchMode.Add902);
+  public showTo902(): void {
+    this.isTo902FormVisible.set(true);
+  }
+
+  public hideTo902(): void {
+    this.searchMode902.set(SearchMode902.Add902);
+    this.isTo902FormVisible.set(false);
   }
 
   /**
    * Réinitialise la recherche et le formulaire.
    */
   public clear(resetFormCallback?: () => void): void {
+    this.isTo902FormVisible.set(false);
     this.searchMode.set(SearchMode.AddField);
     this.NZSelectedEntry.set(undefined);
 
     if (resetFormCallback) {
       resetFormCallback();
     }
-    this.alert.info(this.translate.instant('idrefSearch.notImplemented'), { delay: 1000 });
+    this.alert.info(this.translate.instant('idrefSearch.clear'), { delay: 1000 });
   }
 
   /**
    * Réinitialise l'état de la recherche.
    */
   public reset(): void {
-    this.searchMode.set(SearchMode.AddField);
+    this.isTo902FormVisible.set(false);
     this.idrefService.NZSelectedEntry.set(undefined);
     this.recordService.resetSelectedEntity();
   }

@@ -20,6 +20,7 @@ export class To902FormComponent {
 		private idrefSearchService = inject(IdrefSearchService);
 		private fb = inject(FormBuilder);
 	
+		public readonly searchMode902 = this.idrefSearchService.searchMode902;
 		public readonly searchMode = this.idrefSearchService.searchMode;
 		public readonly NZSelectedEntry = this.idrefSearchService.NZSelectedEntry;
 		public readonly flattenedValue = this.idrefSearchService.flattenedValue;
@@ -61,11 +62,11 @@ export class To902FormComponent {
 		this.idrefSearchService.createFieldIfNotFound(this.searchForm.value);
 	}
 
-	public to902(): void {
-		this.idrefSearchService.to902();
-	}
-
 	public clear(): void {
 		this.idrefSearchService.clear(() => this.searchForm.reset());
+	}
+
+	public hideTo902(): void {
+		this.idrefSearchService.hideTo902();
 	}
 }

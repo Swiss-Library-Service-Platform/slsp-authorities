@@ -16,7 +16,7 @@ import { MARC_STRUCTURE_KEY } from '../../models/idref-model';
 import { BiblioReferencedEntryService } from '../../services/biblio-referenced-entry.service';
 import { IdrefService } from '../../services/idref.service';
 import { IdrefSearchService } from './idref-search/idref-search.service';
-import { SearchMode } from './idref-search/model';
+import { SearchMode, SearchMode902 } from './idref-search/model';
 
 //Composant pour afficher les notices bibliographique provenant de la NZ
 @Component({
@@ -49,6 +49,12 @@ export class BiblioRecordComponent implements OnInit {
 	public pushToInput(entry: xmlEntry): void {
 		this.selectedEntry = entry;
 		this.idrefService.NZSelectedEntry.set({...entry});
+		
+		//on gere le cas du 902
+		if (entry.tag === '902') {
+			this.idrefSearchService.searchMode902.set(SearchMode902.Modify902);
+			this.idrefSearchService.showTo902();
+		}
 		this.idrefSearchService.searchMode.set(SearchMode.Update);
 	}
 
