@@ -3,7 +3,6 @@ import { Component, effect, inject, input } from '@angular/core';
 import { Bib } from '../../../../models/bib-records';
 import { IdrefSearchService } from '../idref-search.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { IdrefService } from '../../../../services/idref.service';
 
 @Component({
 	selector: 'app-to902-form',
@@ -16,7 +15,6 @@ export class To902FormComponent {
 	
 		public searchForm: FormGroup;
 	
-		private idrefService = inject(IdrefService);
 		private idrefSearchService = inject(IdrefSearchService);
 		private fb = inject(FormBuilder);
 	

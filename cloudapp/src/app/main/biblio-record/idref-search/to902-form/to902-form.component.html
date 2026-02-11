@@ -1,38 +1,36 @@
+<div class="to902-container">
+	<div class="to902-box">
+		<h3>{{ searchMode902() }}</h3>
+		<form [formGroup]="searchForm" class="search-form">
+			<div class="input-section">
+				<input class="tagInput" placeholder="tag" formControlName="tag" readonly />
 
-	<div class="to902-container">
-		<div class="to902-box">
-			<h3>{{ searchMode902() }}</h3>
-			<form [formGroup]="searchForm" class="search-form">
-				<div class="input-section">
-					<input class="tagInput" placeholder="tag" formControlName="tag" />
+				<input class="indInput" formControlName="ind1" readonly />
+                 
+				<input class="indInput" formControlName="ind2" readonly />
 
-					<input class="indInput" formControlName="ind1" />
+				<textarea
+					class="subfieldsInput"
+					placeholder="subfields"
+					formControlName="subfields"
+					rows="2"
+				></textarea>
+			</div>
 
-					<input class="indInput" formControlName="ind2" />
-
-					<textarea
-						class="subfieldsInput"
-						placeholder="subfields"
-						formControlName="subfields"
-						rows="2"
-					></textarea>
-				</div>
-
-				<div class="button-section">
-					@if (this.searchMode902() === 'add902') {
-						<button color="primary" (click)="createFieldIfNotFound()">
-							{{ 'idrefSearch.addToRecord' | translate }}
-						</button>
-					} @else if (this.searchMode902() === 'update902') {
-						<button color="primary" (click)="updateFieldIfFound()">
-							{{ 'idrefSearch.updateRecord' | translate }}
-						</button>
-					}
-					<button color="primary" (click)="hideTo902()">
-						{{ 'idrefSearch.hideTo902' | translate }}
+			<div class="button-section">
+				@if (this.searchMode902() === 'add902') {
+					<button color="primary" (click)="createFieldIfNotFound()">
+						{{ 'idrefSearch.addToRecord' | translate }}
 					</button>
-				</div>
-			</form>
-		</div>
+				} @else if (this.searchMode902() === 'update902') {
+					<button color="primary" (click)="updateFieldIfFound()">
+						{{ 'idrefSearch.updateRecord' | translate }}
+					</button>
+				}
+				<button color="primary" (click)="hideTo902()">
+					{{ 'idrefSearch.hideTo902' | translate }}
+				</button>
+			</div>
+		</form>
 	</div>
-
+</div>

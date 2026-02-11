@@ -1,13 +1,15 @@
+@use "../idref-search.shared";
+
 .to902-container {
     margin-top: 5px;
 }
 
 .to902-box {
+    position: relative;
     padding: 10px;
     background-color: #f3e5f5;
     border-radius: 4px;
     border-left: 4px solid #ab47bc;
-    text-align: left;
 }
 
 .to902-box h3 {

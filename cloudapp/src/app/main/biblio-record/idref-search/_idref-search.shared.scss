@@ -1,0 +1,43 @@
+.input-section {
+    display: flex;
+    gap: 2px;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    margin: 0 !important;
+    padding-left: 0 !important;
+}
+
+.indInput {
+    width: calc(1ch + 26px);
+    text-align: center;
+    padding: 4px 8px;
+    height: 28px;
+    box-sizing: border-box;
+    line-height: 1;
+    min-width: 32px;
+}
+
+.tagInput {
+    width: calc(3ch + 16px);
+    text-align: center;
+    padding: 4px 8px;
+    height: 28px;
+    box-sizing: border-box;
+    line-height: 1;
+}
+
+.subfieldsInput {
+    flex: 1 1 auto;
+    min-width: 140px;
+    min-height: 48px;
+    padding: 6px 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.2;
+    box-sizing: border-box;
+    resize: vertical;
+    align-self: center;
+}
