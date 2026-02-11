@@ -9,7 +9,6 @@ import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { RecordService } from './record.service';
 import { StringUtils } from '../utils/stringUtils';
-import { tap } from 'lodash';
 
 @Injectable({
   providedIn: 'root'
@@ -64,7 +63,6 @@ export class NZQueryService {
         selectedEntry: xmlEntry,
         updatedDataField: DataField
       ): Observable<Bib> {
-        this.loader.show();
 
         return this.authenticationService.ensureAccess$().pipe(
           switchMap(() => {
@@ -110,8 +108,7 @@ export class NZQueryService {
             this.alert.error(this.translate.instant('error.restApiError', [errorMsg]), { autoClose: false });
 
             return EMPTY;
-          }),
-          finalize(() => this.loader.hide())
+          })
         );
       }
 
@@ -123,7 +120,7 @@ export class NZQueryService {
         selectedEntry: xmlEntry,
         updatedDataField: DataField
       ): Observable<Bib> {
-        this.loader.show();
+
 
         return this.authenticationService.ensureAccess$().pipe(
           switchMap(() => {
@@ -157,13 +154,11 @@ export class NZQueryService {
                 this.alert.error(this.translate.instant('error.restApiError', [errorMsg]), { autoClose: false });
 
                 return EMPTY;
-          }),
-          finalize(() => this.loader.hide())
+          })
         );
       }
 
     public deleteBibRecord(selectedEntry: xmlEntry): Observable<Bib> {
-    this.loader.show();
 
     return this.authenticationService.ensureAccess$().pipe(
       // 1. Récupérer l'ID Alma (nzMmsId) depuis l'entité
@@ -213,12 +208,7 @@ export class NZQueryService {
         );
 
         return EMPTY;
-      }),
-
-      // 5. Masquer le loader dans tous les cas
-      finalize(() => {
-        this.loader.hide();
-      }),
+      })
     );
   }
 

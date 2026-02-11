@@ -11,8 +11,8 @@ import { BiblioReferencedEntryService } from '../../../../services/biblio-refere
 import { NZQueryService } from '../../../../services/nzquery.service';
 import { StringUtils } from '../../../../utils/stringUtils';
 import { SearchMode } from '../model';
-import { RecordService } from '../../../../services/record.service';
 import { LoadingIndicatorService } from '../../../../services/loading-indicator.service';
+import { RecordService } from '../../../../services/record.service';
 
 @Component({
 	selector: 'app-main-form',
@@ -32,8 +32,8 @@ export class MainFormComponent {
 	private alert = inject(AlertService);
 	private referenceCurrentField = inject(BiblioReferencedEntryService);
 	private fb = inject(FormBuilder);
-	private recordService = inject(RecordService);
 	private loader = inject(LoadingIndicatorService);
+	private recordService = inject(RecordService);
 
 	public readonly searchMode = this.idrefSearchService.searchMode;
 	public readonly NZSelectedEntry = this.idrefSearchService.NZSelectedEntry;
@@ -89,6 +89,8 @@ export class MainFormComponent {
 	}
 
 	public addrecord(): void {
+		this.loader.show();
+
 		const values = this.searchForm.value;
 		const reference = this.referenceCurrentField.getSavedCurrentEntry();
 
@@ -108,14 +110,11 @@ export class MainFormComponent {
 		this.nzQueryService
 			.updateFieldIfExists(reference, formatedValues)
 			.pipe(
-				tap(() =>
-					this.alert.success(this.translate.instant('idrefSearch.recordAdded'), { delay: 1000 })
-				),
 				switchMap(() => this.eventsService.refreshPage()),
 				catchError((err) => {
 					if (err?.message === 'FIELD_NOT_FOUND') {
 						// Champ non trouvé -> créer
-						/*return this.nzQueryService.createFieldIfNotExists(reference, formatedValues).pipe(
+						return this.nzQueryService.createFieldIfNotExists(reference, formatedValues).pipe(
 							tap(() => this.alert.success(this.translate.instant('idrefSearch.recordAdded'), { delay: 1000 })),
 							switchMap(() => this.eventsService.refreshPage()),
 							catchError((err2) => {
@@ -124,7 +123,7 @@ export class MainFormComponent {
 
 								return of(null);
 							}),
-						);*/
+						);
 					}
 
 					this.alert.warn(this.translate.instant('idrefSearch.acceptRefreshModal'), {
@@ -134,10 +133,13 @@ export class MainFormComponent {
 
 					return of(null);
 				})
-			)
-			.subscribe(() => {
-				this.recordService.resetSelectedEntity();
-				this.loader.hide();
+			).subscribe({
+				complete: () => {
+					this.reset();
+					this.loader.hide();
+					this.alert.success(this.translate.instant('idrefSearch.recordAdded'), { delay: 1000 });
+					console.log('complete updateFieldIfExists');
+				}
 			});
 	}
 
@@ -145,6 +147,8 @@ export class MainFormComponent {
 	 * Expose une méthode publique qui met à jour le champ uniquement s'il existe.
 	 */
 	public updateFieldIfFound(): void {
+		this.loader.show();
+
 		const values = this.searchForm.value;
 		const reference = this.referenceCurrentField.getSavedCurrentEntry();
 
@@ -162,9 +166,6 @@ export class MainFormComponent {
 		this.nzQueryService
 			.updateFieldIfExists(reference, formatedValues)
 			.pipe(
-				tap(() =>
-					this.alert.success(this.translate.instant('idrefSearch.recordAdded'), { delay: 1000 })
-				),
 				switchMap(() => this.eventsService.refreshPage()),
 				catchError((err) => {
 					this.alert.warn(this.translate.instant('idrefSearch.acceptRefreshModal'), {
@@ -174,10 +175,13 @@ export class MainFormComponent {
 
 					return of(null);
 				})
-			)
-			.subscribe(() => {
-				this.recordService.resetSelectedEntity();
-				this.loader.hide();
+			).subscribe({
+				complete: () => {
+					this.reset();
+					this.loader.hide();
+					this.alert.success(this.translate.instant('idrefSearch.recordAdded'), { delay: 1000 });
+					console.log('complete updateFieldIfExists');
+				}
 			});
 	}
 
@@ -186,6 +190,8 @@ export class MainFormComponent {
 	 * No need to verify reference existence — we're creating a new field, not updating an existing one.
 	 */
 	public createFieldIfNotFound(): void {
+		this.loader.show();
+
 		const values = this.searchForm.value;
 		// Use a dummy reference just for the API signature; it's not used in createFieldIfNotExists
 		const dummyReference = this.referenceCurrentField.getSavedCurrentEntry() || {
@@ -203,9 +209,6 @@ export class MainFormComponent {
 		this.nzQueryService
 			.createFieldIfNotExists(dummyReference, formatedValues)
 			.pipe(
-				tap(() =>
-					this.alert.success(this.translate.instant('idrefSearch.recordAdded'), { delay: 1000 })
-				),
 				switchMap(() => this.eventsService.refreshPage()),
 				catchError((err) => {
 					this.alert.warn(this.translate.instant('idrefSearch.acceptRefreshModal'), {
@@ -215,8 +218,14 @@ export class MainFormComponent {
 
 					return of(null);
 				})
-			)
-			.subscribe();
+			).subscribe({
+				complete: () => {
+					this.reset();
+					this.loader.hide();
+					this.alert.success(this.translate.instant('idrefSearch.recordAdded'), { delay: 1000 });
+					console.log('complete updateFieldIfExists');
+				}
+			});
 	}
 
 	public to902(): void {
@@ -232,5 +241,11 @@ export class MainFormComponent {
 
 	public setSearchMode(mode: SearchMode): void {
 		this.idrefSearchService.searchMode.set(mode);
+	}
+
+	public reset(): void {
+		this.searchMode.set(SearchMode.AddField);
+		this.idrefService.NZSelectedEntry.set(undefined);
+		this.recordService.resetSelectedEntity();
 	}
 }
