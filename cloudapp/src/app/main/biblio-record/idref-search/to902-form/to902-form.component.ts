@@ -118,7 +118,7 @@ public predifinedContent = computed(() => {
 		this.idrefSearchService.clear(() => this.searchForm.reset());
 	}
 
-	public hideTo902(): void {
-		this.idrefSearchService.hideTo902();
+	public closeTo902(): void {
+		this.idrefSearchService.closeTo902();
 	}
 }

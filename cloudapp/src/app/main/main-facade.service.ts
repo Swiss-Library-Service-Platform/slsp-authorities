@@ -6,7 +6,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, tap, catchError, EMPTY, forkJoin, switchMap, of, finalize, Observable } from 'rxjs';
 import { AuthenticationService } from '../services/authentication.service';
-import { IdrefService } from '../services/idref.service';
 import { LoadingIndicatorService } from '../services/loading-indicator.service';
 import { NZQueryService } from '../services/nzquery.service';
 import { RecordService } from '../services/record.service';
@@ -28,7 +27,6 @@ export class MainFacadeService {
   private auth = inject(AuthenticationService);
   private loader = inject(LoadingIndicatorService);
   private recordService = inject(RecordService);
-  private idrefService = inject(IdrefService);
   private nzQuery = inject(NZQueryService);
   private idrefRecordService = inject(IdrefRecordService);
   private idrefSearchService = inject(IdrefSearchService);
@@ -117,6 +115,7 @@ public entities = toSignal<Entity[]>(
 
   public reset(): void {
     this.idrefSearchService.reset();
+    this.recordService.resetSelectedEntity();
     this.idrefRecordService.reset();
   }
 

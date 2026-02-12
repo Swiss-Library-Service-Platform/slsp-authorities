@@ -1,4 +1,4 @@
-import { computed, inject, Injectable, signal, effect } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
@@ -24,16 +24,6 @@ export class IdrefService {
 	private http = inject(HttpClient);
 	private solr = '/Sru/Solr';
 
-	public constructor() {
-		//pour logger facilement
-		effect(() => {
-			// debug effect removed
-		})
-
-		effect(() => {
-			// debug effect removed
-		})
-	}
 
 	//permet de faire des recherches génériques dans idref (peut-être à améliorer car pour le moment on ne peut pas ajouter d'autres options que wt)
 	public searchAuthorities(query: string): Observable<IdrefRecords> {

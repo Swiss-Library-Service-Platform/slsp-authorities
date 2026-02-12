@@ -230,7 +230,7 @@ export class IdrefSearchService {
     this.isTo902FormVisible.set(true);
   }
 
-  public hideTo902(): void {
+  public closeTo902(): void {
     this.searchMode902.set(SearchMode902.Add902);
     this.isTo902FormVisible.set(false);
   }
@@ -257,6 +257,5 @@ export class IdrefSearchService {
     this.searchMode902.set(SearchMode902.Add902);
     this.searchMode.set(SearchMode.AddField);
     this.idrefService.reset();
-    this.recordService.resetSelectedEntity();
   }
 }
