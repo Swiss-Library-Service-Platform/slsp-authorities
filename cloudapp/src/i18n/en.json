@@ -24,13 +24,17 @@
 		"noSelectedEntry": "There is no selected entry"
 	},
 	"idrefSearch":{
-		"addToRecord": "Add to record",
+		"addToRecord": "Add",
 		"to902": "To 902",
 		"clear": "Clear",
 		"notImplemented": "Not implemented yet",
 		"noSelectedEntry": "There is no selected entry",
 		"recordAdded": "The record has been updated.",
-		"acceptRefreshModal": "Warning ! Don't forget to click on the accept refresh."
+		"acceptRefreshModal": "Warning ! Don't forget to click on the accept refresh.",
+		"updateRecord": "Update",
+		"hideTo902": "Hide",
+		"showTo902": "Create 902"
+
 	},
 	"biblioRecord":{
 		"title": "Authority related fields",

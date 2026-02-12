@@ -1,9 +1,5 @@
 @use "../idref-search.shared";
 
-.to902-container {
-    margin-top: 5px;
-}
-
 .to902-box {
     position: relative;
     padding: 10px;
@@ -19,13 +15,59 @@
 }
 
 .to902-box p {
-    margin: 0 0 16px 0;
     color: #666;
     font-size: 14px;
+}
+
+.to902-row {
+    display: flex;
+    align-items: flex-start;
+}
+
+.to902-tag {
+    margin-right: 5px;
+    flex: 0 0 auto;
+    width: 3ch;
+}
+
+.to902-ind {
+    flex: 0 0 auto;
+    width: 1ch;
+}
+
+.to902-label {
+    color: black;;
+    margin-left: 2px;
+    margin-right: 2px;
+    flex: 0 0 auto;
+}
+
+.to902-select {
+    flex: 1 1 auto;
+}
+
+.to902-textarea {
+    flex: 1 1 auto;
+}
+
+.to902-close-button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
 }
 
 .button-section {
     display: flex;
     gap: 8px;
     justify-content: flex-start;
+}
+
+.button-section button {
+    flex: 0 0 auto;
+}
+
+input:disabled {
+    background-color: #f0f0f0; /* Fond gris clair */
+    color: #808080;             /* Texte gris */
+    border: 1px solid #ccc;     /* Bordure */
 }

@@ -3,7 +3,7 @@ import { Injectable, inject, signal } from '@angular/core';
 import { AlertService, CloudAppEventsService } from '@exlibris/exl-cloudapp-angular-lib';
 import { catchError, of, switchMap, tap } from 'rxjs';
 import { IdrefService } from '../../../services/idref.service';
-import { SearchMode, SearchMode902 } from './model';
+import { FormValues, SearchMode, SearchMode902 } from './model';
 import { DataField } from '../../../models/bib-records';
 import { NZQueryService } from '../../../services/nzquery.service';
 import { BiblioReferencedEntryService } from '../../../services/biblio-referenced-entry.service';
@@ -69,12 +69,7 @@ export class IdrefSearchService {
   /**
    * Set the NZSelectedEntry in the idref service
    */
-  public setNZSelectedEntry(values: {
-    tag: string;
-    ind1: string;
-    ind2: string;
-    subfields: string;
-  }): void {
+  public setNZSelectedEntry(values: FormValues): void {
     this.NZSelectedEntry.set({
       change: '',
       tag: values.tag,
@@ -87,12 +82,7 @@ export class IdrefSearchService {
   /**
    * Crée un champ uniquement s'il n'existe pas.
    */
-  public createFieldIfNotFound(formValues: {
-    tag: string;
-    ind1: string;
-    ind2: string;
-    subfields: string;
-  }): void {
+  public createFieldIfNotFound(formValues: FormValues): void {
     this.loader.show();
 
     const dummyReference = this.referenceCurrentField.getSavedCurrentEntry() || {
@@ -133,12 +123,7 @@ export class IdrefSearchService {
   /**
    * Met à jour un champ uniquement s'il existe.
    */
-  public updateFieldIfFound(formValues: {
-    tag: string;
-    ind1: string;
-    ind2: string;
-    subfields: string;
-  }): void {
+  public updateFieldIfFound(formValues: FormValues): void {
     this.loader.show();
 
     const reference = this.referenceCurrentField.getSavedCurrentEntry();
@@ -182,12 +167,7 @@ export class IdrefSearchService {
    * Ajoute ou met à jour un enregistrement.
    * Tente d'abord une mise à jour ; si le champ n'existe pas, le crée.
    */
-  public addrecord(formValues: {
-    tag: string;
-    ind1: string;
-    ind2: string;
-    subfields: string;
-  }): void {
+  public addrecord(formValues: FormValues): void {
     this.loader.show();
 
     const reference = this.referenceCurrentField.getSavedCurrentEntry();
@@ -274,6 +254,7 @@ export class IdrefSearchService {
    */
   public reset(): void {
     this.isTo902FormVisible.set(false);
+    this.searchMode902.set(SearchMode902.Add902);
     this.searchMode.set(SearchMode.AddField);
     this.idrefService.reset();
     this.recordService.resetSelectedEntity();

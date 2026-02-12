@@ -51,6 +51,8 @@ export class BiblioRecordComponent implements OnInit {
 	public pushToInput(entry: xmlEntry): void {
 		this.selectedEntry = entry;
 		this.idrefService.NZSelectedEntry.set({...entry});
+		this.idrefSearchService.hideTo902();
+		this.idrefSearchService.searchMode902.set(SearchMode902.Add902);
 		
 		//on gere le cas du 902
 		if (entry.tag === '902') {
