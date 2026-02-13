@@ -12,6 +12,16 @@
     padding: 4px 0;
   }
 
+  
+  .idrefmarc-row .idrefmarc-column--actions {
+      margin-left: auto;
+      display: flex;
+      flex-direction: row;
+      gap: 2px;
+      align-items: center;
+   }
+
+
   .idrefmarc-column {
     display: flex;
     flex-direction: column;
@@ -45,9 +55,8 @@
 
     
 .idrefmarc-row.idrefmarc-row--active {
-    background-color: #e3f2fd;   // bleu léger type Material
-    // optionnel : bordure ou autre
-    // border-left: 4px solid #1976d2;
+    background-color: #e3f2fd;
+    border-left: 4px solid #1976d2;
   }
 
   

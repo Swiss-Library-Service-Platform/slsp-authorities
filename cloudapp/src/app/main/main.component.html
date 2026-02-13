@@ -1,6 +1,6 @@
 @if (facade.isInstitutionAllowed() && facade.hasCatalogerRole()) {
   <div class="eca-actions">
-    <a href="https://www.idref.fr/" target="_blank" rel="noopener noreferrer">
+    <a href="https://www.idref.fr/" (click)="openIdref($event)">
       <img
         src="https://www.idref.fr/img/logo.png"
         alt="logo of idref"
