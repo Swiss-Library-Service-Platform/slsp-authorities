@@ -212,6 +212,22 @@ export class NZQueryService {
     );
   }
 
+  
+public refreshSelectedEntityDetails(): void {
+    const entity = this.recordService.selectedEntity();
+
+    if (!entity) {
+      return;
+    }
+
+    this.getBibRecord(entity).subscribe({
+      next: (bib) => this.recordService.selectedEntityDetails.set(bib),
+      error: (err) => {
+        console.error('Erreur refreshSelectedEntityDetails', err);
+      },
+    });
+  }
+
 
   /**
  * Construit l'URL d'accès à un Bib via son nzMmsId.

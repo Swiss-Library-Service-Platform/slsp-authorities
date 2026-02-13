@@ -113,6 +113,7 @@ export class IdrefSearchService {
       .subscribe({
         complete: () => {
           this.reset();
+          this.nzQueryService.refreshSelectedEntityDetails();
           this.loader.hide();
           this.alert.success(this.translate.instant('idrefSearch.recordAdded'), { delay: 1000 });
           console.log('complete createFieldIfNotFound');
@@ -156,6 +157,7 @@ export class IdrefSearchService {
       .subscribe({
         complete: () => {
           this.reset();
+          this.nzQueryService.refreshSelectedEntityDetails();
           this.loader.hide();
           this.alert.success(this.translate.instant('idrefSearch.recordAdded'), { delay: 1000 });
           console.log('complete updateFieldIfFound');
@@ -216,6 +218,7 @@ export class IdrefSearchService {
       .subscribe({
         complete: () => {
           this.reset();
+          this.nzQueryService.refreshSelectedEntityDetails();
           this.loader.hide();
           this.alert.success(this.translate.instant('idrefSearch.recordAdded'), { delay: 1000 });
           console.log('complete addrecord');

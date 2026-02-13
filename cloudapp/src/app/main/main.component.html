@@ -1,41 +1,40 @@
-@if(facade.isInstitutionAllowed() && facade.hasCatalogerRole()){
-<div class="eca-actions">
-	
-	<a href="https://www.idref.fr/" target="_blank" rel="noopener noreferrer">
-  	<img
-    src="https://www.idref.fr/img/logo.png"
-    alt="logo of idref"
-    style="width: 80px; height: auto; cursor: pointer;" />
-	</a>
+@if (facade.isInstitutionAllowed() && facade.hasCatalogerRole()) {
+  <div class="eca-actions">
+    <a href="https://www.idref.fr/" target="_blank" rel="noopener noreferrer">
+      <img
+        src="https://www.idref.fr/img/logo.png"
+        alt="logo of idref"
+        style="width: 80px; height: auto; cursor: pointer;"
+      />
+    </a>
 
-	<button
-		mat-flat-button
-		color="secondary"
-		(click)="reset()"
-		[disabled]="!facade.selectedEntity() || (loader.isLoading | async)">
-		<mat-icon>arrow_back</mat-icon>{{ 'main.resetButtonLabel' | translate }}
-	</button>
-</div>
+    <button
+      mat-flat-button
+      color="secondary"
+      (click)="reset()"
+      [disabled]="!facade.selectedEntity() || (loader.isLoading | async)"
+    >
+      <mat-icon>arrow_back</mat-icon>{{ 'main.resetButtonLabel' | translate }}
+    </button>
+  </div>
 
-@if (facade.entities()?.length && !facade.selectedEntity()) {
-	<app-entity-list
-		[entities]="facade.entities()"
-		(selectedEntity)="facade.selectEntity($event)"
-	/>
-} @else if (facade.selectedEntity()) {
-	<app-entity-detail [entity]="facade.selectedEntityDetails()" />
+  @if (facade.entities()?.length && !facade.selectedEntity()) {
+    <app-entity-list />
+  } @else if (facade.selectedEntity()) {
+    <app-entity-detail />
+  } @else {
+    <p>{{ 'main.noActiveRecordInMetadataEditor' | translate }}</p>
+  }
+
+  @if (loader.isLoading | async) {
+    <div class="loading-shade">
+      <mat-spinner
+        diameter="50"
+        [mode]="(loader.mode | async) ?? 'indeterminate'"
+        [value]="loader.progress | async"
+      ></mat-spinner>
+    </div>
+  }
 } @else {
-	<p>{{ 'main.noActiveRecordInMetadataEditor' | translate }}</p>
-}
-@if (loader.isLoading | async) {
-	<div class="loading-shade">
-		<mat-spinner
-			diameter="50"
-			[mode]="(loader.mode | async) ?? 'indeterminate'"
-			[value]="loader.progress | async"
-		></mat-spinner>
-	</div>
-}
-}@else{
-	<p>{{ 'main.rightIssue' | translate }}</p>
+  <p>{{ 'main.rightIssue' | translate }}</p>
 }
