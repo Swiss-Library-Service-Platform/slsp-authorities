@@ -89,7 +89,7 @@ export const MARC_STRUCTURE = new Map<string, idrefSearch>([
 	['600|1 |a,t', { label: 'Auteur / titre', filters: ['nametitle_t'], recordtypes: ['h'] }],
 	['600|0 |a,t', { label: 'Auteur / titre', filters: ['nametitle_t'], recordtypes: ['h'] }],
 
-	['650|  ', { label: 'Sujet', filters: ['subjectheading_t'], recordtypes: ['r'] }],
+	['650|  ', { label: 'Sujet', filters: ['subjectheading_t'], recordtypes: [''] }],
 
 	['651|  ', { label: 'Nom géographique', filters: ['geoname_t'], recordtypes: ['c'] }],
 	['751|  ', { label: 'Nom géographique', filters: ['geoname_t'], recordtypes: ['c'] }],
@@ -162,7 +162,7 @@ export const IDREF_RECORDTYPE_MAP = new Map<string, string>([
 	['Famille', 'e'],
 	['Titre uniforme', 'f'],
 	['Auteur / titre', 'h'],
-	['Sujet', 'r'],
+	['Sujet', ''],
 	['Nom de marque', 'd'],
 	['Noms géographiques', 'c'],
 	['Forme', 'r'],

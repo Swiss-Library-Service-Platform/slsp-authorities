@@ -164,7 +164,7 @@ export class IdrefRecordService {
 
 		const recordTypeCharac = IDREF_RECORDTYPE_MAP.get(searchIndex);
 
-		if (recordTypeCharac) {
+		if (recordTypeCharac && recordTypeCharac.length > 0) {
 			query = `${IDREF_FILTER_MAP.get(searchIndex)}:${query} AND recordtype_z:${recordTypeCharac}`;
 		} else {
 			query = `all:${query}`;
