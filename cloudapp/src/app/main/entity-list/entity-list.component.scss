@@ -1,16 +1,55 @@
 .entities-list {
-  .mat-list-item {
-    height: 50px;
-    padding: unset;
+  // Cible les items Angular Material MDC
+  .mat-mdc-list-item {
+    height: 30px;
+    border-radius: 0%;
+    padding-bottom: 0%;
 
-    .mat-icon {
-      margin-right: 10px;
+    // Alternance de couleur de fond (odd/even)
+    &:nth-child(odd) {
+      background-color: #ffffff;
     }
-  }
 
-  .entity-description {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    &:nth-child(even) {
+      background-color: #f5f5f5;
+    }
+
+    // Hover
+    &:hover {
+      background-color: #eaf2f6;;
+      cursor: pointer;
+    }
+
+    // Contenu interne : alignement horizontal et vertical
+    .mdc-list-item__content {
+      display: flex;
+      align-items: center;
+    }
+
+    // Icône
+    mat-icon {
+      margin-right: 8px;
+      font-size: 25px;
+      width: 25px;
+      height: 25px;
+      color: #4164a4;
+    }
+
+    // ID mis en avant
+    .entity-id {
+      font-weight: 600;
+      color: #4164a4;
+      margin-right: 4px;
+      white-space: nowrap;
+      min-width: 80px; // optionnel : alignement vertical de tous les IDs
+    }
+
+    // Description tronquée correctement
+    .entity-description {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
   }
 }

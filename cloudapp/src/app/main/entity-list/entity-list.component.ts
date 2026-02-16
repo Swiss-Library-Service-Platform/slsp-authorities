@@ -5,6 +5,7 @@ import { MainFacadeService } from '../main-facade.service';
 @Component({
 	selector: 'app-entity-list',
 	templateUrl: './entity-list.component.html',
+  styleUrl: './entity-list.component.scss',
 })
 export class EntityListComponent {
 	

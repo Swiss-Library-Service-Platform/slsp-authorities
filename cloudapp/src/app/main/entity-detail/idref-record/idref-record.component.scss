@@ -52,11 +52,16 @@
   .idrefmarc-row:nth-child(odd) {
       background: rgb(243, 245, 244);
     }
+  
+  .idrefmarc-row:hover {
+      background-color: #eaf2f6;;
+      cursor: pointer;
+    }
 
     
 .idrefmarc-row.idrefmarc-row--active {
-    background-color: #e3f2fd;
-    border-left: 4px solid #1976d2;
+    background-color: #eaf2f6;
+    border-left: 4px solid #0e7bba ;
   }
 
   

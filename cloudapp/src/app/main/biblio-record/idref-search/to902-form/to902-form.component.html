@@ -7,10 +7,10 @@
 	</div>
 	<form [formGroup]="searchForm">
 		<div class="to902-row">
-			<input class="to902-tag" placeholder="tag" formControlName="tag" />
-			<input class="to902-ind" formControlName="ind1" />
-			<input class="to902-ind" formControlName="ind2" />
-			<span class="to902-label">$$a:</span>
+			<input class="to902-tag tag" placeholder="tag" formControlName="tag" />
+			<input class="to902-ind ind" formControlName="ind1" />
+			<input class="to902-ind ind" formControlName="ind2" />
+			<span class="to902-label subfield">$$a:</span>
 			<select class="to902-select" formControlName="purpose">
 				@for (option of to902Purpose; track option) {
 					<option [value]="option">{{ option }}</option>
@@ -18,7 +18,7 @@
 			</select>
 		</div>
 		<div class="to902-row">
-			<span class="to902-label">$$b:</span>
+			<span class="to902-label subfield">$$b:</span>
 			<textarea
 				class="to902-textarea"
 				placeholder="subfields"

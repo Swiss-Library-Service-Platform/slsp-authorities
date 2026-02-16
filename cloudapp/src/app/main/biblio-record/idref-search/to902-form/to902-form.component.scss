@@ -71,3 +71,19 @@ input:disabled {
     color: #808080;             /* Texte gris */
     border: 1px solid #ccc;     /* Bordure */
 }
+
+.tag {
+    color: rgb(128, 0, 128);
+    width: 30px;
+    padding-left: 3px;
+  }
+
+  .ind {
+    color: rgb(0, 128, 0);
+    width: 1em;
+  }
+
+  .subfield {
+    color: rgb(0, 0, 255);
+    // width: 3em;
+  }
