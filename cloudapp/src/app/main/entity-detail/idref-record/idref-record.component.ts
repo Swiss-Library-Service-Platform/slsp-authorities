@@ -14,6 +14,8 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { Doc, IDREF_RECORDTYPE_TO_ICON_MAP } from '../../../models/idref-model';
 import { IdrefService } from '../../../services/idref.service';
 import { IdrefRecordService } from './idref-record.service';
+import { MatIconRegistry } from '@angular/material/icon';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-idref-record',
@@ -63,6 +65,9 @@ export class IdrefRecordComponent {
   private fb = inject(FormBuilder);
 
   public constructor() {
+
+    this.implementIcones();
+
     this.searchForm = this.fb.group({
       searchIndex: [''],
       constructedQuery: [''],
@@ -132,4 +137,21 @@ export class IdrefRecordComponent {
       this.pageSize.set(event.pageSize);
     });
   }
+
+  private implementIcones(): void {
+    const matIconRegistry = inject(MatIconRegistry);
+    const domSanitizer = inject(DomSanitizer); 
+  
+    matIconRegistry.addSvgIcon('congres', domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/congres.svg'));
+    matIconRegistry.addSvgIcon('famille', domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/famille.svg'));
+    matIconRegistry.addSvgIcon('personne', domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/personne.svg'));
+    matIconRegistry.addSvgIcon('titre_uniforme', domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/titre_uniforme.svg'));
+    matIconRegistry.addSvgIcon('auteur_titre', domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/auteur_titre.svg'));
+    matIconRegistry.addSvgIcon('sujet', domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/sujet.svg'));
+    matIconRegistry.addSvgIcon('nom_marque', domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/nom_marque.svg'));
+    matIconRegistry.addSvgIcon('noms_geographiques', domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/noms_geographiques.svg'));
+    matIconRegistry.addSvgIcon('forme', domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/forme.svg'));
+    
+  }
+
 }

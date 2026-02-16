@@ -179,6 +179,7 @@ export class IdrefRecordService {
 	public updateSelectedEntryWithPPN(ppn_z: string): void {
 		const selectedEntry = this.idrefService.NZSelectedEntry();
 
+		//TODO: c'est le cas où on crée un nouveaux champ dans la notice biblio
 		if (!selectedEntry) {
 			return;
 		}
