@@ -197,7 +197,7 @@ export class IdrefRecordService {
 			// Ajout d'un nouveau sous-champ $$0
 			newValues.push({
 				code: '0',
-				value: ppn_z,
+				value: `(IDREF)${ppn_z}`,
 			});
 		}
 
