@@ -1,310 +1,321 @@
 import { inject, Injectable } from '@angular/core';
-import { AlertService, CloudAppRestService, Entity, HttpMethod } from '@exlibris/exl-cloudapp-angular-lib';
+import {
+	AlertService,
+	CloudAppRestService,
+	CloudAppSettingsService,
+	Entity,
+	HttpMethod,
+} from '@exlibris/exl-cloudapp-angular-lib';
 import { Observable, switchMap, catchError, EMPTY, finalize, of, throwError } from 'rxjs';
 import { Bib, DataField, xmlEntry } from '../models/bib-records';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthenticationService } from './authentication.service';
 import { LoadingIndicatorService } from './loading-indicator.service';
-import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { RecordService } from './record.service';
 import { StringUtils } from '../utils/stringUtils';
+import { Settings } from '../models/setting';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class NZQueryService {
+	//Services
+	private loader = inject(LoadingIndicatorService);
+	private alert = inject(AlertService);
+	private translate = inject(TranslateService);
+	private authenticationService = inject(AuthenticationService);
+	private restService = inject(CloudAppRestService);
+	private http = inject(HttpClient);
+	private recordService = inject(RecordService);
+	private settingsService = inject(CloudAppSettingsService);
+	private proxyUrl: string | undefined;
 
-  private proxyUrl= environment.proxyUrl;
+	public constructor() {
+		this.settingsService.get().subscribe((settings) => {
+			this.proxyUrl = (settings as Settings).proxyUrl;
+		});
+	}
 
-  //Services
-  private loader = inject(LoadingIndicatorService);
-  private alert = inject(AlertService);
-  private translate = inject(TranslateService);
-  private authenticationService = inject(AuthenticationService);
-  private restService = inject(CloudAppRestService);
-  private http = inject(HttpClient);
-  private recordService = inject(RecordService);
-  
+	// ---------------------------
+	// 📚 Appel NZ : Bib record
+	// ---------------------------
 
-    // ---------------------------
-    // 📚 Appel NZ : Bib record
-    // ---------------------------
-  
-    /** Récupère la notice bib de la NZ pour l'entité sélectionnée */
-    public getBibRecord(entity: Entity): Observable<Bib> {
-      this.loader.show();
-      
-      return this.authenticationService.ensureAccess$().pipe(
-        switchMap(() => this.getNzMmsIdFromEntity(entity)),
-        switchMap((nzMmsId) =>
-          this.http.get<Bib>(
-            `${this.proxyUrl}/p/api-eu.hosted.exlibrisgroup.com/almaws/v1/bibs/${nzMmsId}`,
-            this.authenticationService.getHttpOptions(),
-          ),
-        ),
-        catchError((error) => {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const errorMsg = (error as any)?.message || (error as any)?.statusText || 'Unknown error';
-  
-          this.alert.error(this.translate.instant('error.restApiError', [errorMsg]), { autoClose: false });
-  
-          return EMPTY;
-        }),
-        finalize(() => this.loader.hide()),
-      );
-    }
-      
-      /**
-       * Met à jour un champ uniquement si il existe.
-       * Renvoie une erreur si le champ n'est pas trouvé.
-       */
-      public updateFieldIfExists(
-        selectedEntry: xmlEntry,
-        updatedDataField: DataField
-      ): Observable<Bib> {
+	/** Récupère la notice bib de la NZ pour l'entité sélectionnée */
+	public getBibRecord(entity: Entity): Observable<Bib> {
+		this.loader.show();
 
-        return this.authenticationService.ensureAccess$().pipe(
-          switchMap(() => {
-            const entity = this.recordService.selectedEntity();
+		return this.authenticationService.ensureAccess$().pipe(
+			switchMap(() => this.getNzMmsIdFromEntity(entity)),
+			switchMap((nzMmsId) =>
+				this.http.get<Bib>(
+					`${this.proxyUrl}/p/api-eu.hosted.exlibrisgroup.com/almaws/v1/bibs/${nzMmsId}`,
+					this.authenticationService.getHttpOptions()
+				)
+			),
+			catchError((error) => {
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				const errorMsg = (error as any)?.message || (error as any)?.statusText || 'Unknown error';
 
-            if (!entity) {
-              this.alert.error(this.translate.instant('error.noSelectedEntry'));
+				this.alert.error(this.translate.instant('error.restApiError', [errorMsg]), {
+					autoClose: false,
+				});
 
-              return throwError(() => new Error('Aucune entité sélectionnée.'));
-            }
+				return EMPTY;
+			}),
+			finalize(() => this.loader.hide())
+		);
+	}
 
-            return this.getNzMmsIdFromEntity(entity);
-          }),
-          switchMap((nzMmsId) =>
-            this.http.get<Bib>(this.buildBibUrl(nzMmsId), this.authenticationService.getHttpOptions()).pipe(
-              switchMap((bib) => {
-                const marcRecord = StringUtils.xmlToMarcRecord(bib.anies[0]);
-                const targetDataField = StringUtils.xmlEntryToDataField(selectedEntry);
-                const index = marcRecord.dataFields.findIndex(field =>
-                  StringUtils.areDataFieldsEqual(field, targetDataField)
-                );
+	/**
+	 * Met à jour un champ uniquement si il existe.
+	 * Renvoie une erreur si le champ n'est pas trouvé.
+	 */
+	public updateFieldIfExists(
+		selectedEntry: xmlEntry,
+		updatedDataField: DataField
+	): Observable<Bib> {
+		return this.authenticationService.ensureAccess$().pipe(
+			switchMap(() => {
+				const entity = this.recordService.selectedEntity();
 
-                if (index === -1) {
-                  return throwError(() => new Error('FIELD_NOT_FOUND'));
-                }
+				if (!entity) {
+					this.alert.error(this.translate.instant('error.noSelectedEntry'));
 
-                marcRecord.dataFields[index] = updatedDataField;
+					return throwError(() => new Error('Aucune entité sélectionnée.'));
+				}
 
-                const updatedMarcXml = StringUtils.marcRecordToXml(marcRecord);
+				return this.getNzMmsIdFromEntity(entity);
+			}),
+			switchMap((nzMmsId) =>
+				this.http
+					.get<Bib>(this.buildBibUrl(nzMmsId), this.authenticationService.getHttpOptions())
+					.pipe(
+						switchMap((bib) => {
+							const marcRecord = StringUtils.xmlToMarcRecord(bib.anies[0]);
+							const targetDataField = StringUtils.xmlEntryToDataField(selectedEntry);
+							const index = marcRecord.dataFields.findIndex((field) =>
+								StringUtils.areDataFieldsEqual(field, targetDataField)
+							);
 
-                return this.http.put<Bib>(this.buildBibUrl(nzMmsId), `<bib>${updatedMarcXml}</bib>`, this.authenticationService.getXmlHttpOptions());
-              })
-            )
-          ),
-          catchError((error) => {
-            const errorMsg = error?.message || error?.statusText || 'Unknown error';
+							if (index === -1) {
+								return throwError(() => new Error('FIELD_NOT_FOUND'));
+							}
 
-            // Propagate our specific control errors so callers can react
-            if (error?.message === 'FIELD_NOT_FOUND' || error?.message === 'FIELD_ALREADY_EXISTS') {
-              return throwError(() => error);
-            }
+							marcRecord.dataFields[index] = updatedDataField;
 
-            this.alert.error(this.translate.instant('error.restApiError', [errorMsg]), { autoClose: false });
+							const updatedMarcXml = StringUtils.marcRecordToXml(marcRecord);
 
-            return EMPTY;
-          })
-        );
-      }
+							return this.http.put<Bib>(
+								this.buildBibUrl(nzMmsId),
+								`<bib>${updatedMarcXml}</bib>`,
+								this.authenticationService.getXmlHttpOptions()
+							);
+						})
+					)
+			),
+			catchError((error) => {
+				const errorMsg = error?.message || error?.statusText || 'Unknown error';
 
-      /**
-       * Crée un champ uniquement si il n'existe pas encore.
-       * Renvoie une erreur si le champ existe déjà.
-       */
-      public createFieldIfNotExists(
-        selectedEntry: xmlEntry,
-        updatedDataField: DataField
-      ): Observable<Bib> {
+				// Propagate our specific control errors so callers can react
+				if (error?.message === 'FIELD_NOT_FOUND' || error?.message === 'FIELD_ALREADY_EXISTS') {
+					return throwError(() => error);
+				}
 
+				this.alert.error(this.translate.instant('error.restApiError', [errorMsg]), {
+					autoClose: false,
+				});
 
-        return this.authenticationService.ensureAccess$().pipe(
-          switchMap(() => {
-            const entity = this.recordService.selectedEntity();
+				return EMPTY;
+			})
+		);
+	}
 
-            if (!entity) {
-              this.alert.error(this.translate.instant('error.noSelectedEntry'));
+	/**
+	 * Crée un champ uniquement si il n'existe pas encore.
+	 * Renvoie une erreur si le champ existe déjà.
+	 */
+	public createFieldIfNotExists(
+		selectedEntry: xmlEntry,
+		updatedDataField: DataField
+	): Observable<Bib> {
+		return this.authenticationService.ensureAccess$().pipe(
+			switchMap(() => {
+				const entity = this.recordService.selectedEntity();
 
-              return throwError(() => new Error('Aucune entité sélectionnée.'));
-            }
+				if (!entity) {
+					this.alert.error(this.translate.instant('error.noSelectedEntry'));
 
-            return this.getNzMmsIdFromEntity(entity);
-          }),
-          switchMap((nzMmsId) =>
-            this.http.get<Bib>(this.buildBibUrl(nzMmsId), this.authenticationService.getHttpOptions()).pipe(
-              switchMap((bib) => {
-                    // Always add the new DataField, even if a similar one already exists
-                    const marcRecord = StringUtils.xmlToMarcRecord(bib.anies[0]);
+					return throwError(() => new Error('Aucune entité sélectionnée.'));
+				}
 
-                    marcRecord.dataFields.push(updatedDataField);
+				return this.getNzMmsIdFromEntity(entity);
+			}),
+			switchMap((nzMmsId) =>
+				this.http
+					.get<Bib>(this.buildBibUrl(nzMmsId), this.authenticationService.getHttpOptions())
+					.pipe(
+						switchMap((bib) => {
+							// Always add the new DataField, even if a similar one already exists
+							const marcRecord = StringUtils.xmlToMarcRecord(bib.anies[0]);
 
-                    const updatedMarcXml = StringUtils.marcRecordToXml(marcRecord);
+							marcRecord.dataFields.push(updatedDataField);
 
-                    return this.http.put<Bib>(this.buildBibUrl(nzMmsId), `<bib>${updatedMarcXml}</bib>`, this.authenticationService.getXmlHttpOptions());
-              })
-            )
-          ),
-          catchError((error) => {
-                const errorMsg = error?.message || error?.statusText || 'Unknown error';
+							const updatedMarcXml = StringUtils.marcRecordToXml(marcRecord);
 
-                this.alert.error(this.translate.instant('error.restApiError', [errorMsg]), { autoClose: false });
+							return this.http.put<Bib>(
+								this.buildBibUrl(nzMmsId),
+								`<bib>${updatedMarcXml}</bib>`,
+								this.authenticationService.getXmlHttpOptions()
+							);
+						})
+					)
+			),
+			catchError((error) => {
+				const errorMsg = error?.message || error?.statusText || 'Unknown error';
 
-                return EMPTY;
-          })
-        );
-      }
+				this.alert.error(this.translate.instant('error.restApiError', [errorMsg]), {
+					autoClose: false,
+				});
 
-    public deleteBibRecord(selectedEntry: xmlEntry): Observable<Bib> {
+				return EMPTY;
+			})
+		);
+	}
 
-    return this.authenticationService.ensureAccess$().pipe(
-      // 1. Récupérer l'ID Alma (nzMmsId) depuis l'entité
-      switchMap(() => {
-        const entity = this.recordService.selectedEntity();
+	public deleteBibRecord(selectedEntry: xmlEntry): Observable<Bib> {
+		return this.authenticationService.ensureAccess$().pipe(
+			// 1. Récupérer l'ID Alma (nzMmsId) depuis l'entité
+			switchMap(() => {
+				const entity = this.recordService.selectedEntity();
 
-        if (!entity) {
-          return throwError(() => new Error('Aucune entité sélectionnée.'));
-        }
+				if (!entity) {
+					return throwError(() => new Error('Aucune entité sélectionnée.'));
+				}
 
-        return this.getNzMmsIdFromEntity(entity);
-      }),
+				return this.getNzMmsIdFromEntity(entity);
+			}),
 
-      // 2. Récupérer le Bib le plus à jour
-      switchMap((nzMmsId) =>
-        this.http.get<Bib>(
-          this.buildBibUrl(nzMmsId),
-          this.authenticationService.getHttpOptions()
-        ).pipe(
-          // 3. Mettre à jour le Bib et faire le PUT
-          switchMap((bib) => {
-            const updatedMarcXml = this.buildDeletedMarcXml(
-              bib,
-              selectedEntry
-            );
+			// 2. Récupérer le Bib le plus à jour
+			switchMap((nzMmsId) =>
+				this.http
+					.get<Bib>(this.buildBibUrl(nzMmsId), this.authenticationService.getHttpOptions())
+					.pipe(
+						// 3. Mettre à jour le Bib et faire le PUT
+						switchMap((bib) => {
+							const updatedMarcXml = this.buildDeletedMarcXml(bib, selectedEntry);
 
+							return this.http.put<Bib>(
+								this.buildBibUrl(nzMmsId),
+								`<bib>${updatedMarcXml}</bib>`,
+								this.authenticationService.getXmlHttpOptions()
+							);
+						})
+					)
+			),
 
-            return this.http.put<Bib>(
-              this.buildBibUrl(nzMmsId),
-              `<bib>${updatedMarcXml}</bib>`,
-              this.authenticationService.getXmlHttpOptions()
-            );
-          }),
-        )
-      ),
+			// 4. Gestion d’erreur globale
+			catchError((error) => {
+				const errorMsg = error?.message || error?.statusText || 'Unknown error';
 
-      // 4. Gestion d’erreur globale
-      catchError((error) => {
-        const errorMsg =
-          error?.message ||
-          error?.statusText ||
-          'Unknown error';
+				this.alert.error(this.translate.instant('error.restApiError', [errorMsg]), {
+					autoClose: false,
+				});
 
-        this.alert.error(
-          this.translate.instant('error.restApiError', [errorMsg]),
-          { autoClose: false },
-        );
+				return EMPTY;
+			})
+		);
+	}
 
-        return EMPTY;
-      })
-    );
-  }
+	public refreshSelectedEntityDetails(): void {
+		const entity = this.recordService.selectedEntity();
 
-  
-public refreshSelectedEntityDetails(): void {
-    const entity = this.recordService.selectedEntity();
+		if (!entity) {
+			return;
+		}
 
-    if (!entity) {
-      return;
-    }
+		this.getBibRecord(entity).subscribe({
+			next: (bib) => this.recordService.selectedEntityDetails.set(bib),
+			error: (err) => {
+				console.error('Erreur refreshSelectedEntityDetails', err);
+			},
+		});
+	}
 
-    this.getBibRecord(entity).subscribe({
-      next: (bib) => this.recordService.selectedEntityDetails.set(bib),
-      error: (err) => {
-        console.error('Erreur refreshSelectedEntityDetails', err);
-      },
-    });
-  }
+	/**
+	 * Construit l'URL d'accès à un Bib via son nzMmsId.
+	 */
+	private buildBibUrl(nzMmsId: string): string {
+		return `${this.proxyUrl}/p/api-eu.hosted.exlibrisgroup.com/almaws/v1/bibs/${nzMmsId}`;
+	}
 
+	/**
+	 * À partir d'un Bib existant, met à jour/ajoute le DataField
+	 * et renvoie le MARC XML prêt à être envoyé.
+	 */
+	private buildUpdatedMarcXml(
+		bib: Bib,
+		selectedEntry: xmlEntry,
+		updatedDataField: DataField
+	): string {
+		const marcRecord = StringUtils.xmlToMarcRecord(bib.anies[0]);
+		const targetDataField = StringUtils.xmlEntryToDataField(selectedEntry);
+		const index = marcRecord.dataFields.findIndex((field) =>
+			StringUtils.areDataFieldsEqual(field, targetDataField)
+		);
 
-  /**
- * Construit l'URL d'accès à un Bib via son nzMmsId.
- */
-  private buildBibUrl(nzMmsId: string): string {
-    return `${this.proxyUrl}/p/api-eu.hosted.exlibrisgroup.com/almaws/v1/bibs/${nzMmsId}`;
-  }
+		if (index !== -1) {
+			// Mise à jour
+			marcRecord.dataFields[index] = updatedDataField;
+		} else {
+			// Ajout si non trouvé
+			marcRecord.dataFields.push(updatedDataField);
+		}
 
-  /**
-   * À partir d'un Bib existant, met à jour/ajoute le DataField
-   * et renvoie le MARC XML prêt à être envoyé.
-   */
-  private buildUpdatedMarcXml(
-    bib: Bib,
-    selectedEntry: xmlEntry,
-    updatedDataField: DataField
-  ): string {
-    const marcRecord = StringUtils.xmlToMarcRecord(bib.anies[0]);
-    const targetDataField = StringUtils.xmlEntryToDataField(selectedEntry);
-    const index = marcRecord.dataFields.findIndex(field =>
-      StringUtils.areDataFieldsEqual(field, targetDataField)
-    );
+		return StringUtils.marcRecordToXml(marcRecord);
+	}
 
-    if (index !== -1) {
-      // Mise à jour
-      marcRecord.dataFields[index] = updatedDataField;
-    } else {
-      // Ajout si non trouvé
-      marcRecord.dataFields.push(updatedDataField);
-    }
+	private buildDeletedMarcXml(bib: Bib, selectedEntry: xmlEntry): string {
+		const marcRecord = StringUtils.xmlToMarcRecord(bib.anies[0]);
+		const targetDataField = StringUtils.xmlEntryToDataField(selectedEntry);
+		// Trouver l'index du champ à supprimer
+		const index = marcRecord.dataFields.findIndex((field) =>
+			StringUtils.areDataFieldsEqual(field, targetDataField)
+		);
 
-    return StringUtils.marcRecordToXml(marcRecord);
-  }
+		if (index !== -1) {
+			// Suppression du DataField correspondant
+			marcRecord.dataFields.splice(index, 1);
+		}
 
-  private buildDeletedMarcXml(
-    bib: Bib,
-    selectedEntry: xmlEntry
-  ): string {
-    const marcRecord = StringUtils.xmlToMarcRecord(bib.anies[0]);
-    const targetDataField = StringUtils.xmlEntryToDataField(selectedEntry);
-    // Trouver l'index du champ à supprimer
-    const index = marcRecord.dataFields.findIndex(field =>
-      StringUtils.areDataFieldsEqual(field, targetDataField)
-    );
+		return StringUtils.marcRecordToXml(marcRecord);
+	}
 
-    if (index !== -1) {
-      // Suppression du DataField correspondant
-      marcRecord.dataFields.splice(index, 1);
-    }
+	/**
+	 * Retrieves the NZ MMS ID from the given entity.
+	 */
+	private getNzMmsIdFromEntity(entity: Entity): Observable<string> {
+		const id = entity.id;
 
-    return StringUtils.marcRecordToXml(marcRecord);
-  }
-    
+		if (entity.link.indexOf('?nz_mms_id') >= 0) {
+			return of(id);
+		}
 
-    /**
-   * Retrieves the NZ MMS ID from the given entity.
-   */
-  private getNzMmsIdFromEntity(entity: Entity): Observable<string> {
-    const id = entity.id;
+		return this.restService
+			.call({
+				method: HttpMethod.GET,
+				url: entity.link,
+				queryParams: { view: 'brief' },
+			})
+			.pipe(
+				switchMap((response) => {
+					const nzMmsId: string = response?.linked_record_id?.value;
 
-    if (entity.link.indexOf('?nz_mms_id') >= 0) {
-      return of(id);
-    }
+					if (!nzMmsId) throw new Error('No NZ MMSID found in linked record');
 
-    return this.restService.call({
-      method: HttpMethod.GET,
-      url: entity.link,
-      queryParams: { view: 'brief' }
-    }).pipe(
-      switchMap(response => {
-        const nzMmsId: string = response?.linked_record_id?.value;
-
-        if (!nzMmsId) throw new Error('No NZ MMSID found in linked record');
-
-        return of(nzMmsId);
-      }),
-      catchError(() => of(entity.id))
-    );
-  }
+					return of(nzMmsId);
+				}),
+				catchError(() => of(entity.id))
+			);
+	}
 }

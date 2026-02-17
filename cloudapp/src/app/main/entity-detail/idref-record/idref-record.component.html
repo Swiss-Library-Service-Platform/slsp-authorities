@@ -41,8 +41,7 @@
 
 			<mat-paginator
 				[length]="docs().length"
-				[pageSize]="10"
-				[pageSizeOptions]="[5, 10, 50, 100]"
+				[pageSize]="pageSize()"
 				aria-label="Select page"
 			>
 			</mat-paginator

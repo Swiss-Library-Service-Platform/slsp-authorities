@@ -1,0 +1,48 @@
+@if (form) {
+	<div class="settings-container">
+		<form [formGroup]="form" class="settings-form">
+			<section class="settings-section">
+				<h2 class="settings-title">Paramètres généraux</h2>
+
+				<!-- pageSize -->
+				<div class="settings-field">
+					<label for="pageSize">Taille de page</label>
+					<input id="pageSize" type="number" formControlName="pageSize" step="5" />
+				</div>
+
+				<!-- idrefSearchRowNumber -->
+				<div class="settings-field">
+					<label for="idrefSearchRowNumber">Taille de la requête IdRef</label>
+					<input
+						id="idrefSearchRowNumber"
+						type="number"
+						formControlName="idrefSearchRowNumber"
+						step="10"
+					/>
+				</div>
+
+				<!-- proxyUrl -->
+				<div class="settings-field">
+					<label for="proxyUrl">Proxy URL</label>
+					<input id="proxyUrl" type="text" formControlName="proxyUrl" />
+				</div>
+			</section>
+		</form>
+
+		<pre class="settings-debug"
+			>{{ form.value | json }}
+    </pre>
+	</div>
+}
+
+<div buttons class="settings-buttons">
+	<button
+		mat-flat-button
+		type="button"
+		color="primary"
+		(click)="save()"
+		[disabled]="!form.dirty || saving"
+	>
+		Save
+	</button>
+</div>

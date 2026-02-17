@@ -16,5 +16,8 @@
    "fullscreen": {
       "allow": true,
       "open": false
+   },
+   "pages": {
+      "settings": "/#/settings"
    }
 }

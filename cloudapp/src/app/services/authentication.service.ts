@@ -1,20 +1,21 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { CloudAppEventsService } from '@exlibris/exl-cloudapp-angular-lib';
+import { CloudAppEventsService, CloudAppSettingsService } from '@exlibris/exl-cloudapp-angular-lib';
 import { catchError, forkJoin, map, mapTo, Observable, of, shareReplay, switchMap, take, tap, throwError } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { Settings } from '../models/setting';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthenticationService {
   public readonly ready$: Observable<void>;
-
-  private proxyUrl= environment.proxyUrl;
-
   //Services
   private eventsService = inject(CloudAppEventsService);
   private http = inject(HttpClient);
+    private settingsService = inject(CloudAppSettingsService);
+    private proxyUrl: string | undefined;
+
 
   //httpOptions
   private httpOptions!: { headers: HttpHeaders; params: { isProdEnvironment: boolean } };
@@ -96,36 +97,40 @@ export class AuthenticationService {
     return this.xmlHttpOptions;
   }
 
-  /** ⚙️ Construit httpOptions une fois */
-  private createInit$(): Observable<void> {
-    return forkJoin({
-      initData: this.eventsService.getInitData(),
-      authToken: this.eventsService.getAuthToken(),
-    }).pipe(
-      tap(({ initData, authToken }) => {
-        const regExp = new RegExp('^https(.*)psb(.*)com/?$|.*localhost.*');
-        const isProdEnvironment = !regExp.test(initData.urls.alma);
+/** ⚙️ Construit httpOptions + proxyUrl une fois */
+private createInit$(): Observable<void> {
+  return forkJoin({
+    settings: this.settingsService.get(),
+    initData: this.eventsService.getInitData().pipe(take(1)),
+    authToken: this.eventsService.getAuthToken().pipe(take(1)),
+  }).pipe(
+    tap(({ settings, initData, authToken }) => {
+      const proxyUrl  = (settings as Settings).proxyUrl;
+      
+      console.log(settings);
+      this.proxyUrl = proxyUrl;
 
-        this.httpOptions = {
-          params: { isProdEnvironment },
-          headers: new HttpHeaders({
-            Authorization: `Bearer ${authToken}`,
-            'Content-Type': 'application/json',
-          }),
-        };
+      const regExp = new RegExp('^https(.*)psb(.*)com/?$|.*localhost.*');
+      const isProdEnvironment = !regExp.test(initData.urls.alma);
 
-        this.xmlHttpOptions = {
-          params: { isProdEnvironment },
-          headers: new HttpHeaders({
-            Authorization: `Bearer ${authToken}`,
-            'Content-Type': 'application/xml',
-          }),
-        };
+      this.httpOptions = {
+        params: { isProdEnvironment },
+        headers: new HttpHeaders({
+          Authorization: `Bearer ${authToken}`,
+          'Content-Type': 'application/json',
+        }),
+      };
 
-
-      }),
-      mapTo(void 0),
-      shareReplay({ bufferSize: 1, refCount: false }),
-    );
-  }
+      this.xmlHttpOptions = {
+        params: { isProdEnvironment },
+        headers: new HttpHeaders({
+          Authorization: `Bearer ${authToken}`,
+          'Content-Type': 'application/xml',
+        }),
+      };
+    }),
+    mapTo(void 0),
+    shareReplay({ bufferSize: 1, refCount: false }),
+  );
+}
 }

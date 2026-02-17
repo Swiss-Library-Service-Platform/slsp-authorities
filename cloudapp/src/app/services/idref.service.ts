@@ -5,39 +5,47 @@ import { environment } from '../../environments/environment';
 import { IdrefRecords, idrefSearch, MARC_STRUCTURE } from '../models/idref-model';
 import { xmlEntry } from '../models/bib-records';
 import { TranslateService } from '@ngx-translate/core';
-import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
+import { AlertService, CloudAppSettingsService } from '@exlibris/exl-cloudapp-angular-lib';
+import { Settings } from '../models/setting';
 
 @Injectable({ providedIn: 'root' })
 export class IdrefService {
 	// resultat de la recherche idref
 	public idrefResult = signal<IdrefRecords | undefined>(undefined);
 	public NZSelectedEntry = signal<xmlEntry | undefined>(undefined);
-	public idrefAuthorityDetail = signal<Document| undefined>(undefined)
+	public idrefAuthorityDetail = signal<Document | undefined>(undefined);
 
-	//concaténation des strings des subfields 
+	//concaténation des strings des subfields
 	public flattenedValue = computed(() =>
-		this.NZSelectedEntry()?.value.map((v) => `$$${v.code} ${v.value}`).join(' '),
+		this.NZSelectedEntry()
+			?.value.map((v) => `$$${v.code} ${v.value}`)
+			.join(' ')
 	);
 
 	private translate = inject(TranslateService);
 	private alert = inject(AlertService);
 	private http = inject(HttpClient);
+	private settingsService = inject(CloudAppSettingsService);
 	private solr = '/Sru/Solr';
+	private idrefSearchRowNumber: number | undefined;
 
+	public constructor() {
+		this.settingsService.get().subscribe((settings) => {
+			this.idrefSearchRowNumber = (settings as Settings).idrefSearchRowNumber;
+		});
+	}
 
 	//permet de faire des recherches génériques dans idref (peut-être à améliorer car pour le moment on ne peut pas ajouter d'autres options que wt)
 	public searchAuthorities(query: string): Observable<IdrefRecords> {
 		const params = {
 			q: query,
 			wt: 'json',
-			sort: "score desc",
-			version: "2.2",
-			start: "0",
-			rows: "30",
-			indent: "on",
-			fl: "ppn_z,recordtype_z,affcourt_z"
-
-
+			sort: 'score desc',
+			version: '2.2',
+			start: '0',
+			rows: `${this.idrefSearchRowNumber}`,
+			indent: 'on',
+			fl: 'ppn_z,recordtype_z,affcourt_z',
 		};
 
 		return this.http.get<IdrefRecords>(environment.idrefUrl + this.solr, {
@@ -48,38 +56,38 @@ export class IdrefService {
 		//this.searchAuthorities(`ppn_z:${ppn}`).subscribe({next: r => this.idrefResult.set(r)})
 
 		return this.http.get(`${environment.idrefUrl}/${ppn}.xml`, { responseType: 'text' }).pipe(
-			map(xmlString => {
+			map((xmlString) => {
 				const parser = new DOMParser();
 				const xmlDoc = parser.parseFromString(xmlString, 'application/xml');
 
 				return xmlDoc;
-			}))
-
+			})
+		);
 	}
 
 	public searchFromQuery(query: string): void {
-
-		this.searchAuthorities(query).subscribe({ next: r => this.idrefResult.set(r),error: e => this.alert.error(this.translate.instant('error.httpError'+e), { autoClose: true })})
+		this.searchAuthorities(query).subscribe({
+			next: (r) => this.idrefResult.set(r),
+			error: (e) =>
+				this.alert.error(this.translate.instant('error.httpError' + e), { autoClose: true }),
+		});
 	}
 
 	public calculatedSearch(searchParams: idrefSearch | undefined): void {
 		const query = this.buildQuery(searchParams);
 
-		this.searchAuthorities(query).subscribe({ next: r => this.idrefResult.set(r) })
+		this.searchAuthorities(query).subscribe({ next: (r) => this.idrefResult.set(r) });
 	}
 
-	//permet de récuperer la strucutre lié 
-	public getMarcStructure():idrefSearch | undefined {
-
+	//permet de récuperer la strucutre lié
+	public getMarcStructure(): idrefSearch | undefined {
 		const codes: string[] = [];
-		const tag= this.NZSelectedEntry()?.tag;
+		const tag = this.NZSelectedEntry()?.tag;
 		const ind1 = this.NZSelectedEntry()?.ind1;
 		const ind2 = this.NZSelectedEntry()?.ind2;
 		const value = this.NZSelectedEntry()?.value;
 
-		value?.forEach((subfield) =>
-			codes.push(subfield.code.replace('$$', '')),
-		);
+		value?.forEach((subfield) => codes.push(subfield.code.replace('$$', '')));
 
 		const subfieldsStr = codes.sort().join(',');
 		let result = MARC_STRUCTURE.get(`${tag}|${ind1}${ind2}|${subfieldsStr}`);
@@ -92,7 +100,7 @@ export class IdrefService {
 
 			if (result) return result;
 			if ((result = MARC_STRUCTURE.get(`${tag}|  `))) return result;
-			
+
 			return;
 		}
 	}
@@ -105,18 +113,18 @@ export class IdrefService {
 
 	//fonction qui renvoie la chaine de charactere qui permettra de faire le recherche via Solr
 	private buildQuery(searchParams: idrefSearch | undefined): string {
-		let query = "";
+		let query = '';
 		const recordTypes = searchParams?.recordtypes;
 		const filter = searchParams?.filters;
 
 		if (filter && filter.length > 1) {
-			console.error("Pas encore développé")
+			console.error('Pas encore développé');
 		} else if (filter && recordTypes) {
 			query = `${filter[0]}:${this.NZSelectedEntry()?.value[0].value} AND recordtype_z:${recordTypes[0]}`;
 
-			return query
+			return query;
 		}
-		console.error("il n'y a pas de filtre, il y a eu un problème")
+		console.error("il n'y a pas de filtre, il y a eu un problème");
 
 		return query;
 	}

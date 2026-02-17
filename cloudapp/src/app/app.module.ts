@@ -31,6 +31,8 @@ import { IdrefRecordComponent } from './main/entity-detail/idref-record/idref-re
 import { IdrefSearchComponent } from './main/biblio-record/idref-search/idref-search.component';
 import { To902FormComponent } from './main/biblio-record/idref-search/to902-form/to902-form.component';
 import { MainFormComponent } from './main/biblio-record/idref-search/main-form/main-form.component';
+import { JsonPipe } from '@angular/common';
+import { SettingsComponent } from './settings/settings.component';
 
 
 @NgModule({
@@ -45,7 +47,8 @@ import { MainFormComponent } from './main/biblio-record/idref-search/main-form/m
 		IdrefEntryDetailsComponent,
 		DeleteDialogComponent,
 		To902FormComponent,
-		MainFormComponent
+		MainFormComponent,
+		SettingsComponent
 	],
 	bootstrap: [AppComponent],
 	imports: [
@@ -60,7 +63,8 @@ import { MainFormComponent } from './main/biblio-record/idref-search/main-form/m
     MatSelectModule,
     MatFormFieldModule,
     MatInputModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+	JsonPipe,
 ],
 	providers: [
 		{

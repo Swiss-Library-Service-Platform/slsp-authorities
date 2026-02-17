@@ -16,6 +16,8 @@ import { IdrefService } from '../../../services/idref.service';
 import { IdrefRecordService } from './idref-record.service';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
+import { CloudAppSettingsService } from '@exlibris/exl-cloudapp-angular-lib';
+import { Settings } from '../../../models/setting';
 
 @Component({
   selector: 'app-idref-record',
@@ -26,6 +28,7 @@ export class IdrefRecordComponent {
   public selectedDoc: Doc | null = null;
   private idrefService = inject(IdrefService);
   private idrefRecordService = inject(IdrefRecordService);
+  private settingsService = inject(CloudAppSettingsService)
 
   // Signals from services
   public idrefResult = this.idrefService.idrefResult;
@@ -48,7 +51,7 @@ export class IdrefRecordComponent {
 
   // Pagination state
   private pageIndex = signal(0);
-  private pageSize = signal(10);
+  public pageSize = signal(10);
 
   // Slice côté client
   public paginatedDocs: Signal<Doc[]> = computed(() => {
@@ -65,6 +68,11 @@ export class IdrefRecordComponent {
   private fb = inject(FormBuilder);
 
   public constructor() {
+    this.settingsService.get().subscribe(
+      settings => {
+        this.pageSize.set((settings as Settings).pageSize)
+      }
+    )
 
     this.implementIcones();
 
