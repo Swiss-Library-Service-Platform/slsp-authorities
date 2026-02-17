@@ -202,6 +202,14 @@ export class IdrefRecordService {
 			});
 		}
 
+		if(selectedEntry.tag.match(/^6\d\d$/) && !newValues.some(subfield => subfield.code === '2')) {
+		// Ajout d'un nouveau sous-champ $$2
+			newValues.push({
+				code: '2',
+				value: `idref `,
+			});
+		}
+
 		const newEntry = {
 			...selectedEntry,
 			value: newValues,
