@@ -1,32 +1,5 @@
-import { Entity } from '@exlibris/exl-cloudapp-angular-lib'
-
-export interface BibRecord {
-
-	mms_id: string
-	title: string
-	author: string
-	record_format: string
-	anies: string[]
-	entity: Entity
-}
-
-
-export interface LinkedRecordId {
-  value: string;
-  type: string;
-}
-
-export interface CatalogingLevel {
-  value: string;
-  desc: string;
-}
-
-export interface BriefLevel {
-  value: string;
-  desc: string;
-}
-
-export interface Bib {
+//type du renvoie d'une requette sur: almaws/v+/bibs/{mms_id} dans la NZ
+export interface NzBibRecord {
   mms_id: string;
   record_format: string;
   linked_record_id: LinkedRecordId;
@@ -49,17 +22,27 @@ export interface Bib {
   anies: string[];
 }
 
-export interface BibResponse {
-  bib: Bib[];
-  total_record_count: number;
+export interface LinkedRecordId {
+  value: string;
+  type: string;
 }
 
-export interface xmlEntry{
+export interface CatalogingLevel {
+  value: string;
+  desc: string;
+}
+
+export interface BriefLevel {
+  value: string;
+  desc: string;
+}
+
+export interface BibRecordField{
     change: string,
     tag: string,
     ind1: string,
     ind2: string,
-    value: { code: string; value: string }[],
+    subfields: { code: string; value: string }[],
 }
 
 

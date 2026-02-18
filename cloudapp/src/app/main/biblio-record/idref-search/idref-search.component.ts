@@ -1,5 +1,5 @@
 import { Component, inject, input } from '@angular/core';
-import { Bib } from '../../../models/bib-records';
+import { NzBibRecord } from '../../../models/bib-records';
 import { IdrefSearchService } from './idref-search.service';
 
 
@@ -10,7 +10,7 @@ import { IdrefSearchService } from './idref-search.service';
 })
 export class IdrefSearchComponent {
 
-	public entity = input.required<Bib | undefined>();
+	public entity = input.required<NzBibRecord | undefined>();
 	public isTo902FormVisible = inject(IdrefSearchService).isTo902FormVisible;
 	public searchMode902 = inject(IdrefSearchService).searchMode902;
 }

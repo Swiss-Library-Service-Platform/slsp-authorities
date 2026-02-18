@@ -14,12 +14,11 @@ export class EntityDetailComponent {
 	@ViewChild(BiblioRecordComponent) public bibRecord!: BiblioRecordComponent
 
 	private facade = inject(MainFacadeService);
-	// On lit les détails directement depuis la façade
   	// eslint-disable-next-line @typescript-eslint/member-ordering
-  	public entity = computed(() => this.facade.selectedEntityDetails());
+  	public selectedEntity = computed(() => this.facade.selectedEntityDetails());
 
 	public updateAllowedTags(): void {
-		this.bibRecord.updateAllowedTags();
+		this.bibRecord.showDetails();
 	}
 	
 

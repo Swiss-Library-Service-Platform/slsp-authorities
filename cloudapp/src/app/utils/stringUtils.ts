@@ -1,4 +1,4 @@
-import { ControlField, DataField, MarcRecord, SubField, xmlEntry } from "../models/bib-records";
+import { BibRecordField, ControlField, DataField, MarcRecord, SubField } from "../models/bib-records";
 export class StringUtils {
   public static xmlToMarcRecord(xml: string): MarcRecord {
     const parser = new DOMParser();
@@ -107,21 +107,6 @@ export class StringUtils {
     return xmlString;
   }
 
-  public static xmlEntryToDataField(entry: xmlEntry): DataField {
-    // Convert xmlEntry to DataField
-
-    return {
-      tag: entry.tag,
-      ind1: entry.ind1,
-      ind2: entry.ind2,
-      subfields: entry.value.map(v => ({
-        code: v.code,
-        value: v.value,
-      })),
-    };
-  }
-
-
   public static parseSubfieldsString(subfieldsStr: string): SubField[] {
     if (!subfieldsStr) return [];
 
@@ -138,7 +123,7 @@ export class StringUtils {
       });
   }
   
-  public static areDataFieldsEqual(a: DataField, b: DataField): boolean {
+  public static areDataFieldsEqual(a: DataField, b: BibRecordField): boolean {
     return (
       a.tag === b.tag &&
       a.ind1 === b.ind1 &&

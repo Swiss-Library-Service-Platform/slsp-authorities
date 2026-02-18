@@ -159,7 +159,7 @@ export class IdrefRecordComponent {
     matIconRegistry.addSvgIcon('nom_marque', domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/nom_marque.svg'));
     matIconRegistry.addSvgIcon('noms_geographiques', domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/noms_geographiques.svg'));
     matIconRegistry.addSvgIcon('forme', domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/forme.svg'));
-    
   }
+
 
 }

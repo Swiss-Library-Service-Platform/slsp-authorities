@@ -1,26 +1,9 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 import { computed, inject, Injectable, signal } from '@angular/core';
-import {
-	CloudAppEventsService,
-	AlertService,
-	Entity,
-	EntityType,
-	RefreshPageResponse,
-} from '@exlibris/exl-cloudapp-angular-lib';
+import { CloudAppEventsService, AlertService, Entity, EntityType, RefreshPageResponse } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
-
 import { toSignal } from '@angular/core/rxjs-interop';
-import {
-	filter,
-	tap,
-	catchError,
-	EMPTY,
-	forkJoin,
-	switchMap,
-	of,
-	finalize,
-	Observable,
-} from 'rxjs';
+import { filter, tap, catchError, EMPTY, forkJoin, switchMap, of, finalize, Observable } from 'rxjs';
 import { AuthenticationService } from '../services/authentication.service';
 import { LoadingIndicatorService } from '../services/loading-indicator.service';
 import { NZQueryService } from '../services/nzquery.service';

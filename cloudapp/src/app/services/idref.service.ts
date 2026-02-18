@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { IdrefRecords, idrefSearch, MARC_STRUCTURE } from '../models/idref-model';
-import { xmlEntry } from '../models/bib-records';
+import { BibRecordField } from '../models/bib-records';
 import { TranslateService } from '@ngx-translate/core';
 import { AlertService, CloudAppSettingsService } from '@exlibris/exl-cloudapp-angular-lib';
 import { Settings } from '../models/setting';
@@ -12,13 +12,13 @@ import { Settings } from '../models/setting';
 export class IdrefService {
 	// resultat de la recherche idref
 	public idrefResult = signal<IdrefRecords | undefined>(undefined);
-	public NZSelectedEntry = signal<xmlEntry | undefined>(undefined);
+	public NZSelectedEntry = signal<BibRecordField | undefined>(undefined);
 	public idrefAuthorityDetail = signal<Document | undefined>(undefined);
 
 	//concaténation des strings des subfields
 	public flattenedValue = computed(() =>
 		this.NZSelectedEntry()
-			?.value.map((v) => `$$${v.code} ${v.value}`)
+			?.subfields.map((v) => `$$${v.code} ${v.value}`)
 			.join(' ')
 	);
 
@@ -85,7 +85,7 @@ export class IdrefService {
 		const tag = this.NZSelectedEntry()?.tag;
 		const ind1 = this.NZSelectedEntry()?.ind1;
 		const ind2 = this.NZSelectedEntry()?.ind2;
-		const value = this.NZSelectedEntry()?.value;
+		const value = this.NZSelectedEntry()?.subfields;
 
 		value?.forEach((subfield) => codes.push(subfield.code.replace('$$', '')));
 
@@ -120,7 +120,7 @@ export class IdrefService {
 		if (filter && filter.length > 1) {
 			console.error('Pas encore développé');
 		} else if (filter && recordTypes) {
-			query = `${filter[0]}:${this.NZSelectedEntry()?.value[0].value} AND recordtype_z:${recordTypes[0]}`;
+			query = `${filter[0]}:${this.NZSelectedEntry()?.subfields[0].value} AND recordtype_z:${recordTypes[0]}`;
 
 			return query;
 		}

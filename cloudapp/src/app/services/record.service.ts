@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { Entity } from '@exlibris/exl-cloudapp-angular-lib';
-import { Bib } from '../models/bib-records';
+import { NzBibRecord } from '../models/bib-records';
 
 
 @Injectable({
@@ -8,7 +8,7 @@ import { Bib } from '../models/bib-records';
 })
 export class RecordService {
 	public selectedEntity = signal<Entity | null>(null);
-	public selectedEntityDetails = signal<Bib | undefined>(undefined);
+	public selectedEntityDetails = signal<NzBibRecord | undefined>(undefined);
 
 	public resetSelectedEntity(): void {
 		this.selectedEntity.set(null);

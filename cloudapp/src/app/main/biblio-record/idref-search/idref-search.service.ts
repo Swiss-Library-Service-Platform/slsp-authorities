@@ -75,7 +75,7 @@ export class IdrefSearchService {
       tag: values.tag,
       ind1: values.ind1,
       ind2: values.ind2,
-      value: this.parseFlattenedArray(values.subfields),
+      subfields: this.parseFlattenedArray(values.subfields),
     });
   }
 
@@ -84,21 +84,14 @@ export class IdrefSearchService {
    */
   public createFieldIfNotFound(formValues: FormValues): void {
     this.loader.show();
-
-    const dummyReference = this.referenceCurrentField.getSavedCurrentEntry() || {
-      change: '',
-      tag: '',
-      ind1: '',
-      ind2: '',
-      value: [],
-    };
+    
     const formatedValues = {
       ...formValues,
       subfields: StringUtils.parseSubfieldsString(formValues.subfields),
     } as DataField;
 
     this.nzQueryService
-      .createFieldIfNotExists(dummyReference, formatedValues)
+      .createFieldIfNotExists(formatedValues)
       .pipe(
         switchMap(() => this.eventsService.refreshPage()),
         catchError((err) => {
@@ -195,7 +188,7 @@ export class IdrefSearchService {
         catchError((err) => {
           if (err?.message === 'FIELD_NOT_FOUND') {
             // Champ non trouvé -> créer
-            return this.nzQueryService.createFieldIfNotExists(reference, formatedValues).pipe(
+            return this.nzQueryService.createFieldIfNotExists( formatedValues).pipe(
               tap(() => this.alert.success(this.translate.instant('idrefSearch.recordAdded'), { delay: 1000 })),
               switchMap(() => this.eventsService.refreshPage()),
               catchError((err2) => {

@@ -7,7 +7,7 @@ import {
 	HttpMethod,
 } from '@exlibris/exl-cloudapp-angular-lib';
 import { Observable, switchMap, catchError, EMPTY, finalize, of, throwError } from 'rxjs';
-import { Bib, DataField, xmlEntry } from '../models/bib-records';
+import { NzBibRecord, DataField, BibRecordField } from '../models/bib-records';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthenticationService } from './authentication.service';
 import { LoadingIndicatorService } from './loading-indicator.service';
@@ -42,13 +42,13 @@ export class NZQueryService {
 	// ---------------------------
 
 	/** Récupère la notice bib de la NZ pour l'entité sélectionnée */
-	public getBibRecord(entity: Entity): Observable<Bib> {
+	public getBibRecord(entity: Entity): Observable<NzBibRecord> {
 		this.loader.show();
 
 		return this.authenticationService.ensureAccess$().pipe(
 			switchMap(() => this.getNzMmsIdFromEntity(entity)),
 			switchMap((nzMmsId) =>
-				this.http.get<Bib>(
+				this.http.get<NzBibRecord>(
 					`${this.proxyUrl}/p/api-eu.hosted.exlibrisgroup.com/almaws/v1/bibs/${nzMmsId}`,
 					this.authenticationService.getHttpOptions()
 				)
@@ -72,9 +72,9 @@ export class NZQueryService {
 	 * Renvoie une erreur si le champ n'est pas trouvé.
 	 */
 	public updateFieldIfExists(
-		selectedEntry: xmlEntry,
+		selectedEntry: BibRecordField,
 		updatedDataField: DataField
-	): Observable<Bib> {
+	): Observable<NzBibRecord> {
 		return this.authenticationService.ensureAccess$().pipe(
 			switchMap(() => {
 				const entity = this.recordService.selectedEntity();
@@ -89,13 +89,12 @@ export class NZQueryService {
 			}),
 			switchMap((nzMmsId) =>
 				this.http
-					.get<Bib>(this.buildBibUrl(nzMmsId), this.authenticationService.getHttpOptions())
+					.get<NzBibRecord>(this.buildBibUrl(nzMmsId), this.authenticationService.getHttpOptions())
 					.pipe(
 						switchMap((bib) => {
 							const marcRecord = StringUtils.xmlToMarcRecord(bib.anies[0]);
-							const targetDataField = StringUtils.xmlEntryToDataField(selectedEntry);
 							const index = marcRecord.dataFields.findIndex((field) =>
-								StringUtils.areDataFieldsEqual(field, targetDataField)
+								StringUtils.areDataFieldsEqual(field, selectedEntry)
 							);
 
 							if (index === -1) {
@@ -106,7 +105,7 @@ export class NZQueryService {
 
 							const updatedMarcXml = StringUtils.marcRecordToXml(marcRecord);
 
-							return this.http.put<Bib>(
+							return this.http.put<NzBibRecord>(
 								this.buildBibUrl(nzMmsId),
 								`<bib>${updatedMarcXml}</bib>`,
 								this.authenticationService.getXmlHttpOptions()
@@ -136,9 +135,8 @@ export class NZQueryService {
 	 * Renvoie une erreur si le champ existe déjà.
 	 */
 	public createFieldIfNotExists(
-		selectedEntry: xmlEntry,
 		updatedDataField: DataField
-	): Observable<Bib> {
+	): Observable<NzBibRecord> {
 		return this.authenticationService.ensureAccess$().pipe(
 			switchMap(() => {
 				const entity = this.recordService.selectedEntity();
@@ -153,7 +151,7 @@ export class NZQueryService {
 			}),
 			switchMap((nzMmsId) =>
 				this.http
-					.get<Bib>(this.buildBibUrl(nzMmsId), this.authenticationService.getHttpOptions())
+					.get<NzBibRecord>(this.buildBibUrl(nzMmsId), this.authenticationService.getHttpOptions())
 					.pipe(
 						switchMap((bib) => {
 							// Always add the new DataField, even if a similar one already exists
@@ -163,7 +161,7 @@ export class NZQueryService {
 
 							const updatedMarcXml = StringUtils.marcRecordToXml(marcRecord);
 
-							return this.http.put<Bib>(
+							return this.http.put<NzBibRecord>(
 								this.buildBibUrl(nzMmsId),
 								`<bib>${updatedMarcXml}</bib>`,
 								this.authenticationService.getXmlHttpOptions()
@@ -183,7 +181,7 @@ export class NZQueryService {
 		);
 	}
 
-	public deleteBibRecord(selectedEntry: xmlEntry): Observable<Bib> {
+	public deleteBibRecord(selectedEntry: BibRecordField): Observable<NzBibRecord> {
 		return this.authenticationService.ensureAccess$().pipe(
 			// 1. Récupérer l'ID Alma (nzMmsId) depuis l'entité
 			switchMap(() => {
@@ -199,13 +197,13 @@ export class NZQueryService {
 			// 2. Récupérer le Bib le plus à jour
 			switchMap((nzMmsId) =>
 				this.http
-					.get<Bib>(this.buildBibUrl(nzMmsId), this.authenticationService.getHttpOptions())
+					.get<NzBibRecord>(this.buildBibUrl(nzMmsId), this.authenticationService.getHttpOptions())
 					.pipe(
 						// 3. Mettre à jour le Bib et faire le PUT
 						switchMap((bib) => {
 							const updatedMarcXml = this.buildDeletedMarcXml(bib, selectedEntry);
 
-							return this.http.put<Bib>(
+							return this.http.put<NzBibRecord>(
 								this.buildBibUrl(nzMmsId),
 								`<bib>${updatedMarcXml}</bib>`,
 								this.authenticationService.getXmlHttpOptions()
@@ -254,14 +252,13 @@ export class NZQueryService {
 	 * et renvoie le MARC XML prêt à être envoyé.
 	 */
 	private buildUpdatedMarcXml(
-		bib: Bib,
-		selectedEntry: xmlEntry,
+		bib: NzBibRecord,
+		selectedEntry: BibRecordField,
 		updatedDataField: DataField
 	): string {
 		const marcRecord = StringUtils.xmlToMarcRecord(bib.anies[0]);
-		const targetDataField = StringUtils.xmlEntryToDataField(selectedEntry);
 		const index = marcRecord.dataFields.findIndex((field) =>
-			StringUtils.areDataFieldsEqual(field, targetDataField)
+			StringUtils.areDataFieldsEqual(field, selectedEntry)
 		);
 
 		if (index !== -1) {
@@ -275,12 +272,11 @@ export class NZQueryService {
 		return StringUtils.marcRecordToXml(marcRecord);
 	}
 
-	private buildDeletedMarcXml(bib: Bib, selectedEntry: xmlEntry): string {
+	private buildDeletedMarcXml(bib: NzBibRecord, selectedEntry: BibRecordField): string {
 		const marcRecord = StringUtils.xmlToMarcRecord(bib.anies[0]);
-		const targetDataField = StringUtils.xmlEntryToDataField(selectedEntry);
 		// Trouver l'index du champ à supprimer
 		const index = marcRecord.dataFields.findIndex((field) =>
-			StringUtils.areDataFieldsEqual(field, targetDataField)
+			StringUtils.areDataFieldsEqual(field, selectedEntry)
 		);
 
 		if (index !== -1) {

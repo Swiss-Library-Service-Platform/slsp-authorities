@@ -2,7 +2,7 @@ import { Component, Inject, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { CloudAppEventsService, AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
-import { xmlEntry } from '../../../models/bib-records';
+import { BibRecordField } from '../../../models/bib-records';
 import { NZQueryService } from '../../../services/nzquery.service';
 import { RecordService } from '../../../services/record.service';
 import { LoadingIndicatorService } from '../../../services/loading-indicator.service';
@@ -25,7 +25,7 @@ export class DeleteDialogComponent {
   private loader = inject(LoadingIndicatorService);
   
   // eslint-disable-next-line @angular-eslint/prefer-inject
-  public constructor(@Inject(MAT_DIALOG_DATA) public data: {entry: xmlEntry}) {}
+  public constructor(@Inject(MAT_DIALOG_DATA) public data: {entry: BibRecordField}) {}
 
   public onNoClick(): void {
     this.dialogRef.close();

@@ -2,7 +2,7 @@
 import { Injectable, inject, Signal, computed, signal } from '@angular/core';
 import { IDREF_FILTER_MAP, IDREF_RECORDTYPE_MAP } from '../../../models/idref-model';
 import { IdrefService } from '../../../services/idref.service';
-import { xmlEntry } from '../../../models/bib-records';
+import { BibRecordField } from '../../../models/bib-records';
 
 @Injectable({
 	providedIn: 'root',
@@ -32,7 +32,7 @@ export class IdrefRecordService {
 	 * Récupère les valeurs des filtres à partir de l'entry sélectionnée
 	 */
 	public getFilterValues(): Signal<Array<{ code: string; value: string }> | undefined> {
-		return computed(() => this.idrefService.NZSelectedEntry()?.value);
+		return computed(() => this.idrefService.NZSelectedEntry()?.subfields);
 	}
 
 	/**
@@ -110,7 +110,7 @@ export class IdrefRecordService {
 	/**
 	 * Définit les valeurs du formulaire à partir d'une entry et lance la recherche
 	 */
-	public setFormValuesFromEntry(entry: xmlEntry): void {
+	public setFormValuesFromEntry(entry: BibRecordField): void {
 		// Mettre à jour l'entry sélectionnée
 		this.idrefService.NZSelectedEntry.set({ ...entry });
 
@@ -178,14 +178,14 @@ export class IdrefRecordService {
 	 */
 	public updateSelectedEntryWithPPN(ppn_z: string): void {
 		const selectedEntry = this.idrefService.NZSelectedEntry();
-
+		
 		//TODO: c'est le cas où on crée un nouveaux champ dans la notice biblio
 		if (!selectedEntry) {
 			return;
 		}
 
 		// On clone le tableau pour rester "immutable"
-		const newValues = [...selectedEntry.value];
+		const newValues = [...selectedEntry.subfields];
 		const currentPPNIndex = newValues.findIndex((subfield) => subfield.code === '0');
 
 		if (currentPPNIndex !== -1) {
@@ -210,9 +210,9 @@ export class IdrefRecordService {
 			});
 		}
 
-		const newEntry = {
+		const newEntry: BibRecordField = {
 			...selectedEntry,
-			value: newValues,
+			subfields: newValues,
 		};
 
 		// Mise à jour du signal

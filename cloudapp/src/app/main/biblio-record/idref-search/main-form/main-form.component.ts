@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 import { Component, inject, effect, input } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { Bib } from '../../../../models/bib-records';
+import { NzBibRecord } from '../../../../models/bib-records';
 import { IdrefService } from '../../../../services/idref.service';
 import { IdrefSearchService } from '../idref-search.service';
 
@@ -11,7 +11,7 @@ import { IdrefSearchService } from '../idref-search.service';
 	styleUrl: './main-form.component.scss',
 })
 export class MainFormComponent {
-	public entity = input.required<Bib | undefined>();
+	public entity = input.required<NzBibRecord | undefined>();
 
 	public searchForm: FormGroup;
 

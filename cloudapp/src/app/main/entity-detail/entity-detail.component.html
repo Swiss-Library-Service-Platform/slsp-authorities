@@ -1,8 +1,8 @@
-@if (entity()) {
+@if (selectedEntity()) {
   <!-- CONTENEUR QUI GÈRE LE MODE COLONNES -->
   <div class="records-grid">
     <div class="records-column">
-      <app-biblio-record [entity]="entity()"></app-biblio-record>
+      <app-biblio-record [selectedEntity]="selectedEntity()"></app-biblio-record>
     </div>
 
     <div class="records-column">

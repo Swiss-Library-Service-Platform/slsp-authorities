@@ -1,10 +1,10 @@
-  <app-idref-search [entity]="entity()"></app-idref-search>
+  <app-idref-search [entity]="selectedEntity()"></app-idref-search>
 
   <div class="selected-head">
     <div class="entity-title">
-      <h1 class="entity-title">{{ entity()?.title }}</h1>
-      <span class="entity-subtitle">{{ entity()?.mms_id }}</span>
-	  <button color="primary" (click)="updateAllowedTags()">
+      <h1 class="entity-title">{{ selectedEntity()?.title }}</h1>
+      <span class="entity-subtitle">{{ selectedEntity()?.mms_id }}</span>
+	  <button color="primary" (click)="showDetails()">
         {{ 'main.detailsButtonLabel' | translate }}
       </button>
     </div>
@@ -16,31 +16,30 @@
   <div class="bar"></div>
 <h2>{{"biblioRecord.title" | translate}}</h2>
 <div class="marc">
-	@for (entry of marcFields; track $index) {
-	<!--Pour les couleurs [style.background-color]="getColorForTag(entry.tag)"-->
-	<div class="marc-row" [class.marc-row--active]="entry === selectedEntry">
+	@for (bibRecordField of BibRecordFields(); track $index) {
+	<div class="marc-row" [class.marc-row--active]="bibRecordField === selectedBibRecordField">
 		<div class="marc-column marc-column-actions">
-			@if(getIdrefAllowedTags().includes(entry.tag)){
+			@if(getIdrefAllowedTags().includes(bibRecordField.tag)){
 
-			<button mat-icon-button color="primary" (click)="saveCurrentEntry(entry);pushToInput(entry); searchIdref(entry)" >
+			<button mat-icon-button color="primary" (click)="saveCurrentEntry(bibRecordField);pushToInput(bibRecordField); searchIdref(bibRecordField)" >
 				<mat-icon>edit</mat-icon>
 			</button>
-			<button mat-icon-button color="primary" (click)="deleteField(entry)">
+			<button mat-icon-button color="primary" (click)="deleteField(bibRecordField)">
 				<mat-icon>delete</mat-icon>
 			</button>
 			}
 		</div>
 		<div class="marc-column">
-			<span class="tag">{{ entry.tag }}</span>
+			<span class="tag">{{ bibRecordField.tag }}</span>
 		</div>
 		<div class="marc-column">
-			<span class="ind">{{ entry.ind1 }}</span>
+			<span class="ind">{{ bibRecordField.ind1 }}</span>
 		</div>
 		<div class="marc-column">
-			<span class="ind">{{ entry.ind2 }}</span>
+			<span class="ind">{{ bibRecordField.ind2 }}</span>
 		</div>
 		<div class="marc-column">
-			@for (valueEntry of entry.value; track $index) {
+			@for (valueEntry of bibRecordField.subfields; track $index) {
 			<div class="marc-column-value">
 				@if (valueEntry.code && valueEntry.code !== '') {
 				<span class="subfield">$${{ valueEntry.code }}</span>

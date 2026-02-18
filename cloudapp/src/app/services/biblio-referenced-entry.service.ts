@@ -1,5 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import { xmlEntry } from '../models/bib-records';
+import { BibRecordField } from '../models/bib-records';
 
 @Injectable({
   providedIn: 'root'
@@ -8,13 +8,13 @@ export class BiblioReferencedEntryService {
 
   //on a besoin de sauvegarder la notice que l'on est en train de modifier car comme il n'y a pas d'id sur les champs
 
-  private savedCurrentEntry = signal<xmlEntry | undefined>(undefined);
+  private savedCurrentEntry = signal<BibRecordField | undefined>(undefined);
 
-  public setSavedCurrentEntry(entry: xmlEntry): void{
+  public setSavedCurrentEntry(entry: BibRecordField): void{
 		this.savedCurrentEntry.set(entry);
 	}
 
-	public getSavedCurrentEntry(): xmlEntry |undefined {
+	public getSavedCurrentEntry(): BibRecordField |undefined {
 		return this.savedCurrentEntry();
 	}
 }

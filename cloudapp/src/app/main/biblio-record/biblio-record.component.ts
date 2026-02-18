@@ -1,17 +1,7 @@
-import { Component, inject, input, OnInit } from '@angular/core';
-
-
-import { toObservable } from '@angular/core/rxjs-interop';
-import {
-	map,
-	distinctUntilChanged,
-	combineLatest,
-	BehaviorSubject,
-} from 'rxjs';
-
+import { Component, computed, inject, input, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteDialogComponent } from './delete-dialog/delete-dialog.component';
-import { xmlEntry, Bib } from '../../models/bib-records';
+import { BibRecordField, NzBibRecord } from '../../models/bib-records';
 import { MARC_STRUCTURE_KEY } from '../../models/idref-model';
 import { BiblioReferencedEntryService } from '../../services/biblio-referenced-entry.service';
 import { IdrefService } from '../../services/idref.service';
@@ -25,35 +15,44 @@ import { IdrefRecordService } from '../entity-detail/idref-record/idref-record.s
 	templateUrl: './biblio-record.component.html',
 	styleUrl: './biblio-record.component.scss',
 })
-export class BiblioRecordComponent implements OnInit {
-	public marcFields: xmlEntry[] = [];
-	public selectedEntry: xmlEntry | null = null;
-	public entity = input.required<Bib | undefined>();
-	public entity$ = toObservable(this.entity);
-
-	public entityAnnies$ = this.entity$.pipe(
-		map((e) => e?.anies[0] ?? null),
-		distinctUntilChanged(),
-	);
+export class BiblioRecordComponent {
+	public selectedBibRecordField: BibRecordField | null = null;
+	public selectedEntity = input.required<NzBibRecord | undefined>();
 	public dialog = inject(MatDialog);
 	private idrefSearchService = inject(IdrefSearchService);
 	private idrefService = inject(IdrefService);
 	private referenceCurrentField = inject(BiblioReferencedEntryService);
 	private idrefRecordService = inject(IdrefRecordService);
 	// ✅ BehaviorSubject pour allowedTags
-	private allowedTags$ = new BehaviorSubject<string[]>(MARC_STRUCTURE_KEY);
+	private allowedTags = signal(MARC_STRUCTURE_KEY);
+
+	// eslint-disable-next-line @typescript-eslint/member-ordering
+	public  BibRecordFields = computed(() => {
+			const entity = this.selectedEntity()
+
+			console.log(this.allowedTags())
+			console.log(entity)
+
+			const anie = this.selectedEntity()?.anies[0];
+
+			if(typeof anie === 'string'){
+				return this.updateMarcFields(anie, this.allowedTags());
+			}
+
+			return [];
+		});
 
 	//retourne les tag de la notice bibliographique sur lesquels on peut faire une recherche
 	public getIdrefAllowedTags(): string[] {
 		return MARC_STRUCTURE_KEY;
 	}
 
-	public pushToInput(entry: xmlEntry): void {
-		this.selectedEntry = entry;
-		this.idrefService.NZSelectedEntry.set({...entry});
+	public pushToInput(entry: BibRecordField): void {
+		this.selectedBibRecordField = entry;
+		this.idrefService.NZSelectedEntry.set({ ...entry });
 		this.idrefSearchService.closeTo902();
 		this.idrefSearchService.searchMode902.set(SearchMode902.Add902);
-		
+
 		//on gere le cas du 902
 		if (entry.tag === '902') {
 			this.idrefSearchService.searchMode902.set(SearchMode902.Modify902);
@@ -62,82 +61,56 @@ export class BiblioRecordComponent implements OnInit {
 		this.idrefSearchService.searchMode.set(SearchMode.Update);
 	}
 
-	public saveCurrentEntry(entry: xmlEntry): void {
-
+	public saveCurrentEntry(entry: BibRecordField): void {
 		this.referenceCurrentField.setSavedCurrentEntry(entry);
 	}
 
-	public searchIdref(entry: xmlEntry): void {
+	public searchIdref(entry: BibRecordField): void {
 		this.idrefRecordService.setFormValuesFromEntry(entry);
 	}
 
-	public deleteField(entry: xmlEntry): void {
+	public deleteField(entry: BibRecordField): void {
 		const dialogRef = this.dialog.open(DeleteDialogComponent, {
-      width: '50px',
-	  data: {entry}
-    });
+			width: '50px',
+			data: { entry },
+		});
 
-
-	// no action required after dialog close
+		// no action required after dialog close
 		dialogRef.afterClosed().subscribe();
-  }
-	
-
-	public ngOnInit(): void {
-		// Combine xmlString et allowedTags pour recalculer marcFields
-		//donc lorsque l'on met à jour allowedTags avec updateAllowedTags ça recalcule automatiquement marcfields
-		combineLatest([this.entityAnnies$, this.allowedTags$]).subscribe(
-			([xmlString, allowedTagsArray]) => {
-				if (!xmlString) {
-					this.marcFields = [];
-
-					return;
-				}
-				this.updateMarcFields(xmlString, allowedTagsArray);
-			},
-		);
 	}
 
 	// ✅ Méthode pour mettre à jour allowedTags
-	public updateAllowedTags(): void {
-		if (this.allowedTags$.value.length > 0) {
-			this.allowedTags$.next([]);
+	public showDetails(): void {
+		if (this.allowedTags().length > 0) {
+			this.allowedTags.set([]);
 		} else {
 			//on récupère toutes les clés de MARC_STRUCTURE et on les mets dans un tableau pour les afficher dans le html
-			this.allowedTags$.next(MARC_STRUCTURE_KEY);
+			this.allowedTags.set(MARC_STRUCTURE_KEY);
 		}
 	}
 
-	private updateMarcFields(
-		xmlString: string,
-		allowedTagsArray: string[],
-	): void {
+	private updateMarcFields(xmlString: string, allowedTagsArray: string[]): BibRecordField[] {
 		const xmlRecord = new DOMParser().parseFromString(xmlString, 'text/xml');
 		const record: Element = xmlRecord.getElementsByTagName('record')[0];
 
 		if (!record) {
-			this.marcFields = [];
-
-			return;
+			return [];
 		}
 
 		const fields: Element[] = Array.from(record.childNodes).filter(
-			(node): node is Element => node.nodeType === Node.ELEMENT_NODE,
+			(node): node is Element => node.nodeType === Node.ELEMENT_NODE
 		);
 		const filteredFields =
 			allowedTagsArray.length > 0
-				? fields.filter((field) =>
-						allowedTagsArray.includes(field.getAttribute('tag') ?? ''),
-					)
+				? fields.filter((field) => allowedTagsArray.includes(field.getAttribute('tag') ?? ''))
 				: fields;
-
-		this.marcFields = filteredFields.map((field) => {
-			const entry: xmlEntry = {
+		const marcFields = filteredFields.map((field) => {
+			const entry: BibRecordField = {
 				change: '',
 				tag: '',
 				ind1: '',
 				ind2: '',
-				value: [],
+				subfields: [],
 			};
 
 			if (field.tagName === 'leader') {
@@ -145,9 +118,7 @@ export class BiblioRecordComponent implements OnInit {
 				entry.tag = 'LDR';
 				entry.ind1 = ' ';
 				entry.ind2 = ' ';
-				entry.value = [
-					{ code: '', value: (field.textContent ?? '').replace(/ /g, '#') },
-				];
+				entry.subfields = [{ code: '', value: (field.textContent ?? '').replace(/ /g, '#') }];
 
 				return entry;
 			}
@@ -159,9 +130,7 @@ export class BiblioRecordComponent implements OnInit {
 			if (field.tagName === 'controlfield') {
 				entry.ind1 = ' ';
 				entry.ind2 = ' ';
-				entry.value = [
-					{ code: '', value: (field.textContent ?? '').replace(/ /g, '#') },
-				];
+				entry.subfields = [{ code: '', value: (field.textContent ?? '').replace(/ /g, '#') }];
 
 				return entry;
 			}
@@ -173,19 +142,19 @@ export class BiblioRecordComponent implements OnInit {
 				const valueMap: { code: string; value: string }[] = [];
 
 				Array.from(field.childNodes)
-					.filter(
-						(node): node is Element => node.nodeType === Node.ELEMENT_NODE,
-					)
+					.filter((node): node is Element => node.nodeType === Node.ELEMENT_NODE)
 					.forEach((subfield) => {
 						valueMap.push({
 							code: subfield.getAttribute('code') ?? '',
 							value: subfield.textContent ?? '',
 						});
 					});
-				entry.value = valueMap;
+				entry.subfields = valueMap;
 			}
 
 			return entry;
 		});
+
+		return marcFields;
 	}
 }

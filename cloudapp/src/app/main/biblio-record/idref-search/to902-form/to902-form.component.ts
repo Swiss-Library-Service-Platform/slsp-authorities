@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 import { Component, computed, effect, inject, input } from '@angular/core';
-import { Bib } from '../../../../models/bib-records';
+import { NzBibRecord } from '../../../../models/bib-records';
 import { IdrefSearchService } from '../idref-search.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { FormValues } from '../model';
@@ -17,7 +17,7 @@ export enum to902$$aFields {
 	styleUrl: './to902-form.component.scss',
 })
 export class To902FormComponent {
-	public entity = input.required<Bib | undefined>();
+	public entity = input.required<NzBibRecord | undefined>();
 
 	public searchForm: FormGroup;
 
@@ -32,10 +32,10 @@ export class To902FormComponent {
 	
 public defaultPurpose = computed(() => {
   if (this.NZSelectedEntry()?.tag === '902') {
-    return `${this.NZSelectedEntry()?.value.find((f) => f.code === 'a')?.value}`;
+    return `${this.NZSelectedEntry()?.subfields.find((f) => f.code === 'a')?.value}`;
   }
 
-  if (this.NZSelectedEntry()?.value.find((f) => f.code === '0' && f.value.includes('IDREF'))) {
+  if (this.NZSelectedEntry()?.subfields.find((f) => f.code === '0' && f.value.includes('IDREF'))) {
     return to902$$aFields.correction;
   }
 
@@ -47,13 +47,13 @@ public defaultPurpose = computed(() => {
 	
 public predifinedContent = computed(() => {
   if (this.NZSelectedEntry()?.tag === '902') {
-    return `${this.NZSelectedEntry()?.value.find((f) => f.code === 'b')?.value}`;
+    return `${this.NZSelectedEntry()?.subfields.find((f) => f.code === 'b')?.value}`;
   }
 
   const purpose = this.searchForm.get('purpose')?.value;
 
   if (purpose === to902$$aFields.correction) {
-    return `The link to idref should be: ${this.NZSelectedEntry()?.value.find((f) => f.code === '0')?.value}`;
+    return `The link to idref should be: ${this.NZSelectedEntry()?.subfields.find((f) => f.code === '0')?.value}`;
   } else if (purpose === to902$$aFields.nouveau) {
     return `It is Necessary to add a link to the record in idref.`;
   } else {

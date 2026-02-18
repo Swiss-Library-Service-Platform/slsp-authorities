@@ -1,4 +1,4 @@
-import { xmlEntry } from '../models/bib-records';
+import { BibRecordField } from '../models/bib-records';
 
 export const tagGroups: {
 	[groupName: string]: { tags: string[]; color: string };
@@ -117,13 +117,13 @@ function getMarStructureKey(): string[] {
 
 export const MARC_STRUCTURE_KEY = getMarStructureKey();
 
-export function getIdrefRecordsFromXmlentry(entry: xmlEntry): { label: string; filters: string[]; recordtypes: string[] } | undefined {
+export function getIdrefRecordsFromBibRecordField(entry: BibRecordField): { label: string; filters: string[]; recordtypes: string[] } | undefined {
 	const tag = entry.tag;
 	const ind1 = entry.ind1.length > 0 ? entry.ind1 : ' ';
 	const ind2 = entry.ind2.length > 0 ? entry.ind2 : ' ';
 	const subfields: string[] = [];
 
-	entry.value.forEach((v) => {
+	entry.subfields.forEach((v) => {
 		subfields.push(v.code);
 	});
 
