@@ -13,7 +13,7 @@
 			<span class="ind">{{ data.entry.ind2 }}</span>
 		</div>
 		<div class="marc-column">
-			@for (valueEntry of data.entry.value; track $index) {
+			@for (valueEntry of data.entry.subfields; track $index) {
 			<div class="marc-column-value">
 				@if (valueEntry.code && valueEntry.code !== '') {
 				<span class="subfield">$${{ valueEntry.code }}</span>
