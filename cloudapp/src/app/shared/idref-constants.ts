@@ -3,13 +3,14 @@ import { MarcStructureValues } from '../models/idref-model';
 
 export const IDREF_RECORDTYPE_TO_ICON_MAP = new Map<string, string>([
 	['a', 'personne'],
-	['b', 'famille'],
+	['b', 'congres'],
 	['e', 'famille'],
 	['f', 'titre_uniforme'],
 	['h', 'auteur_titre'],
-	['r', 'sujet'],
+	['j', 'sujet'],
 	['d', 'nom_marque'],
 	['c', 'noms_geographiques'],
+	['v', 'forme_genre'] 
 ]);
 export const tagGroups: {
 	[groupName: string]: { tags: string[]; color: string };
@@ -47,12 +48,12 @@ export const MARC_STRUCTURE = new Map<string, MarcStructureValues>([
 	['600|1 |a,t', { label: 'Auteur / titre', filters: ['nametitle_t'], recordtypes: ['h'] }],
 	['600|0 |a,t', { label: 'Auteur / titre', filters: ['nametitle_t'], recordtypes: ['h'] }],
 
-	['650|  ', { label: 'Sujet', filters: ['subjectheading_t'], recordtypes: [''] }],
+	['650|  ', { label: 'Sujet', filters: ['subjectheading_t'], recordtypes: ['j'] }],
 
 	['651|  ', { label: 'Nom géographique', filters: ['geoname_t'], recordtypes: ['c'] }],
 	['751|  ', { label: 'Nom géographique', filters: ['geoname_t'], recordtypes: ['c'] }],
 
-	['655|  ', { label: 'Forme / genre', filters: ['formgenreheading_t'], recordtypes: ['r'] }],
+	['655|  ', { label: 'Forme / genre', filters: ['formgenreheading_t'], recordtypes: ['v'] }],
 	['902|  ', { label: '', filters: [''], recordtypes: ['']}],
 ]);
 
