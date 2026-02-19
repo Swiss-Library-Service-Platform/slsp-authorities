@@ -41,7 +41,7 @@
 		type="button"
 		color="primary"
 		(click)="save()"
-		[disabled]="!form.dirty || saving"
+		[disabled]="!form || saving"
 	>
 		Save
 	</button>
