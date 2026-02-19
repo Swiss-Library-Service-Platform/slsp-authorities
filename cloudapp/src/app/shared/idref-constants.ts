@@ -1,4 +1,5 @@
 import { BibRecordField } from '../models/bib-records';
+import { MarcStructureValues } from '../models/idref-model';
 
 export const IDREF_RECORDTYPE_TO_ICON_MAP = new Map<string, string>([
 	['a', 'personne'],
@@ -18,59 +19,6 @@ export const tagGroups: {
 	otherAuthorityLinked: { tags: ['651'], color: '#ebebeb' },
 };
 
-export const IdrefSolrIndexKeys = [
-	'persname_t',
-	'persname_s',
-	'nom_t',
-	'nom_s',
-	'prenom_t',
-	'prenom_s',
-	'bestnom_t',
-	'bestnom_s',
-	'bestprenom_t',
-	'bestprenom_s',
-	'corpname_t',
-	'corpname_s',
-	'conference_t',
-	'conference_s',
-	'datenaissance_dt',
-	'datemort_dt',
-	'subjectheading_t',
-	'subjectheading_s',
-	'formgenreheading_t',
-	'formgenreheading_s',
-	'geogname_t',
-	'geogname_s',
-	'famname_t',
-	'famname_s',
-	'uniformtitle_t',
-	'uniformtitle_s',
-	'nametitle_t',
-	'nametitle_s',
-	'trademark_t',
-	'trademark_s',
-	'equivalent_t',
-	'equivalent_s',
-	'classification_t',
-	'classification_s',
-	'TR231_t',
-	'TR231_s',
-	'TR241_t',
-	'TR241_s',
-	'ppn_z',
-	'rcrcre_z',
-	'rcrmod_z',
-	'datemod_z',
-	'dateetat_dt',
-	'rcr_t',
-	'all',
-];
-
-interface MarcStructureValues {
-	label: string;
-	filters: string[];
-	recordtypes: string[];
-}
 
 export const MARC_STRUCTURE = new Map<string, MarcStructureValues>([
 	['100|0 ', { label: 'Personne', filters: ['persname_t', 'datenaisance_dt', 'datemort_dt'], recordtypes: ['a'] }],

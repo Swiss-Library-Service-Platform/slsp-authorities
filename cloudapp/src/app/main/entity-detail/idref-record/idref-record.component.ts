@@ -45,9 +45,7 @@ export class IdrefRecordComponent {
   );
 
   // Business logic from service
-  private searchIndex = this.idrefRecordService.getSearchIndex();
   private queryInputValue = this.idrefRecordService.buildQueryInputValue();
-  public constructedQuery = this.idrefRecordService.buildConstructedQuery();
 
   // Pagination state
   private pageIndex = signal(0);
@@ -86,7 +84,7 @@ export class IdrefRecordComponent {
       if (entry) {
         this.searchForm.patchValue(
           {
-            searchIndex: this.searchIndex(),
+            searchIndex: this.idrefService.getMarcStructure()?.label ?? '',
             constructedQuery: this.queryInputValue()
           },
           { emitEvent: false }
