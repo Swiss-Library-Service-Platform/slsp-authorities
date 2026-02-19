@@ -29,7 +29,7 @@
 						<span class="value">{{ doc.affcourt_z }}</span>
 					</div>
 					<div class="idrefmarc-column idrefmarc-column--actions">
-						<button color="primary" (click)="pushTobiblioRecordForm(doc.ppn_z)">
+						<button color="primary" (click)="pushTobiblioRecordForm(doc.ppn_z); selectedDoc = doc">
 							{{ 'idrefRecord.select' | translate }}
 						</button>
 						<button color="primary" (click)="showDetails(doc.ppn_z); selectedDoc = doc">

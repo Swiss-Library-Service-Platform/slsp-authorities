@@ -15,7 +15,7 @@ import { StringUtils } from '../../../utils/stringUtils';
 @Injectable({
   providedIn: 'root'
 })
-export class IdrefSearchService {
+export class searchService {
 
 
   public searchMode = signal<SearchMode>(SearchMode.AddField);
@@ -95,7 +95,7 @@ export class IdrefSearchService {
       .pipe(
         switchMap(() => this.eventsService.refreshPage()),
         catchError((err) => {
-          this.alert.warn(this.translate.instant('idrefSearch.acceptRefreshModal'), {
+          this.alert.warn(this.translate.instant('search.acceptRefreshModal'), {
             delay: 1000,
           });
           console.error('Erreur createFieldIfNotExists:', err);
@@ -108,7 +108,7 @@ export class IdrefSearchService {
           this.reset();
           this.nzQueryService.refreshSelectedEntityDetails();
           this.loader.hide();
-          this.alert.success(this.translate.instant('idrefSearch.recordAdded'), { delay: 1000 });
+          this.alert.success(this.translate.instant('search.recordAdded'), { delay: 1000 });
           console.log('complete createFieldIfNotFound');
         },
       });
@@ -123,7 +123,7 @@ export class IdrefSearchService {
     const reference = this.referenceCurrentField.getSavedCurrentEntry();
 
     if (!reference) {
-      this.alert.error(this.translate.instant('idrefSearch.noSelectedEntry'), { delay: 1000 });
+      this.alert.error(this.translate.instant('search.noSelectedEntry'), { delay: 1000 });
       this.loader.hide();
 
       return;
@@ -139,7 +139,7 @@ export class IdrefSearchService {
       .pipe(
         switchMap(() => this.eventsService.refreshPage()),
         catchError((err) => {
-          this.alert.warn(this.translate.instant('idrefSearch.acceptRefreshModal'), {
+          this.alert.warn(this.translate.instant('search.acceptRefreshModal'), {
             delay: 1000,
           });
           console.error('Erreur updateFieldIfExists:', err);
@@ -152,7 +152,7 @@ export class IdrefSearchService {
           this.reset();
           this.nzQueryService.refreshSelectedEntityDetails();
           this.loader.hide();
-          this.alert.success(this.translate.instant('idrefSearch.recordAdded'), { delay: 1000 });
+          this.alert.success(this.translate.instant('search.recordAdded'), { delay: 1000 });
           console.log('complete updateFieldIfFound');
         },
       });
@@ -168,7 +168,7 @@ export class IdrefSearchService {
     const reference = this.referenceCurrentField.getSavedCurrentEntry();
 
     if (!reference) {
-      this.alert.error(this.translate.instant('idrefSearch.noSelectedEntry'), { delay: 1000 });
+      this.alert.error(this.translate.instant('search.noSelectedEntry'), { delay: 1000 });
       this.loader.hide();
 
       return;
@@ -189,10 +189,10 @@ export class IdrefSearchService {
           if (err?.message === 'FIELD_NOT_FOUND') {
             // Champ non trouvé -> créer
             return this.nzQueryService.createFieldIfNotExists( formatedValues).pipe(
-              tap(() => this.alert.success(this.translate.instant('idrefSearch.recordAdded'), { delay: 1000 })),
+              tap(() => this.alert.success(this.translate.instant('search.recordAdded'), { delay: 1000 })),
               switchMap(() => this.eventsService.refreshPage()),
               catchError((err2) => {
-                this.alert.warn(this.translate.instant('idrefSearch.acceptRefreshModal'), { delay: 1000 });
+                this.alert.warn(this.translate.instant('search.acceptRefreshModal'), { delay: 1000 });
                 console.error('Erreur lors de la création du champ:', err2);
 
                 return of(null);
@@ -200,7 +200,7 @@ export class IdrefSearchService {
             );
           }
 
-          this.alert.warn(this.translate.instant('idrefSearch.acceptRefreshModal'), {
+          this.alert.warn(this.translate.instant('search.acceptRefreshModal'), {
             delay: 1000,
           });
           console.error('Erreur updateFieldIfExists:', err);
@@ -213,7 +213,7 @@ export class IdrefSearchService {
           this.reset();
           this.nzQueryService.refreshSelectedEntityDetails();
           this.loader.hide();
-          this.alert.success(this.translate.instant('idrefSearch.recordAdded'), { delay: 1000 });
+          this.alert.success(this.translate.instant('search.recordAdded'), { delay: 1000 });
           console.log('complete addrecord');
         },
       });
@@ -242,7 +242,7 @@ export class IdrefSearchService {
     if (resetFormCallback) {
       resetFormCallback();
     }
-    this.alert.info(this.translate.instant('idrefSearch.clear'), { delay: 1000 });
+    this.alert.info(this.translate.instant('search.clear'), { delay: 1000 });
   }
 
   /**

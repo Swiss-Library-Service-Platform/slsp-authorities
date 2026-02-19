@@ -2,7 +2,7 @@ import { computed, inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { IdrefRecords, idrefSearch, MARC_STRUCTURE } from '../models/idref-model';
+import { IdrefRecords, search, MARC_STRUCTURE } from '../models/idref-model';
 import { BibRecordField } from '../models/bib-records';
 import { TranslateService } from '@ngx-translate/core';
 import { AlertService, CloudAppSettingsService } from '@exlibris/exl-cloudapp-angular-lib';
@@ -27,11 +27,11 @@ export class IdrefService {
 	private http = inject(HttpClient);
 	private settingsService = inject(CloudAppSettingsService);
 	private solr = '/Sru/Solr';
-	private idrefSearchRowNumber: number | undefined;
+	private searchRowNumber: number | undefined;
 
 	public constructor() {
 		this.settingsService.get().subscribe((settings) => {
-			this.idrefSearchRowNumber = (settings as Settings).idrefSearchRowNumber;
+			this.searchRowNumber = (settings as Settings).searchRowNumber;
 		});
 	}
 
@@ -43,7 +43,7 @@ export class IdrefService {
 			sort: 'score desc',
 			version: '2.2',
 			start: '0',
-			rows: `${this.idrefSearchRowNumber}`,
+			rows: `${this.searchRowNumber}`,
 			indent: 'on',
 			fl: 'ppn_z,recordtype_z,affcourt_z',
 		};
@@ -73,14 +73,14 @@ export class IdrefService {
 		});
 	}
 
-	public calculatedSearch(searchParams: idrefSearch | undefined): void {
+	public calculatedSearch(searchParams: search | undefined): void {
 		const query = this.buildQuery(searchParams);
 
 		this.searchAuthorities(query).subscribe({ next: (r) => this.idrefResult.set(r) });
 	}
 
 	//permet de récuperer la strucutre lié
-	public getMarcStructure(): idrefSearch | undefined {
+	public getMarcStructure(): search | undefined {
 		const codes: string[] = [];
 		const tag = this.NZSelectedEntry()?.tag;
 		const ind1 = this.NZSelectedEntry()?.ind1;
@@ -112,7 +112,7 @@ export class IdrefService {
 	}
 
 	//fonction qui renvoie la chaine de charactere qui permettra de faire le recherche via Solr
-	private buildQuery(searchParams: idrefSearch | undefined): string {
+	private buildQuery(searchParams: search | undefined): string {
 		let query = '';
 		const recordTypes = searchParams?.recordtypes;
 		const filter = searchParams?.filters;

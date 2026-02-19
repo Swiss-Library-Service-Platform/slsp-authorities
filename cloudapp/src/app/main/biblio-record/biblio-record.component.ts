@@ -5,8 +5,8 @@ import { BibRecordField, NzBibRecord } from '../../models/bib-records';
 import { MARC_STRUCTURE_KEY } from '../../models/idref-model';
 import { BiblioReferencedEntryService } from '../../services/biblio-referenced-entry.service';
 import { IdrefService } from '../../services/idref.service';
-import { IdrefSearchService } from './idref-search/idref-search.service';
-import { SearchMode, SearchMode902 } from './idref-search/model';
+import { searchService } from './search/search.service';
+import { SearchMode, SearchMode902 } from './search/model';
 import { IdrefRecordService } from '../entity-detail/idref-record/idref-record.service';
 
 //Composant pour afficher les notices bibliographique provenant de la NZ
@@ -19,7 +19,7 @@ export class BiblioRecordComponent {
 	public selectedBibRecordField: BibRecordField | null = null;
 	public selectedEntity = input.required<NzBibRecord | undefined>();
 	public dialog = inject(MatDialog);
-	private idrefSearchService = inject(IdrefSearchService);
+	private searchService = inject(searchService);
 	private idrefService = inject(IdrefService);
 	private referenceCurrentField = inject(BiblioReferencedEntryService);
 	private idrefRecordService = inject(IdrefRecordService);
@@ -50,15 +50,15 @@ export class BiblioRecordComponent {
 	public pushToInput(entry: BibRecordField): void {
 		this.selectedBibRecordField = entry;
 		this.idrefService.NZSelectedEntry.set({ ...entry });
-		this.idrefSearchService.closeTo902();
-		this.idrefSearchService.searchMode902.set(SearchMode902.Add902);
+		this.searchService.closeTo902();
+		this.searchService.searchMode902.set(SearchMode902.Add902);
 
 		//on gere le cas du 902
 		if (entry.tag === '902') {
-			this.idrefSearchService.searchMode902.set(SearchMode902.Modify902);
-			this.idrefSearchService.showTo902();
+			this.searchService.searchMode902.set(SearchMode902.Modify902);
+			this.searchService.showTo902();
 		}
-		this.idrefSearchService.searchMode.set(SearchMode.Update);
+		this.searchService.searchMode.set(SearchMode.Update);
 	}
 
 	public saveCurrentEntry(entry: BibRecordField): void {

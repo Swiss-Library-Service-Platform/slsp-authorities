@@ -1,5 +1,15 @@
 import { BibRecordField } from '../models/bib-records';
 
+export const IDREF_RECORDTYPE_TO_ICON_MAP = new Map<string, string>([
+	['a', 'personne'],
+	['b', 'famille'],
+	['e', 'famille'],
+	['f', 'titre_uniforme'],
+	['h', 'auteur_titre'],
+	['r', 'sujet'],
+	['d', 'nom_marque'],
+	['c', 'noms_geographiques'],
+]);
 export const tagGroups: {
 	[groupName: string]: { tags: string[]; color: string };
 } = {
@@ -56,13 +66,13 @@ export const IdrefSolrIndexKeys = [
 	'all',
 ];
 
-export interface idrefSearch {
+interface MarcStructureValues {
 	label: string;
 	filters: string[];
 	recordtypes: string[];
 }
 
-export const MARC_STRUCTURE = new Map<string, idrefSearch>([
+export const MARC_STRUCTURE = new Map<string, MarcStructureValues>([
 	['100|0 ', { label: 'Personne', filters: ['persname_t', 'datenaisance_dt', 'datemort_dt'], recordtypes: ['a'] }],
 	['100|1 ', { label: 'Personne', filters: ['persname_t', 'datenaisance_dt', 'datemort_dt'], recordtypes: ['a'] }],
 	['700|0 ', { label: 'Personne', filters: ['persname_t', 'datenaisance_dt', 'datemort_dt'], recordtypes: ['a'] }],
@@ -115,8 +125,6 @@ function getMarStructureKey(): string[] {
 	return keys;
 }
 
-export const MARC_STRUCTURE_KEY = getMarStructureKey();
-
 export function getIdrefRecordsFromBibRecordField(entry: BibRecordField): { label: string; filters: string[]; recordtypes: string[] } | undefined {
 	const tag = entry.tag;
 	const ind1 = entry.ind1.length > 0 ? entry.ind1 : ' ';
@@ -127,13 +135,12 @@ export function getIdrefRecordsFromBibRecordField(entry: BibRecordField): { labe
 		subfields.push(v.code);
 	});
 
+	//utile pour le sous sous champs 650|1 |a,t et 650|0 |a,t 
 	const subfieldsStr = subfields.sort().join(',');
 	let result = MARC_STRUCTURE.get(`${tag}|${ind1}${ind2}|${subfieldsStr}`);
 
-	if (result) {
-		return result;
-	}
-
+	if (result) return result;
+	//le cas le plus commun il y a seulement le tag et les indexes qui importent
 	result = MARC_STRUCTURE.get(`${tag}|${ind1}${ind2}`);
 
 	if (result) return result;
@@ -142,50 +149,50 @@ export function getIdrefRecordsFromBibRecordField(entry: BibRecordField): { labe
 	return;
 }
 
-export const IDREF_FILTER_MAP = new Map<string, string>([
-	['Personne', 'persname_t'],
-	['Collectivité', 'corpname_t'],
-	['Congrès', 'conference_t'],
-	['Famille', 'famname_t'],
-	['Titre uniforme', 'uniformtitle_t'],
-	['Auteur / titre', 'nametitle_t'],
-	['Sujet', 'subjectheading_t'],
-	['Nom de marque', 'trademark_t'],
-	['Noms géographiques', 'geogname_t'],
-	['Forme', 'formgenreheading_t'],
-]);
+function buildIdrefFilterMap(): Map<string, string> {
+    const map = new Map<string, string>();
 
-export const IDREF_RECORDTYPE_MAP = new Map<string, string>([
-	['Personne', 'a'],
-	['Collectivité', 'b'],
-	['Congrès', 'b'],
-	['Famille', 'e'],
-	['Titre uniforme', 'f'],
-	['Auteur / titre', 'h'],
-	['Sujet', ''],
-	['Nom de marque', 'd'],
-	['Noms géographiques', 'c'],
-	['Forme', 'r'],
-]);
+    for (const { label, filters } of MARC_STRUCTURE.values()) {
+        if (!label || !filters?.length) continue;
+        // On ne set qu'une seule fois par label
 
-export const INVERTED_IDREF_RECORDTYPE_MAP = new Map<string, string>([
-	['a', 'Personne'],
-	['b', 'Collectivité'],
-	['e', 'Famille'],
-	['f', 'Titre uniforme'],
-	['h', 'Auteur / titre'],
-	['r', 'Sujet'],
-	['d', 'Nom de marque'],
-	['c', 'Noms géographiques'],
-]);
+        if (!map.has(label)) {
+            map.set(label, filters[0]);
+        }
+    }
 
-export const IDREF_RECORDTYPE_TO_ICON_MAP = new Map<string, string>([
-	['a', 'personne'],
-	['b', 'famille'],
-	['e', 'famille'],
-	['f', 'titre_uniforme'],
-	['h', 'auteur_titre'],
-	['r', 'sujet'],
-	['d', 'nom_marque'],
-	['c', 'noms_geographiques'],
-]);
+    return map;
+}
+
+function buildIdrefRecordtypeMap(): Map<string, string> {
+    const map = new Map<string, string>();
+
+    for (const { label, recordtypes } of MARC_STRUCTURE.values()) {
+        if (!label || !recordtypes?.length || !recordtypes[0]) continue;
+		
+        if (!map.has(label)) {
+            map.set(label, recordtypes[0]);
+        }
+    }
+
+    return map;
+}
+
+function buildInvertedIdrefRecordtypeMap(
+    source: Map<string, string>
+): Map<string, string> {
+    const map = new Map<string, string>();
+
+    for (const [label, recordType] of source.entries()) {
+        if (!recordType) continue;
+        // Si plusieurs labels partagent le même recordType, le dernier gagne.
+        map.set(recordType, label);
+    }
+
+    return map;
+}
+
+export const MARC_STRUCTURE_KEY = getMarStructureKey();
+export const IDREF_FILTER_MAP = buildIdrefFilterMap()
+export const IDREF_RECORDTYPE_MAP = buildIdrefRecordtypeMap()
+export const INVERTED_IDREF_RECORDTYPE_MAP = buildInvertedIdrefRecordtypeMap(IDREF_RECORDTYPE_MAP)

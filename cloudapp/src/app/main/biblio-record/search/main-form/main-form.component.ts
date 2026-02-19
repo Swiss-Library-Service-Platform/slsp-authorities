@@ -3,7 +3,7 @@ import { Component, inject, effect, input } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { NzBibRecord } from '../../../../models/bib-records';
 import { IdrefService } from '../../../../services/idref.service';
-import { IdrefSearchService } from '../idref-search.service';
+import { searchService } from '../search.service';
 
 @Component({
 	selector: 'app-main-form',
@@ -16,13 +16,13 @@ export class MainFormComponent {
 	public searchForm: FormGroup;
 
 	private idrefService = inject(IdrefService);
-	private idrefSearchService = inject(IdrefSearchService);
+	private searchService = inject(searchService);
 	private fb = inject(FormBuilder);
 
-	public readonly searchMode = this.idrefSearchService.searchMode;
-	public readonly isTo902FormVisible = this.idrefSearchService.isTo902FormVisible;
-	public readonly NZSelectedEntry = this.idrefSearchService.NZSelectedEntry;
-	public readonly flattenedValue = this.idrefSearchService.flattenedValue;
+	public readonly searchMode = this.searchService.searchMode;
+	public readonly isTo902FormVisible = this.searchService.isTo902FormVisible;
+	public readonly NZSelectedEntry = this.searchService.NZSelectedEntry;
+	public readonly flattenedValue = this.searchService.flattenedValue;
 
 	public constructor() {
 		this.searchForm = this.fb.group({
@@ -50,7 +50,7 @@ export class MainFormComponent {
 	}
 
 	public onSearch(): void {
-		this.idrefSearchService.setNZSelectedEntry(this.searchForm.value);
+		this.searchService.setNZSelectedEntry(this.searchForm.value);
 
 		const values = this.searchForm.value as {
 			tag: string;
@@ -74,22 +74,22 @@ export class MainFormComponent {
 	}
 
 	public addrecord(): void {
-		this.idrefSearchService.addrecord(this.searchForm.value);
+		this.searchService.addrecord(this.searchForm.value);
 	}
 
 	public updateFieldIfFound(): void {
-		this.idrefSearchService.updateFieldIfFound(this.searchForm.value);
+		this.searchService.updateFieldIfFound(this.searchForm.value);
 	}
 
 	public createFieldIfNotFound(): void {
-		this.idrefSearchService.createFieldIfNotFound(this.searchForm.value);
+		this.searchService.createFieldIfNotFound(this.searchForm.value);
 	}
 
 	public showTo902(): void {
-		this.idrefSearchService.showTo902();
+		this.searchService.showTo902();
 	}
 
 	public clear(): void {
-		this.idrefSearchService.clear(() => this.searchForm.reset());
+		this.searchService.clear(() => this.searchForm.reset());
 	}
 }

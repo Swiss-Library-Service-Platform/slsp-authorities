@@ -6,7 +6,7 @@
 		"detailsButtonLabel": "Details",
 		"resetButtonLabel": "Reset",
 		"noEntities": "No entities",
-		"idrefSearchButtonLabel": "Idref search",
+		"searchButtonLabel": "Idref search",
 		"noActiveRecordInMetadataEditor": "No active record, please open a bibliographical record in the Metadata editor",
 		"entity": {
 			"description": "Description",
@@ -23,7 +23,7 @@
 		"institutionAllowedError": "Your institution isn't allowed to use this cloud app",
 		"noSelectedEntry": "There is no selected entry"
 	},
-	"idrefSearch":{
+	"search":{
 		"addToRecord": "Add",
 		"to902": "To 902",
 		"clear": "Clear",

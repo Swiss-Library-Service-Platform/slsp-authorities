@@ -1,6 +1,6 @@
-@use "./idref-search.shared";
+@use "./search.shared";
 
-.idref-search-container {
+.search-container {
     display: flex;
     flex-direction: column;
     gap: 0;

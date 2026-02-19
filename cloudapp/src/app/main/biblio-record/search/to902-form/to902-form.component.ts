@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 import { Component, computed, effect, inject, input } from '@angular/core';
 import { NzBibRecord } from '../../../../models/bib-records';
-import { IdrefSearchService } from '../idref-search.service';
+import { searchService } from '../search.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { FormValues } from '../model';
 
@@ -23,12 +23,12 @@ export class To902FormComponent {
 
 	public to902Purpose = Object.values(to902$$aFields);
 
-	private idrefSearchService = inject(IdrefSearchService);
+	private searchService = inject(searchService);
 	private fb = inject(FormBuilder);
 
-	public readonly searchMode902 = this.idrefSearchService.searchMode902;
-	public readonly searchMode = this.idrefSearchService.searchMode;
-	public readonly NZSelectedEntry = this.idrefSearchService.NZSelectedEntry;
+	public readonly searchMode902 = this.searchService.searchMode902;
+	public readonly searchMode = this.searchService.searchMode;
+	public readonly NZSelectedEntry = this.searchService.NZSelectedEntry;
 	
 public defaultPurpose = computed(() => {
   if (this.NZSelectedEntry()?.tag === '902') {
@@ -98,7 +98,7 @@ public predifinedContent = computed(() => {
 			subfields: `$$a ${purpose} $$b ${rawValue.subfields}`,
 		};
 
-		this.idrefSearchService.updateFieldIfFound(finalValues);
+		this.searchService.updateFieldIfFound(finalValues);
 	}
 
 	public createFieldIfNotFound(): void {
@@ -111,14 +111,14 @@ public predifinedContent = computed(() => {
 			subfields: `$$a ${purpose} $$b ${rawValue.subfields}`,
 		};
 		
-		this.idrefSearchService.createFieldIfNotFound(finalValues);
+		this.searchService.createFieldIfNotFound(finalValues);
 	}
 
 	public clear(): void {
-		this.idrefSearchService.clear(() => this.searchForm.reset());
+		this.searchService.clear(() => this.searchForm.reset());
 	}
 
 	public closeTo902(): void {
-		this.idrefSearchService.closeTo902();
+		this.searchService.closeTo902();
 	}
 }

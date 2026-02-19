@@ -29,11 +29,11 @@
 		<div class="button-section">
 			@if (this.searchMode902() === 'add902') {
 				<button color="primary" (click)="createFieldIfNotFound()">
-					{{ 'idrefSearch.addToRecord' | translate }}
+					{{ 'search.addToRecord' | translate }}
 				</button>
 			} @else if (this.searchMode902() === 'update902') {
 				<button color="primary" (click)="updateFieldIfFound()">
-					{{ 'idrefSearch.updateRecord' | translate }}
+					{{ 'search.updateRecord' | translate }}
 				</button>
 			}
 		</div>

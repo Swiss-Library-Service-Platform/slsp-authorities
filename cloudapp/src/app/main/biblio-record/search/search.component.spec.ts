@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { IdrefSearchComponent } from './idref-search.component';
+import { searchComponent } from './search.component';
 
-describe('IdrefSearchComponent', () => {
-  let component: IdrefSearchComponent;
-  let fixture: ComponentFixture<IdrefSearchComponent>;
+describe('searchComponent', () => {
+  let component: searchComponent;
+  let fixture: ComponentFixture<searchComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [IdrefSearchComponent]
+      imports: [searchComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(IdrefSearchComponent);
+    fixture = TestBed.createComponent(searchComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

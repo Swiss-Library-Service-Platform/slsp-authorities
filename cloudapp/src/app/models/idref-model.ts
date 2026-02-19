@@ -126,7 +126,7 @@ export interface IdrefSolrIndex {
 	all: string;
 }
 
-export interface idrefSearch{
+export interface search{
 	label: string;
 	filters: string[];
 	recordtypes: string[];

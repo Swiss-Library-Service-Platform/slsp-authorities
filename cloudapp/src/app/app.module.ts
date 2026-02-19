@@ -28,9 +28,9 @@ import { DeleteDialogComponent } from './main/biblio-record/delete-dialog/delete
 import { EntityDetailComponent } from './main/entity-detail/entity-detail.component';
 import { IdrefEntryDetailsComponent } from './main/entity-detail/idref-entry-details/idref-entry-details.component';
 import { IdrefRecordComponent } from './main/entity-detail/idref-record/idref-record.component';
-import { IdrefSearchComponent } from './main/biblio-record/idref-search/idref-search.component';
-import { To902FormComponent } from './main/biblio-record/idref-search/to902-form/to902-form.component';
-import { MainFormComponent } from './main/biblio-record/idref-search/main-form/main-form.component';
+import { searchComponent } from './main/biblio-record/search/search.component';
+import { To902FormComponent } from './main/biblio-record/search/to902-form/to902-form.component';
+import { MainFormComponent } from './main/biblio-record/search/main-form/main-form.component';
 import { JsonPipe } from '@angular/common';
 import { SettingsComponent } from './settings/settings.component';
 
@@ -41,7 +41,7 @@ import { SettingsComponent } from './settings/settings.component';
 		MainComponent,
 		EntityListComponent,
 		EntityDetailComponent,
-		IdrefSearchComponent,
+		searchComponent,
 		BiblioRecordComponent,
 		IdrefRecordComponent,
 		IdrefEntryDetailsComponent,

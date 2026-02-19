@@ -16,21 +16,21 @@
 		<div class="button-section">
 			@if(this.searchMode() === 'addField' ) {
 				<button color="primary" (click)="createFieldIfNotFound()">
-					{{ 'idrefSearch.addToRecord' | translate }}
+					{{ 'search.addToRecord' | translate }}
 				</button>
 			}
 			@else if(this.searchMode() === 'update') {
 				<button color="primary" (click)="updateFieldIfFound()">
-					{{ 'idrefSearch.updateRecord' | translate }}
+					{{ 'search.updateRecord' | translate }}
 				</button>
 			}
 			@if (!this.isTo902FormVisible()) {
 				<button color="primary" (click)="showTo902()">
-				{{ 'idrefSearch.showTo902' | translate }}
+				{{ 'search.showTo902' | translate }}
 			</button>
 			}
 			<button color="primary" (click)="clear()">
-				{{ 'idrefSearch.clear' | translate }}
+				{{ 'search.clear' | translate }}
 			</button>
 		</div>
 	</form>
