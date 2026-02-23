@@ -247,7 +247,7 @@ export class searchService {
     if (resetFormCallback) {
       resetFormCallback();
     }
-    this.alert.info(this.translate.instant('search.clear'), { delay: 1000 });
+    this.alert.info(this.translate.instant('search.clear'), { delay: 1000, autoClose: true });
   }
 
   /**

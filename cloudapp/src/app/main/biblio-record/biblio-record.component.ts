@@ -8,6 +8,8 @@ import { IdrefService } from '../../services/idref.service';
 import { searchService } from './search/search.service';
 import { SearchMode, SearchMode902 } from './search/model';
 import { IdrefRecordService } from '../entity-detail/idref-record/idref-record.service';
+import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
+import { TranslateService } from '@ngx-translate/core';
 
 //Composant pour afficher les notices bibliographique provenant de la NZ
 @Component({
@@ -23,6 +25,8 @@ export class BiblioRecordComponent {
 	private idrefService = inject(IdrefService);
 	private referenceCurrentField = inject(BiblioReferencedEntryService);
 	private idrefRecordService = inject(IdrefRecordService);
+	private alertService = inject(AlertService);
+	private translate = inject(TranslateService);
 	// ✅ BehaviorSubject pour allowedTags
 	private allowedTags = signal(MARC_STRUCTURE_KEY);
 
@@ -65,6 +69,12 @@ export class BiblioRecordComponent {
 	}
 
 	public deleteField(entry: BibRecordField): void {
+		if (!this.isDeleteAllowed(entry)) {
+			this.alertService.warn(this.translate.instant('search.deleteNotAllowed'), { delay: 3000, autoClose: true });
+
+			return;
+		}
+
 		const dialogRef = this.dialog.open(DeleteDialogComponent, {
 			width: '50px',
 			data: { entry },
@@ -82,6 +92,18 @@ export class BiblioRecordComponent {
 			//on récupère toutes les clés de MARC_STRUCTURE et on les mets dans un tableau pour les afficher dans le html
 			this.allowedTags.set(MARC_STRUCTURE_KEY);
 		}
+	}
+
+	private isDeleteAllowed(entry: BibRecordField): boolean {
+		const subfieldZeroValues = entry.subfields
+			.filter((subfield) => subfield.code === '0')
+			.map((subfield) => subfield.value.trim());
+
+		if (subfieldZeroValues.length === 0) {
+			return true;
+		}
+
+		return subfieldZeroValues.every((value) => value.includes('(IDREF)') || value.includes('(RERO)'));
 	}
 
 	private updateMarcFields(xmlString: string, allowedTagsArray: string[]): BibRecordField[] {
