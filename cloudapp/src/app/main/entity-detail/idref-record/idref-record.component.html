@@ -1,7 +1,10 @@
 <h2>{{ 'idrefRecord.title' | translate }}</h2>
 <form [formGroup]="searchForm">
-	<input placeholder="search index" formControlName="searchIndex" />
-
+	<select class="searchIndex" formControlName="searchIndex">
+		@for (indexLabel of searchIndexs.keys(); track indexLabel) {
+			<option [value]="indexLabel">{{ indexLabel }}</option>
+		}
+	</select>
 	<input placeholder="query" formControlName="constructedQuery" />
 
 	<mat-icon color="primary" fontIcon="search" (click)="onSearch()"></mat-icon>
@@ -17,10 +20,7 @@
 					aria-hidden="true"
 				>
 					<div class="idrefmarc-column">
-						<mat-icon
-							color="primary"
-							[svgIcon]="iconMap.get(doc.recordtype_z) ?? ''"
-						></mat-icon>
+						<mat-icon color="primary" [svgIcon]="iconMap.get(doc.recordtype_z) ?? ''"></mat-icon>
 					</div>
 					<div class="idrefmarc-column">
 						<span class="tag">{{ doc.ppn_z }}</span>
@@ -39,11 +39,7 @@
 				</div>
 			}
 
-			<mat-paginator
-				[length]="docs().length"
-				[pageSize]="pageSize()"
-				aria-label="Select page"
-			>
+			<mat-paginator [length]="docs().length" [pageSize]="pageSize()" aria-label="Select page">
 			</mat-paginator
 			><!--in order tout add translation on the button the paginator need a custom class-->
 		} @else {

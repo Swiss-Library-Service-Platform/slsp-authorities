@@ -11,7 +11,7 @@ export class IdrefRecordService {
 	private idrefService = inject(IdrefService);
 
 	// Formonnées du formulaire
-	public formSearchIndex = signal<string>('');
+	public formSearchIndex = signal<string>('all');
 	public formConstructedQuery = signal<string>('');
 
 	/**
@@ -144,7 +144,7 @@ export class IdrefRecordService {
 	}
 
 	public reset(): void {
-		this.formSearchIndex.set('');
+		this.formSearchIndex.set('all');
 		this.formConstructedQuery.set('');
 	}
 }

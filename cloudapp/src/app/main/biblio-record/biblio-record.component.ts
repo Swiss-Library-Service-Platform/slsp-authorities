@@ -28,11 +28,6 @@ export class BiblioRecordComponent {
 
 	// eslint-disable-next-line @typescript-eslint/member-ordering
 	public  BibRecordFields = computed(() => {
-			const entity = this.selectedEntity()
-
-			console.log(this.allowedTags())
-			console.log(entity)
-
 			const anie = this.selectedEntity()?.anies[0];
 
 			if(typeof anie === 'string'){

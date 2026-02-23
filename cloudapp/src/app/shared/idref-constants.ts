@@ -10,7 +10,7 @@ export const IDREF_RECORDTYPE_TO_ICON_MAP = new Map<string, string>([
 	['j', 'sujet'],
 	['d', 'nom_marque'],
 	['c', 'noms_geographiques'],
-	['v', 'forme_genre'] 
+	['v', 'forme_genre'], 
 ]);
 export const tagGroups: {
 	[groupName: string]: { tags: string[]; color: string };

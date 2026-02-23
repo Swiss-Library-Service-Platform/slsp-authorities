@@ -24,7 +24,7 @@ export class IconService {
       sujet: 'assets/icons/sujet.svg',
       nom_marque: 'assets/icons/nom_marque.svg',
       noms_geographiques: 'assets/icons/noms_geographiques.svg',
-      forme: 'assets/icons/forme.svg',
+      forme_genre: 'assets/icons/forme_genre.svg',
     };
 
     Object.entries(icons).forEach(([name, path]) => {
