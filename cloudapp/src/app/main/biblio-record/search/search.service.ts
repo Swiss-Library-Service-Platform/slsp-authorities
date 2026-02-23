@@ -9,8 +9,8 @@ import { NZQueryService } from '../../../services/nzquery.service';
 import { BiblioReferencedEntryService } from '../../../services/biblio-referenced-entry.service';
 import { LoadingIndicatorService } from '../../../services/loading-indicator.service';
 import { TranslateService } from '@ngx-translate/core';
-import { RecordService } from '../../../services/record.service';
 import { StringUtils } from '../../../utils/stringUtils';
+import { IdrefRecordService } from '../../entity-detail/idref-record/idref-record.service';
 
 @Injectable({
   providedIn: 'root'
@@ -28,7 +28,7 @@ export class searchService {
   private alert = inject(AlertService);
   private referenceCurrentField = inject(BiblioReferencedEntryService);
   private loader = inject(LoadingIndicatorService);
-  private recordService = inject(RecordService);
+  private idrefRecordService = inject(IdrefRecordService);
 
   public NZSelectedEntry = this.idrefService.NZSelectedEntry;
   public flattenedValue = this.idrefService.flattenedValue;
@@ -70,12 +70,18 @@ export class searchService {
    * Set the NZSelectedEntry in the idref service
    */
   public setNZSelectedEntry(values: FormValues): void {
+    let subfields = values.subfields;
+
+    if (!subfields.includes('$$')) {
+      subfields = '$$a ' + subfields;
+    }
+
     this.NZSelectedEntry.set({
       change: '',
       tag: values.tag,
       ind1: values.ind1,
       ind2: values.ind2,
-      subfields: this.parseFlattenedArray(values.subfields),
+      subfields: this.parseFlattenedArray(subfields),
     });
   }
 

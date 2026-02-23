@@ -78,6 +78,15 @@ export class IdrefRecordComponent {
 				{ emitEvent: false }
 			);
 		});
+
+		// ✅ Sync formulaire → signaux du service
+		this.searchForm.get('searchIndex')?.valueChanges.subscribe((value) => {
+			this.idrefRecordService.formSearchIndex.set(value);
+		});
+
+		this.searchForm.get('constructedQuery')?.valueChanges.subscribe((value) => {
+			this.idrefRecordService.formConstructedQuery.set(value);
+		});
 	}
 
 	public onStrictSearchChange(event: Event): void {

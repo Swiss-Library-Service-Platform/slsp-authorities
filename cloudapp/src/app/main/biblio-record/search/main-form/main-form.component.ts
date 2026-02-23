@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { NzBibRecord } from '../../../../models/bib-records';
 import { IdrefService } from '../../../../services/idref.service';
 import { searchService } from '../search.service';
+import { IdrefRecordService } from '../../../entity-detail/idref-record/idref-record.service';
 
 @Component({
 	selector: 'app-main-form',
@@ -17,6 +18,7 @@ export class MainFormComponent {
 
 	private idrefService = inject(IdrefService);
 	private searchService = inject(searchService);
+	private idrefRecordService = inject(IdrefRecordService);
 	private fb = inject(FormBuilder);
 
 	public readonly searchMode = this.searchService.searchMode;
@@ -50,14 +52,15 @@ export class MainFormComponent {
 	}
 
 	public onSearch(): void {
-		this.searchService.setNZSelectedEntry(this.searchForm.value);
-
 		const values = this.searchForm.value as {
 			tag: string;
 			ind1: string;
 			ind2: string;
 			subfields: string;
 		};
+
+		this.searchService.setNZSelectedEntry(values);
+
 		const subfields = values.subfields;
 		const regex = /\$\$0 \(IDREF\)(\d+)/;
 		const match = subfields.match(regex);
@@ -67,9 +70,20 @@ export class MainFormComponent {
 
 			this.idrefService.searchWithPPN(ppn);
 		} else {
-			const searchParams = this.idrefService.getMarcStructure();
+			// Obtenir les valeurs calculées à partir des signaux
+			const searchIndex = this.idrefService.getMarcStructure()?.label ?? '';
+			const constructedQueryValue = this.idrefRecordService.buildQueryInputValue()();
 
-			this.idrefService.calculatedSearch(searchParams);
+			// Mettre à jour les signaux du formulaire
+			this.idrefRecordService.setFormValues(searchIndex, constructedQueryValue);
+
+			// Lancer la recherche
+			const query = this.idrefRecordService.buildQueryFromFormValues(
+				searchIndex,
+				constructedQueryValue
+			);
+
+			this.idrefService.searchFromQuery(query);
 		}
 	}
 
