@@ -154,7 +154,7 @@ export class IdrefRecordService {
 			// Ajout d'un nouveau sous-champ $$0
 			newValues.push({
 				code: 'a',
-				value: `${affcourt_z}`,
+				value: `${affcourt_z.split(',')[0]}`,
 			});
 		}
 
