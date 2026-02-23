@@ -118,6 +118,11 @@ export class searchService {
    * Met à jour un champ uniquement s'il existe.
    */
   public updateFieldIfFound(formValues: FormValues): void {
+    if (!this.isUpdateAllowed(formValues)) {
+      this.alert.warn(this.translate.instant('search.updateNotAllowed'), { delay: 1000 });
+
+      return;
+    }
     this.loader.show();
 
     const reference = this.referenceCurrentField.getSavedCurrentEntry();
@@ -250,8 +255,20 @@ export class searchService {
    */
   public reset(): void {
     this.isTo902FormVisible.set(false);
-    this.searchMode902.set(SearchMode902.Add902);
+    this.searchMode902.set(SearchMode902.Add902); 
     this.searchMode.set(SearchMode.AddField);
     this.idrefService.reset();
+  }
+  private isUpdateAllowed(formValues: FormValues): boolean {
+    const subfieldZeroValues = Array.from(
+      formValues.subfields.matchAll(/\$\$0\s*\(([^)]*)\)/g),
+      ([, value]) => value.trim()
+    );
+
+    if (subfieldZeroValues.length === 0) {
+      return true;
+    }
+
+    return subfieldZeroValues.every((value) => value === 'IDREF' || value === 'RERO');
   }
 }
