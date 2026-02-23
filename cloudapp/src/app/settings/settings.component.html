@@ -1,18 +1,22 @@
+<div buttons class="settings-buttons">
+	<button mat-stroked-button type="button" [routerLink]="['/']">{{ 'settings.return' | translate }}</button>
+</div>
+
 @if (form) {
 	<div class="settings-container">
 		<form [formGroup]="form" class="settings-form">
 			<section class="settings-section">
-				<h2 class="settings-title">Paramètres généraux</h2>
+				<h2 class="settings-title">{{ 'settings.generalTitle' | translate }}</h2>
 
 				<!-- pageSize -->
 				<div class="settings-field">
-					<label for="pageSize">Taille de page</label>
+					<label for="pageSize">{{ 'settings.pageSize' | translate }}</label>
 					<input id="pageSize" type="number" formControlName="pageSize" step="5" />
 				</div>
 
 				<!-- searchRowNumber -->
 				<div class="settings-field">
-					<label for="searchRowNumber">Taille de la requête IdRef</label>
+					<label for="searchRowNumber">{{ 'settings.searchRowNumber' | translate }}</label>
 					<input
 						id="searchRowNumber"
 						type="number"
@@ -23,8 +27,14 @@
 
 				<!-- proxyUrl -->
 				<div class="settings-field">
-					<label for="proxyUrl">Proxy URL</label>
+					<label for="proxyUrl">{{ 'settings.proxyUrl' | translate }}</label>
 					<input id="proxyUrl" type="text" formControlName="proxyUrl" />
+				</div>
+
+				<!-- userSignature -->
+				<div class="settings-field">
+					<label for="userSignature">{{ 'settings.userSignature' | translate }}</label>
+					<input id="userSignature" type="text" formControlName="userSignature" />
 				</div>
 			</section>
 		</form>
@@ -43,6 +53,6 @@
 		(click)="save()"
 		[disabled]="!form || saving"
 	>
-		Save
+		{{ 'settings.save' | translate }}
 	</button>
 </div>

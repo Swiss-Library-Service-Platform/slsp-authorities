@@ -15,6 +15,7 @@ export class SettingsComponent implements OnInit{
 
   private settingsService = inject(CloudAppSettingsService);
   private alert = inject(AlertService);
+  
 
   public ngOnInit(): void {
     this.settingsService.get().subscribe( settings => {

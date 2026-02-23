@@ -61,5 +61,14 @@
 	},
 	"proxyService": {
 		"deleteSuccess": "Delete with sucess"
+	},
+	"settings": {
+		"return": "Return",
+		"generalTitle": "General settings",
+		"pageSize": "Page size",
+		"searchRowNumber": "IdRef query size",
+		"proxyUrl": "Proxy URL",
+		"userSignature": "User Signature",
+		"save": "Save"
 	}
 }

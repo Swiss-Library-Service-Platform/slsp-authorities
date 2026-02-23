@@ -32,7 +32,7 @@ export class To902FormComponent {
 	public readonly searchMode902 = this.searchService.searchMode902;
 	public readonly searchMode = this.searchService.searchMode;
 	public readonly NZSelectedEntry = this.searchService.NZSelectedEntry;
-	public userInitial = signal('');
+	public userSignature = signal('');
 
 	public defaultPurpose = computed(() => {
 		if (this.NZSelectedEntry()?.tag === '902') {
@@ -68,7 +68,7 @@ export class To902FormComponent {
 
 	public constructor() {
 		this.settingsService.get().subscribe(settings => {
-   			this.userInitial.set((settings as Settings).userInitial);
+   			this.userSignature.set((settings as Settings).userSignature);
   		});
 
 		this.searchForm = this.fb.group({
@@ -76,7 +76,7 @@ export class To902FormComponent {
 			ind1: [{ value: ' ', disabled: true }],
 			ind2: [{ value: ' ', disabled: true }],
 			purpose: [this.defaultPurpose()],
-			userInitial: [this.userInitial()],
+			userSignature: [this.userSignature()],
 			subfields: [''],
 		});
 
@@ -90,7 +90,7 @@ export class To902FormComponent {
 					{
 						subfields: this.predifinedContent(),
 						purpose, // ⚠️ plus de [ ... ], c'est une string
-						userInitial: this.userInitial(),
+						userSignature: this.userSignature(),
 					},
 					{ emitEvent: false }
 				);
@@ -105,7 +105,7 @@ export class To902FormComponent {
 			tag: rawValue.tag,
 			ind1: rawValue.ind1,
 			ind2: rawValue.ind2,
-			subfields: `$$a ${purpose} $$b ${rawValue.subfields} $$5 ${this.userInitial()}`,
+			subfields: `$$a ${purpose} $$b ${rawValue.subfields} $$5 ${this.userSignature()}`,
 		};
 
 		this.searchService.updateFieldIfFound(finalValues);
@@ -118,7 +118,7 @@ export class To902FormComponent {
 			tag: rawValue.tag,
 			ind1: rawValue.ind1,
 			ind2: rawValue.ind2,
-			subfields: `$$a ${purpose} $$b ${rawValue.subfields} $$5 ${this.userInitial()}`,
+			subfields: `$$a ${purpose} $$b ${rawValue.subfields} $$5 ${this.userSignature()}`,
 		};
 
 		this.searchService.createFieldIfNotFound(finalValues);
