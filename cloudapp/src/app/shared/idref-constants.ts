@@ -53,7 +53,7 @@ export const MARC_STRUCTURE = new Map<string, MarcStructureValues>([
 	['651|  ', { label: 'Nom géographique', filters: ['geoname_t'], recordtypes: ['c'] }],
 	['751|  ', { label: 'Nom géographique', filters: ['geoname_t'], recordtypes: ['c'] }],
 
-	['655|  ', { label: 'Forme / genre', filters: ['formgenreheading_t'], recordtypes: ['v'] }],
+	['655|  ', { label: 'Forme / genre', filters: ['formgenreheading_t'], recordtypes: ['l'] }],
 	['902|  ', { label: '', filters: [''], recordtypes: ['']}],
 ]);
 
