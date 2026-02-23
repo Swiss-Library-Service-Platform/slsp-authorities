@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 import { Injectable, inject, Signal, computed, signal } from '@angular/core';
-import { IDREF_FILTER_MAP, IDREF_RECORDTYPE_MAP } from '../../../models/idref-model';
+import { Doc, IDREF_FILTER_MAP, IDREF_RECORDTYPE_MAP } from '../../../models/idref-model';
 import { IdrefService } from '../../../services/idref.service';
 import { BibRecordField } from '../../../models/bib-records';
 
@@ -100,8 +100,10 @@ export class IdrefRecordService {
 	/**
 	 * Met à jour l'entry sélectionnée avec le PPN fourni
 	 */
-	public updateSelectedEntryWithPPN(ppn_z: string): void {
+	public updateSelectedEntryWithPPN(doc: Doc): void {
 		const selectedEntry = this.idrefService.NZSelectedEntry();
+		const ppn_z = doc.ppn_z
+		const affcourt_z = doc.affcourt_z
 		
 		//TODO: c'est le cas où on crée un nouveaux champ dans la notice biblio
 		if (!selectedEntry) {
@@ -125,12 +127,28 @@ export class IdrefRecordService {
 				value: `(IDREF)${ppn_z}`,
 			});
 		}
+		
+		const current$$aIndex = newValues.findIndex((subfield) => subfield.code === 'a');
+
+		if (current$$aIndex !== -1) {
+			// Mise à jour de la valeur existante
+			newValues[current$$aIndex] = {
+				...newValues[current$$aIndex],
+				value: `${affcourt_z}`,
+			};
+		} else {
+			// Ajout d'un nouveau sous-champ $$0
+			newValues.push({
+				code: 'a',
+				value: `${affcourt_z}`,
+			});
+		}
 
 		if(selectedEntry.tag.match(/^6\d\d$/) && !newValues.some(subfield => subfield.code === '2')) {
 		// Ajout d'un nouveau sous-champ $$2
 			newValues.push({
 				code: '2',
-				value: `idref `,
+				value: `idref`,
 			});
 		}
 

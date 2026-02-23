@@ -89,8 +89,8 @@ export class IdrefRecordComponent {
     });
   }
 
-  public pushTobiblioRecordForm(ppn_z: string): void {
-    this.idrefRecordService.updateSelectedEntryWithPPN(ppn_z);
+  public pushTobiblioRecordForm(doc: Doc): void {
+    this.idrefRecordService.updateSelectedEntryWithPPN(doc);
   }
 
   public onSearch(): void {
