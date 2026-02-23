@@ -23,7 +23,7 @@ export class IconService {
       auteur_titre: 'assets/icons/auteur_titre.svg',
       sujet: 'assets/icons/sujet.svg',
       nom_marque: 'assets/icons/nom_marque.svg',
-      noms_geographiques: 'assets/icons/noms_geographiques.svg',
+      nom_geographique: 'assets/icons/nom_geographique.svg',
       forme_genre: 'assets/icons/forme_genre.svg',
     };
 
