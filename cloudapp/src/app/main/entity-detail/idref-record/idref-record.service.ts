@@ -15,16 +15,16 @@ export class IdrefRecordService {
 	public formConstructedQuery = signal<string>('');
 	public formIsStrictSearch = signal<boolean>(false);
 
-	private realFormSearchIndex = computed(() =>{
-		const suffixe = this.formIsStrictSearch() ? '_s':'_t';
+	private realFormSearchIndex = computed(() => {
+		const suffixe = this.formIsStrictSearch() ? '_s' : '_t';
 		const searchIndex = IDREF_FILTER_MAP.get(this.formSearchIndex());
-		
-		if(searchIndex !== 'all'){
+
+		if (searchIndex !== 'all') {
 			return `${searchIndex}${suffixe}`;
-		}else{
+		} else {
 			return searchIndex;
 		}
-	})
+	});
 
 	/**
 	 * Construit la valeur d'input de query à partir des valeurs de filtres
@@ -75,8 +75,6 @@ export class IdrefRecordService {
 	 * Construit la query Solr à partir des valeurs du formulaire de recherche
 	 */
 	public buildQueryFromFormValues(searchIndex: string, constructedQuery: string): string {
-		console.log('suiashaiush',this.formSearchIndex())
-
 		const queryValues = constructedQuery.split(',');
 		let dateNaissance = '';
 		let dateMort = '';
@@ -90,10 +88,12 @@ export class IdrefRecordService {
 				dateNaissance = matches[0] ? ` AND ${matches[0].trim()}` : '';
 				dateMort = matches[1] ? ` AND ${matches[1].trim()}` : '';
 			} else {
-				if (query.length > 0) {
-					query = `${query} AND ${value.trim()}`;
-				} else {
-					query = value.trim();
+				if (value.trim().length !== 0) {
+					if (query.length > 0) {
+						query = `${query} AND ${value.trim()}`;
+					} else {
+						query = value.trim();
+					}
 				}
 			}
 		});
@@ -116,9 +116,9 @@ export class IdrefRecordService {
 	 */
 	public updateSelectedEntryWithPPN(doc: Doc): void {
 		const selectedEntry = this.idrefService.NZSelectedEntry();
-		const ppn_z = doc.ppn_z
-		const affcourt_z = doc.affcourt_z
-		
+		const ppn_z = doc.ppn_z;
+		const affcourt_z = doc.affcourt_z;
+
 		//TODO: c'est le cas où on crée un nouveaux champ dans la notice biblio
 		if (!selectedEntry) {
 			return;
@@ -158,8 +158,11 @@ export class IdrefRecordService {
 			});
 		}
 
-		if(selectedEntry.tag.match(/^6\d\d$/) && !newValues.some(subfield => subfield.code === '2')) {
-		// Ajout d'un nouveau sous-champ $$2
+		if (
+			selectedEntry.tag.match(/^6\d\d$/) &&
+			!newValues.some((subfield) => subfield.code === '2')
+		) {
+			// Ajout d'un nouveau sous-champ $$2
 			newValues.push({
 				code: '2',
 				value: `idref`,
