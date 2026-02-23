@@ -6,8 +6,9 @@
 		}
 	</select>
 	<input placeholder="query" formControlName="constructedQuery" />
-
 	<mat-icon color="primary" fontIcon="search" (click)="onSearch()"></mat-icon>
+	<input type="checkbox" formControlName="isStrictSearch" (change)="onStrictSearchChange($event)"/>
+	<label for="isStrictSearch">{{ 'idrefRecord.isStrictSearch' | translate }}</label>
 </form>
 
 @if (idrefResult()) {

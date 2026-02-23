@@ -13,6 +13,18 @@ export class IdrefRecordService {
 	// Formonnées du formulaire
 	public formSearchIndex = signal<string>('all');
 	public formConstructedQuery = signal<string>('');
+	public formIsStrictSearch = signal<boolean>(false);
+
+	private realFormSearchIndex = computed(() =>{
+		const suffixe = this.formIsStrictSearch() ? '_s':'_t';
+		const searchIndex = IDREF_FILTER_MAP.get(this.formSearchIndex());
+		
+		if(searchIndex !== 'all'){
+			return `${searchIndex}${suffixe}`;
+		}else{
+			return searchIndex;
+		}
+	})
 
 	/**
 	 * Construit la valeur d'input de query à partir des valeurs de filtres
@@ -63,6 +75,8 @@ export class IdrefRecordService {
 	 * Construit la query Solr à partir des valeurs du formulaire de recherche
 	 */
 	public buildQueryFromFormValues(searchIndex: string, constructedQuery: string): string {
+		console.log('suiashaiush',this.formSearchIndex())
+
 		const queryValues = constructedQuery.split(',');
 		let dateNaissance = '';
 		let dateMort = '';
@@ -89,7 +103,7 @@ export class IdrefRecordService {
 		const recordTypeCharac = IDREF_RECORDTYPE_MAP.get(searchIndex);
 
 		if (recordTypeCharac && recordTypeCharac.length > 0) {
-			query = `${IDREF_FILTER_MAP.get(searchIndex)}:${query} AND recordtype_z:${recordTypeCharac}`;
+			query = `${this.realFormSearchIndex()}:${query} AND recordtype_z:${recordTypeCharac}`;
 		} else {
 			query = `all:${query}`;
 		}
@@ -127,7 +141,7 @@ export class IdrefRecordService {
 				value: `(IDREF)${ppn_z}`,
 			});
 		}
-		
+
 		const current$$aIndex = newValues.findIndex((subfield) => subfield.code === 'a');
 
 		if (current$$aIndex !== -1) {

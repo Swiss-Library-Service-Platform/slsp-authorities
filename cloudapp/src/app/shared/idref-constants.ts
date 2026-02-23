@@ -22,38 +22,38 @@ export const tagGroups: {
 
 
 export const MARC_STRUCTURE = new Map<string, MarcStructureValues>([
-	['100|0 ', { label: 'Personne', filters: ['persname_t', 'datenaisance_dt', 'datemort_dt'], recordtypes: ['a'] }],
-	['100|1 ', { label: 'Personne', filters: ['persname_t', 'datenaisance_dt', 'datemort_dt'], recordtypes: ['a'] }],
-	['700|0 ', { label: 'Personne', filters: ['persname_t', 'datenaisance_dt', 'datemort_dt'], recordtypes: ['a'] }],
-	['700|1 ', { label: 'Personne', filters: ['persname_t', 'datenaisance_dt', 'datemort_dt'], recordtypes: ['a'] }],
-	['600|0 ', { label: 'Personne', filters: ['persname_t', 'datenaisance_dt', 'datemort_dt'], recordtypes: ['a'] }],
-	['600|1 ', { label: 'Personne', filters: ['persname_t', 'datenaisance_dt', 'datemort_dt'], recordtypes: ['a'] }],
+	['100|0 ', { label: 'Personne', filters: ['persname', 'datenaisance_dt', 'datemort_dt'], recordtypes: ['a'] }],
+	['100|1 ', { label: 'Personne', filters: ['persname', 'datenaisance_dt', 'datemort_dt'], recordtypes: ['a'] }],
+	['700|0 ', { label: 'Personne', filters: ['persname', 'datenaisance_dt', 'datemort_dt'], recordtypes: ['a'] }],
+	['700|1 ', { label: 'Personne', filters: ['persname', 'datenaisance_dt', 'datemort_dt'], recordtypes: ['a'] }],
+	['600|0 ', { label: 'Personne', filters: ['persname', 'datenaisance_dt', 'datemort_dt'], recordtypes: ['a'] }],
+	['600|1 ', { label: 'Personne', filters: ['persname', 'datenaisance_dt', 'datemort_dt'], recordtypes: ['a'] }],
 
-	['110|  ', { label: 'Collectivité', filters: ['corpname_t'], recordtypes: ['b'] }],
-	['610|  ', { label: 'Collectivité', filters: ['corpname_t'], recordtypes: ['b'] }],
-	['710|  ', { label: 'Collectivité', filters: ['corpname_t'], recordtypes: ['b'] }],
+	['110|  ', { label: 'Collectivité', filters: ['corpname'], recordtypes: ['b'] }],
+	['610|  ', { label: 'Collectivité', filters: ['corpname'], recordtypes: ['b'] }],
+	['710|  ', { label: 'Collectivité', filters: ['corpname'], recordtypes: ['b'] }],
 
-	['111|  ', { label: 'Congrès', filters: ['conference_t'], recordtypes: ['b'] }],
-	['611|  ', { label: 'Congrès', filters: ['conference_t'], recordtypes: ['b'] }],
-	['711|  ', { label: 'Congrès', filters: ['conference_t'], recordtypes: ['b'] }],
+	['111|  ', { label: 'Congrès', filters: ['conference'], recordtypes: ['b'] }],
+	['611|  ', { label: 'Congrès', filters: ['conference'], recordtypes: ['b'] }],
+	['711|  ', { label: 'Congrès', filters: ['conference'], recordtypes: ['b'] }],
 
-	['100|3 ', { label: 'Famille', filters: ['famname_t'], recordtypes: ['e'] }],
-	['600|3 ', { label: 'Famille', filters: ['famname_t'], recordtypes: ['e'] }],
-	['700|3 ', { label: 'Famille', filters: ['famname_t'], recordtypes: ['e'] }],
+	['100|3 ', { label: 'Famille', filters: ['famname'], recordtypes: ['e'] }],
+	['600|3 ', { label: 'Famille', filters: ['famname'], recordtypes: ['e'] }],
+	['700|3 ', { label: 'Famille', filters: ['famname'], recordtypes: ['e'] }],
 
-	['130|  ', { label: 'Titre uniforme', filters: ['uniformtitle_t'], recordtypes: ['f'] }],
-	['630|  ', { label: 'Titre uniforme', filters: ['uniformtitle_t'], recordtypes: ['f'] }],
-	['730|  ', { label: 'Titre uniforme', filters: ['uniformtitle_t'], recordtypes: ['f'] }],
+	['130|  ', { label: 'Titre uniforme', filters: ['uniformtitle'], recordtypes: ['f'] }],
+	['630|  ', { label: 'Titre uniforme', filters: ['uniformtitle'], recordtypes: ['f'] }],
+	['730|  ', { label: 'Titre uniforme', filters: ['uniformtitle'], recordtypes: ['f'] }],
 
-	['600|1 |a,t', { label: 'Auteur / titre', filters: ['nametitle_t'], recordtypes: ['h'] }],
-	['600|0 |a,t', { label: 'Auteur / titre', filters: ['nametitle_t'], recordtypes: ['h'] }],
+	['600|1 |a,t', { label: 'Auteur / titre', filters: ['nametitle'], recordtypes: ['h'] }],
+	['600|0 |a,t', { label: 'Auteur / titre', filters: ['nametitle'], recordtypes: ['h'] }],
 
-	['650|  ', { label: 'Sujet', filters: ['subjectheading_t'], recordtypes: ['j'] }],
+	['650|  ', { label: 'Sujet', filters: ['subjectheading'], recordtypes: ['j'] }],
 
-	['651|  ', { label: 'Nom géographique', filters: ['geoname_t'], recordtypes: ['c'] }],
-	['751|  ', { label: 'Nom géographique', filters: ['geoname_t'], recordtypes: ['c'] }],
+	['651|  ', { label: 'Nom géographique', filters: ['geoname'], recordtypes: ['c'] }],
+	['751|  ', { label: 'Nom géographique', filters: ['geoname'], recordtypes: ['c'] }],
 
-	['655|  ', { label: 'Forme / genre', filters: ['formgenreheading_t'], recordtypes: ['l'] }],
+	['655|  ', { label: 'Forme / genre', filters: ['formgenreheading'], recordtypes: ['l'] }],
 	['902|  ', { label: '', filters: [''], recordtypes: ['']}],
 ]);
 

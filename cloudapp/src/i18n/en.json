@@ -46,7 +46,8 @@
 		"noIdrefAuthority": "There is no authority record linked to this PPN.",
 		"paginatorNext": "next page",
 		"NoCurrentSearch": "There are no search results yet.",
-		"view": "View"
+		"view": "View",
+		"isStrictSearch": "Strict"
 	},
 	"idrefEntryDetails": {
 		"title": "Details of Idref entry",
