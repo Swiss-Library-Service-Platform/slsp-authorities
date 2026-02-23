@@ -1,0 +1,73 @@
+{
+	"main": {
+		"rightIssue": "Vous n'avez pas les droits nécessaires pour utiliser cette Cloud App",
+		"actionMessage": "Démo",
+		"actionButtonLabel": "Action principale",
+		"detailsButtonLabel": "Détails",
+		"resetButtonLabel": "Réinitialiser",
+		"noEntities": "Aucune entité",
+		"searchButtonLabel": "Recherche IdRef",
+		"noActiveRecordInMetadataEditor": "Aucun enregistrement actif, veuillez ouvrir une notice bibliographique dans l'éditeur de métadonnées",
+		"entity": {
+			"description": "Description",
+			"id": "Id",
+			"type": "Type",
+			"link": "Lien"
+		},
+		"acceptRefreshModal": "Attention ! N'oubliez pas de cliquer sur accepter l'actualisation."
+	},
+	"error": {
+		"httpError": "Une erreur s'est produite avec la requête HTTP",
+		"restApiError": "Erreur API REST : {{0}}",
+		"catalogerRoleError": "Vous avez besoin du rôle de catalogueur pour utiliser cette Cloud App",
+		"institutionAllowedError": "Votre institution n'est pas autorisée à utiliser cette Cloud App",
+		"noSelectedEntry": "Aucune entrée sélectionnée"
+	},
+	"search": {
+		"addToRecord": "Ajouter",
+		"to902": "Vers 902",
+		"clear": "Effacer",
+		"notImplemented": "Pas encore implémenté",
+		"noSelectedEntry": "Aucune entrée sélectionnée",
+		"recordAdded": "La notice a été mise à jour.",
+		"acceptRefreshModal": "Attention ! N'oubliez pas de cliquer sur accepter l'actualisation.",
+		"updateRecord": "Mettre à jour",
+		"hideTo902": "Masquer",
+		"showTo902": "Créer 902"
+	},
+	"biblioRecord": {
+		"title": "Zones liées aux autorités",
+		"notImplemented": "Pas encore implémenté"
+	},
+	"idrefRecord": {
+		"title": "Recherche Idref",
+		"select": "Sélectionner",
+		"noIdrefAuthority": "Aucune notice d'autorité n'est liée à ce PPN.",
+		"paginatorNext": "page suivante",
+		"NoCurrentSearch": "Il n'y a pas encore de résultats de recherche.",
+		"view": "Voir",
+		"isStrictSearch": "Strict"
+	},
+	"idrefEntryDetails": {
+		"title": "Détails de l'entrée Idref",
+		"NoCurrentDetails": "Effectuez une recherche pour afficher les détails"
+	},
+	"deleteDialog": {
+		"title": "Confirmer la suppression",
+		"content": "Êtes-vous sûr de vouloir supprimer cette notice ?",
+		"no": "Annuler",
+		"ok": "Supprimer"
+	},
+	"proxyService": {
+		"deleteSuccess": "Suppression réussie"
+	},
+	"settings": {
+		"return": "Retour",
+		"generalTitle": "Paramètres généraux",
+		"pageSize": "Taille de page",
+		"searchRowNumber": "Taille de la requête IdRef",
+		"proxyUrl": "URL du proxy",
+		"userSignature": "Signature utilisateur",
+		"save": "Enregistrer"
+	}
+}

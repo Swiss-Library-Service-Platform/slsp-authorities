@@ -1,19 +1,73 @@
 {
 	"main": {
+		"rightIssue": "Sie haben keine Berechtigung, diese Cloud App zu verwenden",
 		"actionMessage": "Demo",
 		"actionButtonLabel": "Primär-Aktion",
 		"detailsButtonLabel": "Details",
-		"resetButtonLabel": "Reset",
+		"resetButtonLabel": "Zurücksetzen",
 		"noEntities": "Keine Elemente",
+		"searchButtonLabel": "Idref-Suche",
 		"noActiveRecordInMetadataEditor": "Kein aktiver Datensatz, bitte öffnen Sie einen bibliografischen Datensatz im Metadaten-Editor.",
 		"entity": {
 			"description": "Beschreibung",
 			"id": "Id",
-			"type": "Type",
+			"type": "Typ",
 			"link": "Link"
-		}
+		},
+		"acceptRefreshModal": "Achtung! Vergessen Sie nicht, auf 'Aktualisierung akzeptieren' zu klicken."
 	},
 	"error": {
-		"restApiError": "Fehler bei der REST-API: {{0}}"
+		"httpError": "Bei der HTTP-Anfrage ist ein Fehler aufgetreten",
+		"restApiError": "REST-API-Fehler: {{0}}",
+		"catalogerRoleError": "Sie benötigen die Katalogisiererrolle, um diese Cloud App zu verwenden",
+		"institutionAllowedError": "Ihre Institution ist nicht berechtigt, diese Cloud App zu verwenden",
+		"noSelectedEntry": "Kein Eintrag ausgewählt"
+	},
+	"search": {
+		"addToRecord": "Hinzufügen",
+		"to902": "Zu 902",
+		"clear": "Löschen",
+		"notImplemented": "Noch nicht implementiert",
+		"noSelectedEntry": "Kein Eintrag ausgewählt",
+		"recordAdded": "Der Datensatz wurde aktualisiert.",
+		"acceptRefreshModal": "Achtung! Vergessen Sie nicht, auf 'Aktualisierung akzeptieren' zu klicken.",
+		"updateRecord": "Aktualisieren",
+		"hideTo902": "Ausblenden",
+		"showTo902": "902 erstellen"
+	},
+	"biblioRecord": {
+		"title": "Autoritätsbezogene Felder",
+		"notImplemented": "Noch nicht implementiert"
+	},
+	"idrefRecord": {
+		"title": "Idref-Suche",
+		"select": "Auswählen",
+		"noIdrefAuthority": "Mit dieser PPN ist kein Normdatensatz verknüpft.",
+		"paginatorNext": "nächste Seite",
+		"NoCurrentSearch": "Es liegen noch keine Suchergebnisse vor.",
+		"view": "Anzeigen",
+		"isStrictSearch": "Strikt"
+	},
+	"idrefEntryDetails": {
+		"title": "Details des Idref-Eintrags",
+		"NoCurrentDetails": "Suchen Sie, um Details anzuzeigen"
+	},
+	"deleteDialog": {
+		"title": "Löschen bestätigen",
+		"content": "Möchten Sie diesen Datensatz wirklich löschen?",
+		"no": "Abbrechen",
+		"ok": "Löschen"
+	},
+	"proxyService": {
+		"deleteSuccess": "Erfolgreich gelöscht"
+	},
+	"settings": {
+		"return": "Zurück",
+		"generalTitle": "Allgemeine Einstellungen",
+		"pageSize": "Seitengröße",
+		"searchRowNumber": "IdRef-Abfragegröße",
+		"proxyUrl": "Proxy-URL",
+		"userSignature": "Benutzersignatur",
+		"save": "Speichern"
 	}
 }
