@@ -105,7 +105,13 @@ export class IdrefRecordService {
 		if (recordTypeCharac && recordTypeCharac.length > 0) {
 			query = `${this.realFormSearchIndex()}:${query} AND recordtype_z:(${recordTypeCharac})`;
 		} else {
-			query = `all:${query}`;
+			const allRecordTypes = Array.from(IDREF_RECORDTYPE_MAP.values()).join(' OR ');
+
+			if (allRecordTypes.length > 0) {
+				query = `all:${query} AND recordtype_z:(${allRecordTypes})`;
+			} else {
+				query = `all:${query}`;
+			}
 		}
 
 		return query;
