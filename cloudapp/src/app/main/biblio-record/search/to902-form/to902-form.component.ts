@@ -4,7 +4,7 @@ import { NzBibRecord } from '../../../../models/bib-records';
 import { searchService } from '../search.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { FormValues } from '../model';
-import { CloudAppSettingsService } from '@exlibris/exl-cloudapp-angular-lib';
+import { CloudAppEventsService, CloudAppSettingsService } from '@exlibris/exl-cloudapp-angular-lib';
 import { Settings } from '../../../../models/setting';
 
 export enum to902$$aFields {
@@ -27,12 +27,14 @@ export class To902FormComponent {
 
 	private searchService = inject(searchService);
 	private settingsService = inject(CloudAppSettingsService);
+	private eventService = inject(CloudAppEventsService);
 	private fb = inject(FormBuilder);
 
 	public readonly searchMode902 = this.searchService.searchMode902;
 	public readonly searchMode = this.searchService.searchMode;
 	public readonly NZSelectedEntry = this.searchService.NZSelectedEntry;
 	public userSignature = signal('');
+	public IZCode = signal('');
 
 	public defaultPurpose = computed(() => {
 		if (this.NZSelectedEntry()?.tag === '902') {
@@ -70,6 +72,14 @@ export class To902FormComponent {
 		this.settingsService.get().subscribe(settings => {
    			this.userSignature.set((settings as Settings).userSignature);
   		});
+		this.eventService.getInitData().subscribe((initData) => {
+			//tout ce qui est après le premier _
+			console.log('Init data received: ', initData);
+
+			const instCode = initData.instCode.split('_')[1] || initData.instCode;
+
+			this.IZCode.set(instCode);
+		});
 
 		this.searchForm = this.fb.group({
 			tag: [{ value: '902', disabled: true }],
@@ -101,11 +111,13 @@ export class To902FormComponent {
 	public updateFieldIfFound(): void {
 		const purpose = this.searchForm.get('purpose')?.value;
 		const rawValue = this.searchForm.getRawValue() as FormValues;
+		//date au format aaaammjj
+		const date = new Date().toISOString().slice(0, 10).replace(/-/g, '');
 		const finalValues: FormValues = {
 			tag: rawValue.tag,
 			ind1: rawValue.ind1,
 			ind2: rawValue.ind2,
-			subfields: `$$a ${purpose} $$b ${rawValue.subfields} $$5 ${this.userSignature()}`,
+			subfields: `$$a ${purpose} $$b ${rawValue.subfields} $$5 ${this.IZCode()}/${date}/${this.userSignature()}`,
 		};
 
 		this.searchService.updateFieldIfFound(finalValues);
@@ -114,11 +126,13 @@ export class To902FormComponent {
 	public createFieldIfNotFound(): void {
 		const purpose = this.searchForm.get('purpose')?.value;
 		const rawValue = this.searchForm.getRawValue() as FormValues;
+		//date au format aaaammjj
+		const date = new Date().toISOString().slice(0, 10).replace(/-/g, '');
 		const finalValues: FormValues = {
 			tag: rawValue.tag,
 			ind1: rawValue.ind1,
 			ind2: rawValue.ind2,
-			subfields: `$$a ${purpose} $$b ${rawValue.subfields} $$5 ${this.userSignature()}`,
+			subfields: `$$a ${purpose} $$b ${rawValue.subfields} $$5 ${this.IZCode()}/${date}/${this.userSignature()}`,
 		};
 
 		this.searchService.createFieldIfNotFound(finalValues);
