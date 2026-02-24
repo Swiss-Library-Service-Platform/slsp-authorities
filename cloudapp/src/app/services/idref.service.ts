@@ -73,12 +73,6 @@ export class IdrefService {
 		});
 	}
 
-	public calculatedSearch(searchParams: MarcStructureValues | undefined): void {
-		const query = this.buildQuery(searchParams);
-
-		this.searchAuthorities(query).subscribe({ next: (r) => this.idrefResult.set(r) });
-	}
-
 	//permet de récuperer la strucutre lié
 	public getMarcStructure(): MarcStructureValues | undefined {
 		const codes: string[] = [];
@@ -109,27 +103,5 @@ export class IdrefService {
 		this.idrefResult.set(undefined);
 		this.NZSelectedEntry.set(undefined);
 		this.idrefAuthorityDetail.set(undefined);
-	}
-
-	//fonction qui renvoie la chaine de charactere qui permettra de faire le recherche via Solr
-	private buildQuery(searchParams: MarcStructureValues | undefined): string {
-		let query = '';
-		const recordTypes = searchParams?.recordtypes;
-		
-		console.log('recordTypes', recordTypes);
-
-		const recordTypeFilter = recordTypes ? `${recordTypes.join(' OR ')}` : '';
-		const filter = searchParams?.filters;
-
-		if (filter && filter.length > 1) {
-			console.error('Pas encore développé');
-		} else if (filter && recordTypes) {
-			query = `${filter[0]}:${this.NZSelectedEntry()?.subfields[0].value} AND recordtype_z:${recordTypeFilter}`;
-
-			return query;
-		}
-		console.error("il n'y a pas de filtre, il y a eu un problème");
-
-		return query;
 	}
 }
