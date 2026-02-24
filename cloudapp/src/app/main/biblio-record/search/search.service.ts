@@ -4,13 +4,12 @@ import { AlertService, CloudAppEventsService } from '@exlibris/exl-cloudapp-angu
 import { catchError, of, switchMap, tap } from 'rxjs';
 import { IdrefService } from '../../../services/idref.service';
 import { FormValues, SearchMode, SearchMode902 } from './model';
-import { DataField } from '../../../models/bib-records';
+import { BibRecordField, DataField } from '../../../models/bib-records';
 import { NZQueryService } from '../../../services/nzquery.service';
 import { BiblioReferencedEntryService } from '../../../services/biblio-referenced-entry.service';
 import { LoadingIndicatorService } from '../../../services/loading-indicator.service';
 import { TranslateService } from '@ngx-translate/core';
 import { StringUtils } from '../../../utils/stringUtils';
-import { IdrefRecordService } from '../../entity-detail/idref-record/idref-record.service';
 
 @Injectable({
   providedIn: 'root'
@@ -28,7 +27,6 @@ export class searchService {
   private alert = inject(AlertService);
   private referenceCurrentField = inject(BiblioReferencedEntryService);
   private loader = inject(LoadingIndicatorService);
-  private idrefRecordService = inject(IdrefRecordService);
 
   public NZSelectedEntry = this.idrefService.NZSelectedEntry;
   public flattenedValue = this.idrefService.flattenedValue;
@@ -124,11 +122,7 @@ export class searchService {
    * Met à jour un champ uniquement s'il existe.
    */
   public updateFieldIfFound(formValues: FormValues): void {
-    if (!this.isUpdateAllowed(formValues)) {
-      this.alert.warn(this.translate.instant('search.updateNotAllowed'), { delay: 1000 });
 
-      return;
-    }
     this.loader.show();
 
     const reference = this.referenceCurrentField.getSavedCurrentEntry();
@@ -137,6 +131,13 @@ export class searchService {
       this.alert.error(this.translate.instant('search.noSelectedEntry'), { delay: 1000 });
       this.loader.hide();
 
+      return;
+    }
+
+    if (reference && !this.isUpdateAllowed(reference)) {
+      this.alert.warn(this.translate.instant('search.updateNotAllowed'), { delay: 1000 });
+      this.loader.hide();
+      
       return;
     }
 
@@ -265,11 +266,16 @@ export class searchService {
     this.searchMode.set(SearchMode.AddField);
     this.idrefService.reset();
   }
-  private isUpdateAllowed(formValues: FormValues): boolean {
-    const subfieldZeroValues = Array.from(
-      formValues.subfields.matchAll(/\$\$0\s*\(([^)]*)\)/g),
-      ([, value]) => value.trim()
-    );
+  private isUpdateAllowed(bibRecordField: BibRecordField): boolean {
+    // Extract subfield code '0' and get values between parentheses
+    const subfieldZeroValues = bibRecordField.subfields
+      .filter((subfield) => subfield.code === '0')
+      .map((subfield) => {
+        const match = subfield.value.match(/\(([^)]*)\)/);
+
+        return match ? match[1].trim() : null;
+      })
+      .filter((value) => value !== null) as string[];
 
     if (subfieldZeroValues.length === 0) {
       return true;

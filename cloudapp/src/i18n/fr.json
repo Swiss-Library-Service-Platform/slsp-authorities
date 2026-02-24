@@ -26,7 +26,7 @@
 	"search": {
 		"addToRecord": "Ajouter",
 		"to902": "Vers 902",
-		"clear": "Effacer",
+		"clear": "Annuler",
 		"notImplemented": "Pas encore implémenté",
 		"noSelectedEntry": "Aucune entrée sélectionnée",
 		"recordAdded": "La notice a été mise à jour.",
@@ -46,7 +46,7 @@
 		"paginatorNext": "page suivante",
 		"NoCurrentSearch": "Il n'y a pas encore de résultats de recherche.",
 		"view": "Voir",
-		"isStrictSearch": "Strict"
+		"isStrictSearch": "Stricte"
 	},
 	"idrefEntryDetails": {
 		"title": "Détails de l'entrée Idref",
