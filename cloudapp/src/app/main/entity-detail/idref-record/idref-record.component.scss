@@ -27,6 +27,11 @@
     flex-direction: column;
     padding-left: 8px;
 
+    &.idrefmarc-column--main {
+      flex: 1;
+      min-width: 0;
+    }
+
     .idrefmarc-column-value {
       display: flex;
       flex-direction: row;
@@ -58,6 +63,14 @@
       cursor: pointer;
     }
 
+  .idrefmarc-row:hover .idrefmarc-column--main .value {
+      white-space: normal;
+      overflow: visible;
+      text-overflow: clip;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
     
 .idrefmarc-row.idrefmarc-row--active {
     background-color: #eaf2f6;
@@ -67,7 +80,7 @@
   
     .tag {
       color: rgb(128, 0, 128);
-      width: 100px;
+      width: 10ch;
       padding-left: 3px;
     }
   
@@ -82,7 +95,12 @@
     }
   
     .value {
-      width: fit-content;
+      display: block;
+      width: 100%;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .button {
