@@ -53,7 +53,7 @@ export const MARC_STRUCTURE = new Map<string, MarcStructureValues>([
 	['651|  ', { label: 'Nom géographique', filters: ['geogname'], recordtypes: ['c'] }],
 	['751|  ', { label: 'Nom géographique', filters: ['geogname'], recordtypes: ['c'] }],
 
-	['655|  ', { label: 'Forme / genre', filters: ['formgenreheading'], recordtypes: ['l'] }],
+	['655|  ', { label: 'Forme / genre', filters: ['formgenreheading'], recordtypes: ['u','v'] }],
 
 	//this is just for showing 902 fields in the bir record components
 	['902|  ', { label: '', filters: [''], recordtypes: ['']}],
@@ -116,34 +116,37 @@ function buildIdrefFilterMap(): Map<string, string> {
 }
 
 function buildIdrefRecordtypeMap(): Map<string, string> {
-    const map = new Map<string, string>();
+	const groupedRecordTypes = new Map<string, Set<string>>();
 
-    for (const { label, recordtypes } of MARC_STRUCTURE.values()) {
-        if (!label || !recordtypes?.length || !recordtypes[0]) continue;
-		
-        if (!map.has(label)) {
-            map.set(label, recordtypes[0]);
-        }
-    }
+	for (const { label, recordtypes } of MARC_STRUCTURE.values()) {
+		if (!label || !recordtypes?.length) continue;
 
-    return map;
+		if (!groupedRecordTypes.has(label)) {
+			groupedRecordTypes.set(label, new Set<string>());
+		}
+
+		const labelRecordTypes = groupedRecordTypes.get(label);
+
+		if (!labelRecordTypes) continue;
+
+		for (const recordtype of recordtypes) {
+			if (recordtype) {
+				labelRecordTypes.add(recordtype);
+			}
+		}
+	}
+
+	const map = new Map<string, string>();
+
+	for (const [label, recordtypes] of groupedRecordTypes.entries()) {
+		map.set(label, Array.from(recordtypes).join(' OR '));
+	}
+
+	return map;
 }
 
-function buildInvertedIdrefRecordtypeMap(
-    source: Map<string, string>
-): Map<string, string> {
-    const map = new Map<string, string>();
-
-    for (const [label, recordType] of source.entries()) {
-        if (!recordType) continue;
-        // Si plusieurs labels partagent le même recordType, le dernier gagne.
-        map.set(recordType, label);
-    }
-
-    return map;
-}
 
 export const MARC_STRUCTURE_KEY = getMarStructureKey();
 export const IDREF_FILTER_MAP = buildIdrefFilterMap()
 export const IDREF_RECORDTYPE_MAP = buildIdrefRecordtypeMap()
-export const INVERTED_IDREF_RECORDTYPE_MAP = buildInvertedIdrefRecordtypeMap(IDREF_RECORDTYPE_MAP)
+

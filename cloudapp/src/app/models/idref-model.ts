@@ -65,4 +65,4 @@ export interface MarcStructureValues{
 }
 
 // Re-export shared constants/utilities to keep existing import paths stable
-export { tagGroups, MARC_STRUCTURE, MARC_STRUCTURE_KEY, getIdrefRecordsFromBibRecordField, IDREF_FILTER_MAP, IDREF_RECORDTYPE_MAP, INVERTED_IDREF_RECORDTYPE_MAP, IDREF_RECORDTYPE_TO_ICON_MAP } from '../shared/idref-constants';
+export { tagGroups, MARC_STRUCTURE, MARC_STRUCTURE_KEY, getIdrefRecordsFromBibRecordField, IDREF_FILTER_MAP, IDREF_RECORDTYPE_MAP, IDREF_RECORDTYPE_TO_ICON_MAP } from '../shared/idref-constants';

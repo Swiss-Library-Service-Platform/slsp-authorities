@@ -115,12 +115,16 @@ export class IdrefService {
 	private buildQuery(searchParams: MarcStructureValues | undefined): string {
 		let query = '';
 		const recordTypes = searchParams?.recordtypes;
+		
+		console.log('recordTypes', recordTypes);
+
+		const recordTypeFilter = recordTypes ? `${recordTypes.join(' OR ')}` : '';
 		const filter = searchParams?.filters;
 
 		if (filter && filter.length > 1) {
 			console.error('Pas encore développé');
 		} else if (filter && recordTypes) {
-			query = `${filter[0]}:${this.NZSelectedEntry()?.subfields[0].value} AND recordtype_z:${recordTypes[0]}`;
+			query = `${filter[0]}:${this.NZSelectedEntry()?.subfields[0].value} AND recordtype_z:${recordTypeFilter}`;
 
 			return query;
 		}
