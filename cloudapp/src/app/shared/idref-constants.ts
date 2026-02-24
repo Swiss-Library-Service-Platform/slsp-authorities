@@ -33,9 +33,9 @@ export const MARC_STRUCTURE = new Map<string, MarcStructureValues>([
 	['610|  ', { label: 'Collectivité', filters: ['corpname'], recordtypes: ['b'] }],
 	['710|  ', { label: 'Collectivité', filters: ['corpname'], recordtypes: ['b'] }],
 
-	['111|  ', { label: 'Congrès', filters: ['conference'], recordtypes: ['b'] }],
-	['611|  ', { label: 'Congrès', filters: ['conference'], recordtypes: ['b'] }],
-	['711|  ', { label: 'Congrès', filters: ['conference'], recordtypes: ['b'] }],
+	['111|  ', { label: 'Congrès', filters: ['conference'], recordtypes: ['s'] }],
+	['611|  ', { label: 'Congrès', filters: ['conference'], recordtypes: ['s'] }],
+	['711|  ', { label: 'Congrès', filters: ['conference'], recordtypes: ['s'] }],
 
 	['100|3 ', { label: 'Famille', filters: ['famname'], recordtypes: ['e'] }],
 	['600|3 ', { label: 'Famille', filters: ['famname'], recordtypes: ['e'] }],
