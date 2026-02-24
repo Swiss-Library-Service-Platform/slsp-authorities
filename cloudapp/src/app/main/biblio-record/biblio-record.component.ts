@@ -21,6 +21,7 @@ export class BiblioRecordComponent {
 	public selectedBibRecordField: BibRecordField | null = null;
 	public selectedEntity = input.required<NzBibRecord | undefined>();
 	public dialog = inject(MatDialog);
+	private readonly idrefAllowedTags = new Set(MARC_STRUCTURE_KEY);
 	private searchService = inject(searchService);
 	private idrefService = inject(IdrefService);
 	private referenceCurrentField = inject(BiblioReferencedEntryService);
@@ -44,6 +45,34 @@ export class BiblioRecordComponent {
 	//retourne les tag de la notice bibliographique sur lesquels on peut faire une recherche
 	public getIdrefAllowedTags(): string[] {
 		return MARC_STRUCTURE_KEY;
+	}
+
+	public getMarcRowStatusClass(entry: BibRecordField): string | null {
+		if (!this.idrefAllowedTags.has(entry.tag)) {
+			return null;
+		}
+
+		const subfieldZeroValues = entry.subfields
+			.filter((subfield) => subfield.code === '0')
+			.map((subfield) => subfield.value);
+
+		if (subfieldZeroValues.length === 0) {
+			return 'marc-row--status-missing';
+		}
+
+		const hasIdref = subfieldZeroValues.some((value) => value.includes('(IDREF)'));
+
+		if (hasIdref) {
+			return 'marc-row--status-idref';
+		}
+
+		const hasParenthesizedValue = subfieldZeroValues.some((value) => /\([^)]*\)/.test(value));
+
+		if (hasParenthesizedValue) {
+			return 'marc-row--status-other';
+		}
+
+		return 'marc-row--status-missing';
 	}
 
 	public pushToInput(entry: BibRecordField): void {

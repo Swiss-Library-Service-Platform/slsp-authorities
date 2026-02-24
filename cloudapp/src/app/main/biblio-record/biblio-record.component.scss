@@ -10,6 +10,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    transition: background-color 120ms ease-in-out;
   }
 
   .marc-column {
@@ -48,13 +49,71 @@
 
 
   .marc-row:nth-child(odd) {
-    background: rgb(243, 245, 244);
+    background: rgb(233, 237, 236);
   }
 
-  .marc-row:hover {
-      background-color: #eaf2f6;;
+  .marc-row:nth-child(even) {
+    background: rgb(249, 251, 251);
+  }
+
+  .marc-row.marc-row--status-missing:nth-child(odd) {
+    background-color: #ffe899;
+  }
+
+  .marc-row.marc-row--status-missing:nth-child(even) {
+    background-color: #fff5c7;
+  }
+
+  .marc-row.marc-row--status-idref:nth-child(odd) {
+    background-color: #c7ebc7;
+  }
+
+  .marc-row.marc-row--status-idref:nth-child(even) {
+    background-color: #dcf4dc;
+  }
+
+  .marc-row.marc-row--status-other:nth-child(odd) {
+    background-color: #cfcfcf;
+  }
+
+  .marc-row.marc-row--status-other:nth-child(even) {
+    background-color: #e3e3e3;
+  }
+
+  .marc-row:not(.marc-row--status-missing):not(.marc-row--status-idref):not(.marc-row--status-other):hover {
+      background-color: #dce8ef;
       cursor: pointer;
     }
+
+  .marc-row.marc-row--status-missing:nth-child(odd):hover {
+    background-color: #ffd86a;
+    cursor: pointer;
+  }
+
+  .marc-row.marc-row--status-missing:nth-child(even):hover {
+    background-color: #ffe79d;
+    cursor: pointer;
+  }
+
+  .marc-row.marc-row--status-idref:nth-child(odd):hover {
+    background-color: #aee0ae;
+    cursor: pointer;
+  }
+
+  .marc-row.marc-row--status-idref:nth-child(even):hover {
+    background-color: #c6eac6;
+    cursor: pointer;
+  }
+
+  .marc-row.marc-row--status-other:nth-child(odd):hover {
+    background-color: #bbbbbb;
+    cursor: pointer;
+  }
+
+  .marc-row.marc-row--status-other:nth-child(even):hover {
+    background-color: #cdcdcd;
+    cursor: pointer;
+  }
 
   
   .marc-row.marc-row--active {

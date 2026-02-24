@@ -17,7 +17,7 @@
 <h2>{{"biblioRecord.title" | translate}}</h2>
 <div class="marc">
 	@for (bibRecordField of BibRecordFields(); track $index) {
-	<div class="marc-row" [class.marc-row--active]="bibRecordField === selectedBibRecordField">
+	<div class="marc-row" [class.marc-row--active]="bibRecordField === selectedBibRecordField" [ngClass]="getMarcRowStatusClass(bibRecordField)">
 		<div class="marc-column marc-column-actions">
 			@if(getIdrefAllowedTags().includes(bibRecordField.tag)){
 
