@@ -8,23 +8,23 @@
 			<section class="settings-section">
 				<h2 class="settings-title">{{ 'settings.generalTitle' | translate }}</h2>
 
-				<!-- pageSize -->
-				<div class="settings-field">
-					<label for="pageSize">{{ 'settings.pageSize' | translate }}</label>
-					<input id="pageSize" type="number" formControlName="pageSize" step="5" />
+				<div class="settings-fields-row">
+					<!-- pageSize -->
+					<div class="settings-field">
+						<label for="pageSize">{{ 'settings.pageSize' | translate }}</label>
+						<input id="pageSize" type="number" formControlName="pageSize" step="5" />
+					</div>
+					<!-- searchRowNumber -->
+					<div class="settings-field">
+						<label for="searchRowNumber">{{ 'settings.searchRowNumber' | translate }}</label>
+						<input
+							id="searchRowNumber"
+							type="number"
+							formControlName="searchRowNumber"
+							step="10"
+						/>
+					</div>
 				</div>
-
-				<!-- searchRowNumber -->
-				<div class="settings-field">
-					<label for="searchRowNumber">{{ 'settings.searchRowNumber' | translate }}</label>
-					<input
-						id="searchRowNumber"
-						type="number"
-						formControlName="searchRowNumber"
-						step="10"
-					/>
-				</div>
-
 				<!-- proxyUrl -->
 				<div class="settings-field">
 					<label for="proxyUrl">{{ 'settings.proxyUrl' | translate }}</label>
@@ -38,13 +38,8 @@
 				</div>
 			</section>
 		</form>
-
-		<pre class="settings-debug"
-			>{{ form.value | json }}
-    </pre>
 	</div>
 }
-
 <div buttons class="settings-buttons">
 	<button
 		mat-flat-button
