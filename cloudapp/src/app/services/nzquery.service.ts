@@ -2,11 +2,10 @@ import { inject, Injectable } from '@angular/core';
 import {
 	AlertService,
 	CloudAppRestService,
-	CloudAppSettingsService,
 	Entity,
 	HttpMethod,
 } from '@exlibris/exl-cloudapp-angular-lib';
-import { Observable, switchMap, catchError, EMPTY, finalize, of, throwError } from 'rxjs';
+import { Observable, switchMap, catchError, EMPTY, finalize, of, throwError, take } from 'rxjs';
 import { NzBibRecord, DataField, BibRecordField } from '../models/bib-records';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthenticationService } from './authentication.service';
@@ -14,7 +13,7 @@ import { LoadingIndicatorService } from './loading-indicator.service';
 import { HttpClient } from '@angular/common/http';
 import { RecordService } from './record.service';
 import { StringUtils } from '../utils/stringUtils';
-import { Settings } from '../models/setting';
+import { InitService } from './init.service';
 
 @Injectable({
 	providedIn: 'root',
@@ -28,12 +27,12 @@ export class NZQueryService {
 	private restService = inject(CloudAppRestService);
 	private http = inject(HttpClient);
 	private recordService = inject(RecordService);
-	private settingsService = inject(CloudAppSettingsService);
+	private initService = inject(InitService);
 	private proxyUrl: string | undefined;
 
 	public constructor() {
-		this.settingsService.get().subscribe((settings) => {
-			this.proxyUrl = (settings as Settings).proxyUrl;
+		this.initService.getConfig$().pipe(take(1)).subscribe((config) => {
+			this.proxyUrl = config.proxyUrl;
 		});
 	}
 
@@ -134,9 +133,7 @@ export class NZQueryService {
 	 * Crée un champ uniquement si il n'existe pas encore.
 	 * Renvoie une erreur si le champ existe déjà.
 	 */
-	public createFieldIfNotExists(
-		updatedDataField: DataField
-	): Observable<NzBibRecord> {
+	public createFieldIfNotExists(updatedDataField: DataField): Observable<NzBibRecord> {
 		return this.authenticationService.ensureAccess$().pipe(
 			switchMap(() => {
 				const entity = this.recordService.selectedEntity();

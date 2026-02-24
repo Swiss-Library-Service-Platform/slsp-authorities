@@ -1,5 +1,5 @@
 <div buttons class="settings-buttons">
-	<button mat-stroked-button type="button" [routerLink]="['/']">{{ 'settings.return' | translate }}</button>
+	<button mat-stroked-button type="button" (click)="relaunchApp()">{{ 'settings.return' | translate }}</button>
 </div>
 
 @if (form) {
@@ -25,12 +25,6 @@
 						/>
 					</div>
 				</div>
-				<!-- proxyUrl -->
-				<div class="settings-field">
-					<label for="proxyUrl">{{ 'settings.proxyUrl' | translate }}</label>
-					<input id="proxyUrl" type="text" formControlName="proxyUrl" />
-				</div>
-
 				<!-- userSignature -->
 				<div class="settings-field">
 					<label for="userSignature">{{ 'settings.userSignature' | translate }}</label>
@@ -49,5 +43,17 @@
 		[disabled]="!form || saving"
 	>
 		{{ 'settings.save' | translate }}
+	</button>
+</div>
+
+<div buttons class="settings-buttons">
+	<button
+		mat-flat-button
+		type="button"
+		color="primary"
+		(click)="reset()"
+		[disabled]="!form || saving"
+	>
+		{{ 'settings.remove' | translate }}
 	</button>
 </div>

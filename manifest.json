@@ -18,6 +18,7 @@
       "open": false
    },
    "pages": {
-      "settings": "/#/settings"
+      "settings": "/#/settings",
+      "config": "/#/config"
    }
 }

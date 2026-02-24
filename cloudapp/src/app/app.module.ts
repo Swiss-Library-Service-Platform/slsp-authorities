@@ -10,9 +10,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {
 	AlertModule,
 	CloudAppTranslateModule,
-	InitService,
+	InitService as ExLibrisInitService,
 	MaterialModule,
 } from '@exlibris/exl-cloudapp-angular-lib';
+import { Observable } from 'rxjs';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -33,6 +34,8 @@ import { To902FormComponent } from './main/biblio-record/search/to902-form/to902
 import { MainFormComponent } from './main/biblio-record/search/main-form/main-form.component';
 import { JsonPipe } from '@angular/common';
 import { SettingsComponent } from './settings/settings.component';
+import { ConfigurationComponent } from './configuration/configuration.component';
+import { InitService } from './services/init.service';
 
 
 @NgModule({
@@ -48,7 +51,8 @@ import { SettingsComponent } from './settings/settings.component';
 		DeleteDialogComponent,
 		To902FormComponent,
 		MainFormComponent,
-		SettingsComponent
+		SettingsComponent,
+		ConfigurationComponent,
 	],
 	bootstrap: [AppComponent],
 	imports: [
@@ -69,8 +73,14 @@ import { SettingsComponent } from './settings/settings.component';
 	providers: [
 		{
 			provide: APP_INITIALIZER,
-			useFactory: (): (() => boolean) => () => true,
+			useFactory: (initService: InitService): (() => Observable<void>) => () => initService.initialized$,
 			deps: [InitService],
+			multi: true,
+		},
+		{
+			provide: APP_INITIALIZER,
+			useFactory: (): (() => boolean) => () => true,
+			deps: [ExLibrisInitService],
 			multi: true,
 		},
 		{

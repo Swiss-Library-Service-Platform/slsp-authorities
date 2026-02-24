@@ -1,0 +1,40 @@
+<div buttons class="config-buttons">
+	<button mat-stroked-button type="button" (click)="relaunchApp()">{{ 'config.return' | translate }}</button>
+</div>
+
+@if (form) {
+	<div class="config-container">
+		<form [formGroup]="form" class="config-form">
+			<section class="config-section">
+				<h2 class="config-title">{{ 'config.generalTitle' | translate }}</h2>
+				<!-- proxyUrl -->
+				<div class="config-field">
+					<label for="proxyUrl">{{ 'config.proxyUrl' | translate }}</label>
+					<input id="proxyUrl" type="text" formControlName="proxyUrl" />
+				</div>
+			</section>
+		</form>
+	</div>
+}
+<div buttons class="config-buttons">
+	<button
+		mat-flat-button
+		type="button"
+		color="primary"
+		(click)="save()"
+		[disabled]="!form || saving"
+	>
+		{{ 'config.save' | translate }}
+	</button>
+</div>
+<div buttons class="config-buttons">
+	<button
+		mat-flat-button
+		type="button"
+		color="primary"
+		(click)="reset()"
+		[disabled]="!form || saving"
+	>
+		{{ 'config.remove' | translate }}
+	</button>
+</div>

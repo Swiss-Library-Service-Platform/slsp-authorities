@@ -1,136 +1,173 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { CloudAppEventsService, CloudAppSettingsService } from '@exlibris/exl-cloudapp-angular-lib';
-import { catchError, forkJoin, map, mapTo, Observable, of, shareReplay, switchMap, take, tap, throwError } from 'rxjs';
-import { Settings } from '../models/setting';
-
+import { CloudAppEventsService } from '@exlibris/exl-cloudapp-angular-lib';
+import {
+	catchError,
+	forkJoin,
+	map,
+	mapTo,
+	Observable,
+	of,
+	shareReplay,
+	switchMap,
+	take,
+	tap,
+	throwError,
+} from 'rxjs';
+import { InitService } from './init.service';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class AuthenticationService {
-  public readonly ready$: Observable<void>;
-  //Services
-  private eventsService = inject(CloudAppEventsService);
-  private http = inject(HttpClient);
-    private settingsService = inject(CloudAppSettingsService);
-    private proxyUrl: string | undefined;
+	public readonly ready$: Observable<void>;
+	public readonly hasRoles$: Observable<boolean>;
+	public readonly institutionAllowed$: Observable<boolean>;
+	//Services
+	private eventsService = inject(CloudAppEventsService);
+	private http = inject(HttpClient);
+	private initService = inject(InitService);
+	private proxyUrl: string | undefined;
 
+	//httpOptions
+	private httpOptions!: { headers: HttpHeaders; params: { isProdEnvironment: boolean } };
+	private xmlHttpOptions!: { headers: HttpHeaders; params: { isProdEnvironment: boolean } };
 
-  //httpOptions
-  private httpOptions!: { headers: HttpHeaders; params: { isProdEnvironment: boolean } };
-  private xmlHttpOptions!: { headers: HttpHeaders; params: { isProdEnvironment: boolean } };
+	/** 🔁 Initialisation (token + httpOptions), faite une seule fois */
+	private init$: Observable<void>;
+	private accessState$: Observable<{ hasRoles: boolean; allowed: boolean }>;
 
-  /** 🔁 Initialisation (token + httpOptions), faite une seule fois */
-  private init$: Observable<void>;
+	public constructor() {
+		this.init$ = this.createInit$();
+		this.ready$ = this.init$.pipe(take(1)); // garantit 1 seule émission
+		this.hasRoles$ = this.createUserRolesCheck$();
+		this.institutionAllowed$ = this.createInstitutionAllowedCheck$();
+		this.accessState$ = forkJoin({
+			hasRoles: this.hasRoles$,
+			allowed: this.institutionAllowed$,
+		}).pipe(shareReplay({ bufferSize: 1, refCount: false }));
+	}
 
-  public constructor() {
-    this.init$ = this.createInit$();
-    this.ready$ = this.init$.pipe(take(1)); // garantit 1 seule émission
-  }
+	// ---------------------------
+	// 🔐 Vérifications d'accès
+	// ---------------------------
 
-    // ---------------------------
-    // 🔐 Vérifications d'accès
-    // ---------------------------
-  
-    /** ✅ Attend l'init avant d'appeler l'API rôles */
-    public checkUserRoles$(): Observable<boolean> {
-      return this.ready$.pipe(
-        switchMap(() =>
-          this.http.get<{ hasRequiredRoles: boolean }>(
-            `${this.proxyUrl}/check-user-roles`,
-            this.httpOptions,
-          ),
-        ),
-        map((res) => res?.hasRequiredRoles ?? false),
-        catchError((error) => {
-          console.error('Role check failed:', error);
-  
-          return of(false);
-        }),
-        shareReplay({ bufferSize: 1, refCount: false }),
-      );
-    }
-  
-      /** ✅ Attend l'init avant d'appeler l'API d’autorisation d’IZ */
-  public isInstitutionAllowed$(): Observable<boolean> {
-    return this.ready$.pipe(
-      switchMap(() => this.http.get(`${this.proxyUrl}/isallowed`, this.httpOptions)),
-      map((response) => !!response),
-      catchError((error) => {
-        console.error('Institution check failed:', error);
+	/** ✅ Attend l'init avant d'appeler l'API rôles */
+	public checkUserRoles$(): Observable<boolean> {
+		return this.hasRoles$;
+	}
 
-        return of(false);
-      }),
-      shareReplay({ bufferSize: 1, refCount: false }),
-    );
-  }
+	/** ✅ Attend l'init avant d'appeler l'API d’autorisation d’IZ */
+	public isInstitutionAllowed$(): Observable<boolean> {
+		return this.institutionAllowed$;
+	}
 
-    /** S'assure que tout est prêt & autorisé */
-  public ensureAccess$(): Observable<void> {
-    return this.ready$.pipe( // ✅ attend l'init
-      switchMap(() =>
-        forkJoin({
-          hasRoles: this.checkUserRoles$(),
-          allowed: this.isInstitutionAllowed$(),
-        }),
-      ),
-      switchMap(({ hasRoles, allowed }) => {
-        if (!hasRoles || !allowed) {
-          return throwError(() => new Error('Access denied'));
-        }
+	/** S'assure que tout est prêt & autorisé */
+	public ensureAccess$(): Observable<void> {
+		return this.accessState$.pipe(
+			switchMap(({ hasRoles, allowed }) => {
+				if (!hasRoles || !allowed) {
+					return throwError(() => new Error('Access denied'));
+				}
 
-        return of(void 0);
-      }),
-    );
-  }
+				return of(void 0);
+			})
+		);
+	}
 
-  public getReady():Observable<void>{
-    return this.ready$;
-  }
+	public getReady(): Observable<void> {
+		return this.ready$;
+	}
 
-  public getHttpOptions():{ headers: HttpHeaders; params: { isProdEnvironment: boolean } }{
-    return this.httpOptions;
-  }
+	public getHttpOptions(): { headers: HttpHeaders; params: { isProdEnvironment: boolean } } {
+		return this.httpOptions;
+	}
 
-  public getXmlHttpOptions():{ headers: HttpHeaders; params: { isProdEnvironment: boolean } }{
-    return this.xmlHttpOptions;
-  }
+	public getXmlHttpOptions(): { headers: HttpHeaders; params: { isProdEnvironment: boolean } } {
+		return this.xmlHttpOptions;
+	}
 
-/** ⚙️ Construit httpOptions + proxyUrl une fois */
-private createInit$(): Observable<void> {
-  return forkJoin({
-    settings: this.settingsService.get(),
-    initData: this.eventsService.getInitData().pipe(take(1)),
-    authToken: this.eventsService.getAuthToken().pipe(take(1)),
-  }).pipe(
-    tap(({ settings, initData, authToken }) => {
-      const proxyUrl  = (settings as Settings).proxyUrl;
-      
-      console.log(settings);
-      this.proxyUrl = proxyUrl;
+	/** ⚙️ Construit httpOptions + proxyUrl une fois */
+	private createInit$(): Observable<void> {
+		return forkJoin({
+			config: this.initService.getConfig$().pipe(take(1)),
+			initData: this.eventsService.getInitData().pipe(take(1)),
+			authToken: this.eventsService.getAuthToken().pipe(take(1)),
+		}).pipe(
+			tap(({ config, initData, authToken }) => {
+				const proxyUrl = config.proxyUrl;
 
-      const regExp = new RegExp('^https(.*)psb(.*)com/?$|.*localhost.*');
-      const isProdEnvironment = !regExp.test(initData.urls.alma);
+				console.log('Using config:', config);
+				this.proxyUrl = proxyUrl;
 
-      this.httpOptions = {
-        params: { isProdEnvironment },
-        headers: new HttpHeaders({
-          Authorization: `Bearer ${authToken}`,
-          'Content-Type': 'application/json',
-        }),
-      };
+				const regExp = new RegExp('^https(.*)psb(.*)com/?$|.*localhost.*');
+				const isProdEnvironment = !regExp.test(initData.urls.alma);
 
-      this.xmlHttpOptions = {
-        params: { isProdEnvironment },
-        headers: new HttpHeaders({
-          Authorization: `Bearer ${authToken}`,
-          'Content-Type': 'application/xml',
-        }),
-      };
-    }),
-    mapTo(void 0),
-    shareReplay({ bufferSize: 1, refCount: false }),
-  );
-}
+				this.httpOptions = {
+					params: { isProdEnvironment },
+					headers: new HttpHeaders({
+						Authorization: `Bearer ${authToken}`,
+						'Content-Type': 'application/json',
+					}),
+				};
+
+				this.xmlHttpOptions = {
+					params: { isProdEnvironment },
+					headers: new HttpHeaders({
+						Authorization: `Bearer ${authToken}`,
+						'Content-Type': 'application/xml',
+					}),
+				};
+			}),
+			mapTo(void 0),
+			shareReplay({ bufferSize: 1, refCount: false })
+		);
+	}
+
+	private createUserRolesCheck$(): Observable<boolean> {
+		return this.ready$.pipe(
+			switchMap(() => {
+				if (!this.proxyUrl) {
+					return of(false);
+				}
+
+				return this.http.get<{ hasRequiredRoles: boolean }>(
+					`${this.proxyUrl}/check-user-roles`,
+					this.httpOptions
+				);
+			}),
+			map((res) => {
+				if (typeof res === 'boolean') {
+					return res;
+				}
+
+				return res?.hasRequiredRoles ?? false;
+			}),
+			catchError((error) => {
+				console.error('Role check failed:', error);
+
+				return of(false);
+			}),
+			shareReplay({ bufferSize: 1, refCount: false })
+		);
+	}
+
+	private createInstitutionAllowedCheck$(): Observable<boolean> {
+		return this.ready$.pipe(
+			switchMap(() => {
+				if (!this.proxyUrl) {
+					return of(false);
+				}
+
+				return this.http.get(`${this.proxyUrl}/isallowed`, this.httpOptions);
+			}),
+			map((response) => !!response),
+			catchError((error) => {
+				console.error('Institution check failed:', error);
+
+				return of(false);
+			}),
+			shareReplay({ bufferSize: 1, refCount: false })
+		);
+	}
 }

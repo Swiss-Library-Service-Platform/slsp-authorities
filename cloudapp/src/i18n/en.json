@@ -64,11 +64,17 @@
 	},
 	"settings": {
 		"return": "Return",
-		"generalTitle": "General settings",
+		"generalTitle": "General user settings",
 		"pageSize": "Page size",
 		"searchRowNumber": "IdRef query size",
 		"proxyUrl": "Proxy URL",
 		"userSignature": "User Signature",
+		"save": "Save"
+	},
+	"config" : {
+		"return": "Return",
+		"generalTitle": "IZ configuration",
+		"proxyUrl": "Proxy URL",
 		"save": "Save"
 	}
 }

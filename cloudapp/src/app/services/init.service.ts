@@ -1,53 +1,104 @@
-import { inject, Injectable } from '@angular/core';
-import { switchMap, of, map, tap, take } from 'rxjs';
+import { inject, Injectable, signal } from '@angular/core';
+import { of, map, tap, take, catchError, shareReplay, finalize, forkJoin, mapTo, switchMap } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Settings } from '../models/setting';
-import { CloudAppEventsService, CloudAppSettingsService } from '@exlibris/exl-cloudapp-angular-lib';
-import { MainFacadeService } from '../main/main-facade.service';
+import {
+	CloudAppConfigService,
+	CloudAppSettingsService,
+} from '@exlibris/exl-cloudapp-angular-lib';
 import { LoadingIndicatorService } from './loading-indicator.service';
+import { Config } from '../models/config';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class InitService {
+	// Public members
 	public loader = inject(LoadingIndicatorService);
-	public facade = inject(MainFacadeService);
+
+	// Signal pour tracker l'état d'initialisation
+	public initialized = signal(false);
+
+	// Observable qui se termine quand l'initialisation est complète
+	public initialized$: Observable<void>;
+
+	// Private members
 	private settingsService = inject(CloudAppSettingsService);
-	private eventService = inject(CloudAppEventsService);
+	private configService = inject(CloudAppConfigService);
+	private settingsReady$: Observable<Settings>;
+	private configReady$: Observable<Config>;
 
 	public constructor() {
-		this.settingsService
-			.get()
-			.pipe(
-				// 1. Si settings existent, on les garde.
-				//    Sinon on crée des settings par défaut.
-				switchMap((settings) => {
-					if (settings.proxyUrl) {
-						return of(settings);
-					}
+		this.loader.show();
+		this.settingsReady$ = this.ensureSettings$().pipe(
+			shareReplay({ bufferSize: 1, refCount: false })
+		);
+		this.configReady$ = this.ensureConfig$().pipe(
+			shareReplay({ bufferSize: 1, refCount: false })
+		);
+		this.initialized$ = this.initialize().pipe(
+			tap(() => this.initialized.set(true)),
+			shareReplay({ bufferSize: 1, refCount: false }),
+			finalize(() => this.loader.hide())
+		);
+	}
 
-					const defaultSettings = new Settings();
+	/**
+	 * Initialise les settings et la config au démarrage.
+	 * Crée des valeurs par défaut si elles n'existent pas.
+	 * À appeler via APP_INITIALIZER au démarrage de l'app.
+	 */
+	public initialize(): Observable<void> {
+		return forkJoin({
+			settings: this.settingsReady$,
+			config: this.configReady$,
+		}).pipe(
+			tap(({ settings, config }) => {
+				console.log('Final settings: ', settings);
+				console.log('Final config: ', config);
+			}),
+			mapTo(void 0),
+			take(1),
+			catchError((err) => {
+				console.error('Erreur lors de l\'initialisation: ', err);
 
-					return this.settingsService.set(defaultSettings).pipe(
-						// on renvoie les settings créés pour la suite de la chaîne
-						map(() => defaultSettings)
-					);
-				}),
+				// On continue même en cas d'erreur (l'app peut se charger partiellement)
+				return of(void 0);
+			})
+		);
+	}
 
-				// 2. On logge les settings finaux (ceux existants ou ceux nouvellement créés)
-				tap((settings) => console.log('Final settings: ', settings)),
+	public getConfig$(): Observable<Config> {
+		return this.configReady$;
+	}
 
-				// 3. On ne s’abonne qu’une fois et on termine
-				take(1)
-			)
-			.subscribe({
-				next: () => {
-					// 4. À ce stade, on est certain que les settings existent
-					this.facade.init();
-				},
-				error: (err) => {
-					console.error('Erreur lors de l’initialisation des settings: ', err);
-					// éventuellement : gestion d’erreur user-friendly
-				},
-			});
+	private ensureSettings$(): Observable<Settings> {
+		return this.settingsService.get().pipe(
+			take(1),
+			switchMap((settings) => {
+				if (settings?.userSignature) {
+					return of(settings as Settings);
+				}
+
+				const defaultSettings = new Settings();
+
+				return this.settingsService.set(defaultSettings).pipe(map(() => defaultSettings));
+			})
+		);
+	}
+
+	private ensureConfig$(): Observable<Config> {
+		return this.configService.get().pipe(
+			take(1),
+			switchMap((config) => {
+				if (config?.proxyUrl) {
+					return of(config as Config);
+				}
+
+				const defaultConfig = new Config();
+
+				return this.configService.set(defaultConfig).pipe(map(() => defaultConfig));
+			})
+		);
 	}
 }

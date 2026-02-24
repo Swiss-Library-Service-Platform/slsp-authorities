@@ -1,19 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 // main.component.ts
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { MainFacadeService } from './main-facade.service';
 import { LoadingIndicatorService } from '../services/loading-indicator.service';
-import { InitService } from '../services/init.service';
 
 @Component({
 	selector: 'app-main',
 	templateUrl: './main.component.html',
 })
-export class MainComponent {
+export class MainComponent implements OnInit {
 	public loader = inject(LoadingIndicatorService);
 	public facade = inject(MainFacadeService);
-	private initService = inject(InitService);
+
+	public ngOnInit(): void {
+		this.facade.init();
+	}
 
 
 	public openIdref(event: MouseEvent): void {

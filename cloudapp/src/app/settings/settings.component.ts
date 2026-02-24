@@ -15,6 +15,10 @@ export class SettingsComponent implements OnInit{
 
   private settingsService = inject(CloudAppSettingsService);
   private alert = inject(AlertService);
+
+  public relaunchApp(): void {
+    window.location.assign(`${window.location.origin}${window.location.pathname}${window.location.search}`);
+  }
   
 
   public ngOnInit(): void {
@@ -35,6 +39,10 @@ export class SettingsComponent implements OnInit{
         this.saving = false;
       }
     });
+  }
+    public reset(): void {
+    this.settingsService.remove().subscribe()
+
   }
 
 }
