@@ -50,10 +50,12 @@ export const MARC_STRUCTURE = new Map<string, MarcStructureValues>([
 
 	['650|  ', { label: 'Sujet', filters: ['subjectheading'], recordtypes: ['j'] }],
 
-	['651|  ', { label: 'Nom géographique', filters: ['geoname'], recordtypes: ['c'] }],
-	['751|  ', { label: 'Nom géographique', filters: ['geoname'], recordtypes: ['c'] }],
+	['651|  ', { label: 'Nom géographique', filters: ['geogname'], recordtypes: ['c'] }],
+	['751|  ', { label: 'Nom géographique', filters: ['geogname'], recordtypes: ['c'] }],
 
 	['655|  ', { label: 'Forme / genre', filters: ['formgenreheading'], recordtypes: ['l'] }],
+
+	//this is just for showing 902 fields in the bir record components
 	['902|  ', { label: '', filters: [''], recordtypes: ['']}],
 ]);
 
