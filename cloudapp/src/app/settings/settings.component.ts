@@ -1,4 +1,5 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormGroup } from '@angular/forms';
 import { AlertService, CloudAppSettingsService, FormGroupUtil } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
@@ -17,6 +18,7 @@ export class SettingsComponent implements OnInit{
   private settingsService = inject(CloudAppSettingsService);
   private alert = inject(AlertService);
   private translate = inject(TranslateService);
+  private destroyRef = inject(DestroyRef);
 
   public relaunchApp(): void {
     window.location.assign(`${window.location.origin}${window.location.pathname}${window.location.search}`);
@@ -24,7 +26,7 @@ export class SettingsComponent implements OnInit{
   
 
   public ngOnInit(): void {
-    this.settingsService.get().subscribe( settings => {
+    this.settingsService.get().pipe(takeUntilDestroyed(this.destroyRef)).subscribe( settings => {
       this.form = FormGroupUtil.toFormGroup(Object.assign(new Settings(), settings))
     });
   }
@@ -42,9 +44,12 @@ export class SettingsComponent implements OnInit{
       }
     });
   }
-    public reset(): void {
-    this.settingsService.remove().subscribe()
-
+  public reset(): void {
+    this.settingsService.remove().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: () => {
+        this.form = FormGroupUtil.toFormGroup(new Settings());
+      },
+    });
   }
 
 }

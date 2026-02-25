@@ -97,11 +97,10 @@ export class SearchService {
       .createFieldIfNotExists(formatedValues)
       .pipe(
         finalize(() => this.loader.hide()),
-        catchError((err) => {
+        catchError((_err) => {
           this.alert.warn(this.translate.instant('search.acceptRefreshModal'), {
             delay: 1000,
           });
-          console.error('Erreur createFieldIfNotExists:', err);
 
           return EMPTY;
         })
@@ -148,11 +147,10 @@ export class SearchService {
       .updateFieldIfExists(reference, formatedValues)
       .pipe(
         finalize(() => this.loader.hide()),
-        catchError((err) => {
+        catchError((_err) => {
           this.alert.warn(this.translate.instant('search.acceptRefreshModal'), {
             delay: 1000,
           });
-          console.error('Erreur updateFieldIfExists:', err);
 
           return EMPTY;
         })
@@ -198,9 +196,8 @@ export class SearchService {
           if (err?.message === 'FIELD_NOT_FOUND') {
             // Champ non trouvé -> créer
             return this.nzQueryService.createFieldIfNotExists( formatedValues).pipe(
-              catchError((err2) => {
+              catchError((_err2) => {
                 this.alert.warn(this.translate.instant('search.acceptRefreshModal'), { delay: 1000 });
-                console.error('Erreur lors de la création du champ:', err2);
 
                 return EMPTY;
               }),
@@ -210,7 +207,6 @@ export class SearchService {
           this.alert.warn(this.translate.instant('search.acceptRefreshModal'), {
             delay: 1000,
           });
-          console.error('Erreur updateFieldIfExists:', err);
 
           return EMPTY;
         })

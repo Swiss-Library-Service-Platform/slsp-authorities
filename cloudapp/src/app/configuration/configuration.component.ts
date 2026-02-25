@@ -1,4 +1,5 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormGroup } from '@angular/forms';
 import {
 	AlertService,
@@ -19,13 +20,14 @@ export class ConfigurationComponent implements OnInit {
 	private configService = inject(CloudAppConfigService);
 	private alert = inject(AlertService);
   private translate = inject(TranslateService);
+  private destroyRef = inject(DestroyRef);
 
   public relaunchApp(): void {
     window.location.assign(`${window.location.origin}${window.location.pathname}${window.location.search}`);
   }
 
 	public ngOnInit(): void {
-		this.configService.get().subscribe((config) => {
+    this.configService.get().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((config) => {
 			this.form = FormGroupUtil.toFormGroup(Object.assign(new Config(), config));
 		});
 	}
@@ -45,7 +47,10 @@ export class ConfigurationComponent implements OnInit {
   }
 
   public reset(): void {
-    this.configService.remove().subscribe()
-
+    this.configService.remove().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+		next: () => {
+			this.form = FormGroupUtil.toFormGroup(new Config());
+		},
+	});
   }
 }

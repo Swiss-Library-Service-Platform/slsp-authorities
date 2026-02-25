@@ -32,6 +32,8 @@ Flux attendu:
 - Préférer les noms explicites (`searchIndexes`, pas `searchIndexs`).
 - Standardiser les fichiers de modèles en `*.model.ts`.
 - Ne pas ajouter de nouveaux fichiers dans `cloudapp/src/app/main/services` (dossier historique).
+- Cible d'organisation: `core/` (services transverses) et `features/<feature>/` (ui, domain, data).
+- Pendant la migration, garder des fichiers de compatibilité (`export *`) pour éviter les régressions d'import.
 
 ## Règles de code
 

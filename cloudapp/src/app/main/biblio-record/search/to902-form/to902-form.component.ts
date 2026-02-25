@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/member-ordering */
-import { Component, computed, effect, inject, input, signal } from '@angular/core';
+import { Component, computed, DestroyRef, effect, inject, input, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NzBibRecord } from '../../../../models/bib-record.model';
 import { SearchService } from '../search.service';
@@ -32,6 +32,7 @@ export class To902FormComponent {
 	private eventService = inject(CloudAppEventsService);
 	private translate = inject(TranslateService);
 	private fb = inject(FormBuilder);
+	private destroyRef = inject(DestroyRef);
 
 	public readonly searchMode902 = this.searchService.searchMode902;
 	public readonly searchMode = this.searchService.searchMode;
@@ -74,10 +75,10 @@ export class To902FormComponent {
 	});
 
 	public constructor() {
-		this.settingsService.get().pipe(takeUntilDestroyed()).subscribe((settings) => {
+		this.settingsService.get().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((settings) => {
 			this.userSignature.set((settings as Settings).userSignature);
 		});
-		this.eventService.getInitData().pipe(takeUntilDestroyed()).subscribe((initData) => {
+		this.eventService.getInitData().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((initData) => {
 			// Conserve uniquement la partie après le premier `_`.
 			const instCode = initData.instCode.split('_')[1] || initData.instCode;
 

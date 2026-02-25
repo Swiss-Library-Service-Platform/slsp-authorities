@@ -242,30 +242,8 @@ export class NZQueryService {
 	}
 
 	/**
-	 * À partir d'un Bib existant, met à jour/ajoute le DataField
-	 * et renvoie le MARC XML prêt à être envoyé.
+	 * Construit le MARC XML après suppression d'un champ.
 	 */
-	private buildUpdatedMarcXml(
-		bib: NzBibRecord,
-		selectedEntry: BibRecordField,
-		updatedDataField: DataField
-	): string {
-		const marcRecord = StringUtils.xmlToMarcRecord(bib.anies[0]);
-		const index = marcRecord.dataFields.findIndex((field) =>
-			StringUtils.areDataFieldsEqual(field, selectedEntry)
-		);
-
-		if (index !== -1) {
-			// Mise à jour.
-			marcRecord.dataFields[index] = updatedDataField;
-		} else {
-			// Ajout si le champ est introuvable.
-			marcRecord.dataFields.push(updatedDataField);
-		}
-
-		return StringUtils.marcRecordToXml(marcRecord);
-	}
-
 	private buildDeletedMarcXml(bib: NzBibRecord, selectedEntry: BibRecordField): string {
 		const marcRecord = StringUtils.xmlToMarcRecord(bib.anies[0]);
 		// Trouve l'index du champ à supprimer.

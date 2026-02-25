@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/member-ordering */
-import { AfterViewInit, Component, ElementRef, ViewChild, effect, inject, input } from '@angular/core';
+import { AfterViewInit, Component, DestroyRef, ElementRef, ViewChild, effect, inject, input } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { distinctUntilChanged } from 'rxjs';
@@ -26,6 +26,7 @@ export class MainFormComponent implements AfterViewInit {
 	private searchService = inject(SearchService);
 	private idrefRecordService = inject(IdrefRecordService);
 	private fb = inject(FormBuilder);
+	private destroyRef = inject(DestroyRef);
 
 	public readonly searchMode = this.searchService.searchMode;
 	public readonly isTo902FormVisible = this.searchService.isTo902FormVisible;
@@ -42,7 +43,7 @@ export class MainFormComponent implements AfterViewInit {
 
 		this.searchForm
 			.get('subfields')
-			?.valueChanges.pipe(distinctUntilChanged(), takeUntilDestroyed())
+			?.valueChanges.pipe(distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
 			.subscribe(() => this.scheduleSubfieldsRender());
 
 		effect(() => {
