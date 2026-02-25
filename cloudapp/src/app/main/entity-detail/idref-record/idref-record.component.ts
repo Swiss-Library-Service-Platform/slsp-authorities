@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 import { Component, computed, inject, Signal, ViewChild, signal, effect } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { MatPaginator } from '@angular/material/paginator';
 import { FormBuilder, FormGroup } from '@angular/forms';
@@ -53,7 +54,7 @@ export class IdrefRecordComponent {
 		// S'assure que la clé 'all' existe.
 		this.searchIndexs.set('all', 'all'); // Ou '' si un "sans index" réel est requis.
 
-		this.settingsService.get().subscribe((settings) => {
+		this.settingsService.get().pipe(takeUntilDestroyed()).subscribe((settings) => {
 			this.pageSize.set((settings as Settings).pageSize);
 		});
 
@@ -81,17 +82,17 @@ export class IdrefRecordComponent {
 		});
 
 		// Synchronise le formulaire vers les signaux du service.
-		this.searchForm.get('searchIndex')?.valueChanges.subscribe((value) => {
+		this.searchForm.get('searchIndex')?.valueChanges.pipe(takeUntilDestroyed()).subscribe((value) => {
 			this.idrefRecordService.formSearchIndex.set(value);
 		});
 
-		this.searchForm.get('constructedQuery')?.valueChanges.subscribe((value) => {
+		this.searchForm.get('constructedQuery')?.valueChanges.pipe(takeUntilDestroyed()).subscribe((value) => {
 			this.idrefRecordService.formConstructedQuery.set(value);
 		});
 
 		this.searchForm
 			.get('constructedQuery')
-			?.valueChanges.pipe(debounceTime(300), distinctUntilChanged())
+			?.valueChanges.pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed())
 			.subscribe(() => this.onSearch());
 	}
 

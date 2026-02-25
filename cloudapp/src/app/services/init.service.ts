@@ -53,10 +53,6 @@ export class InitService {
 			settings: this.settingsReady$,
 			config: this.configReady$,
 		}).pipe(
-			tap(({ settings, config }) => {
-				console.log('Final settings: ', settings);
-				console.log('Final config: ', config);
-			}),
 			mapTo(void 0),
 			take(1),
 			catchError((err) => {

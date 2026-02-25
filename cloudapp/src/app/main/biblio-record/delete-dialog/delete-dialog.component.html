@@ -26,6 +26,6 @@
     </div>
 </div>
 <div mat-dialog-actions>
-  <button mat-button (click)="onNoClick()">{{"deleteDialog.no" | translate}}</button>
-  <button mat-button (click)="onDelete()" cdkFocusInitial>{{"deleteDialog.ok" | translate}}</button>
+	<button mat-button (click)="onNoClick()" [disabled]="isDeleting">{{"deleteDialog.no" | translate}}</button>
+	<button mat-button (click)="onDelete()" [disabled]="isDeleting" cdkFocusInitial>{{"deleteDialog.ok" | translate}}</button>
 </div>

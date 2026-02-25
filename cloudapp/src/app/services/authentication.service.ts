@@ -96,8 +96,6 @@ export class AuthenticationService {
 		}).pipe(
 			tap(({ config, initData, authToken }) => {
 				const proxyUrl = config.proxyUrl;
-
-				console.log('Using config:', config);
 				this.proxyUrl = proxyUrl;
 
 				const regExp = new RegExp('^https(.*)psb(.*)com/?$|.*localhost.*');

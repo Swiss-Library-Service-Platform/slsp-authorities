@@ -112,7 +112,6 @@ export class SearchService {
           onSuccess?.();
           this.nzQueryService.refreshSelectedEntityDetails();
           this.alert.success(this.translate.instant('search.recordAdded'), { delay: 1000 });
-          console.log('complete createFieldIfNotFound');
         },
       });
   }
@@ -164,7 +163,6 @@ export class SearchService {
           onSuccess?.();
           this.nzQueryService.refreshSelectedEntityDetails();
           this.alert.success(this.translate.instant('search.recordAdded'), { delay: 1000 });
-          console.log('complete updateFieldIfFound');
         },
       });
   }
@@ -223,7 +221,6 @@ export class SearchService {
           onSuccess?.();
           this.nzQueryService.refreshSelectedEntityDetails();
           this.alert.success(this.translate.instant('search.recordAdded'), { delay: 1000 });
-          console.log('complete addrecord');
         },
       });
   }

@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 import { Component, computed, effect, inject, input, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NzBibRecord } from '../../../../models/bib-records';
 import { SearchService } from '../search.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
@@ -73,13 +74,11 @@ export class To902FormComponent {
 	});
 
 	public constructor() {
-		this.settingsService.get().subscribe((settings) => {
+		this.settingsService.get().pipe(takeUntilDestroyed()).subscribe((settings) => {
 			this.userSignature.set((settings as Settings).userSignature);
 		});
-		this.eventService.getInitData().subscribe((initData) => {
+		this.eventService.getInitData().pipe(takeUntilDestroyed()).subscribe((initData) => {
 			// Conserve uniquement la partie après le premier `_`.
-			console.log('Init data received: ', initData);
-
 			const instCode = initData.instCode.split('_')[1] || initData.instCode;
 
 			this.IZCode.set(instCode);

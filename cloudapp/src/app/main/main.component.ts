@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { Component, inject, OnInit } from '@angular/core';
 import { MainFacadeService } from './main-facade.service';
 import { LoadingIndicatorService } from '../services/loading-indicator.service';

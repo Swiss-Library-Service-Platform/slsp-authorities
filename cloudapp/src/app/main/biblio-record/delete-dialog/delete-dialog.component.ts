@@ -6,6 +6,7 @@ import { BibRecordField } from '../../../models/bib-records';
 import { NZQueryService } from '../../../services/nzquery.service';
 import { RecordService } from '../../../services/record.service';
 import { LoadingIndicatorService } from '../../../services/loading-indicator.service';
+import { EMPTY, catchError, finalize, switchMap } from 'rxjs';
 
 
 @Component({
@@ -14,6 +15,7 @@ import { LoadingIndicatorService } from '../../../services/loading-indicator.ser
   styleUrl: './delete-dialog.component.scss'
 })
 export class DeleteDialogComponent {
+  public isDeleting = false;
   
   
   public dialogRef= inject(MatDialogRef<DeleteDialogComponent>);
@@ -28,21 +30,39 @@ export class DeleteDialogComponent {
   public constructor(@Inject(MAT_DIALOG_DATA) public data: {entry: BibRecordField}) {}
 
   public onNoClick(): void {
+    if (this.isDeleting) {
+      return;
+    }
+
     this.dialogRef.close();
   }
 
   public onDelete(): void {
-    this.loader.show();
-    this.nzQueryService.deleteBibRecord(this.data.entry).subscribe({
-      next: () => {
-        this.eventsService.refreshPage().subscribe();
-        this.recordService.resetSelectedEntity();
-        this.alert.info(this.translate.instant("proxyService.deleteSuccess"));
-      },
-      complete: () => {
-        this.loader.hide();
-      }
-    })
+    if (this.isDeleting) {
+      return;
+    }
+
+    this.isDeleting = true;
+    this.dialogRef.disableClose = true;
     this.dialogRef.close();
+    this.loader.show();
+    this.nzQueryService
+      .deleteBibRecord(this.data.entry)
+      .pipe(
+        switchMap(() => this.eventsService.refreshPage()),
+        catchError(() => {
+          this.alert.error(this.translate.instant('error.restApiError'), { autoClose: false });
+
+          return EMPTY;
+        }),
+        finalize(() => {
+          this.loader.hide();
+          this.isDeleting = false;
+        })
+      )
+      .subscribe(() => {
+        this.recordService.resetSelectedEntity();
+        this.alert.info(this.translate.instant('proxyService.deleteSuccess'));
+      });
   }
 }

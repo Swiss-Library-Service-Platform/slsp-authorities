@@ -17,8 +17,7 @@ export class ConfigurationGuard {
       switchMap(initData => this.restService.call(`/users/${initData.user.primaryId}`)),
       map(user => {
         if (!user.user_role.some((role: { role_type: { value: string; }; }) => role.role_type.value === '204')) {
-          this.router.navigate(['/error'],
-            { queryParams: { error: 'access denied' } });
+			this.router.navigate(['/']);
 
           return false;
         }
