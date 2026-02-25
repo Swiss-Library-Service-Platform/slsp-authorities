@@ -1,114 +1,107 @@
-# Sample Cloud App
+# SLSP Authorities Cloud App
 
-A minimal Ex Libris Alma Cloud App template. This can be used as starting point for new Cloud App projects.
+Application Angular (Ex Libris Alma Cloud App) pour rechercher des autorités IdRef et enrichir/modifier des champs MARC sur des notices bibliographiques NZ.
 
-## What's Included
+## Objectif fonctionnel
 
-This sample demonstrates:
+- Charger la notice NZ de l'entité Alma sélectionnée.
+- Rechercher des autorités IdRef à partir des champs MARC de la notice.
+- Injecter/mettre à jour/supprimer des champs MARC (dont le cas spécifique `902`).
+- Gérer configuration et paramètres utilisateur depuis l'interface Cloud App.
 
-**Cloud App Basics**
+## Stack technique
 
-- Loading and displaying entities via the event service
-- Fetching entity details from the Alma API using the rest service
-- Basic error handling and memory management in RxJS pipes
+- Angular `18`
+- RxJS `7`
+- Angular Material
+- `@exlibris/exl-cloudapp-angular-lib`
+- `@ngx-translate/core`
 
-**Modern Angular Patterns**
+## Démarrage
 
-- Dependency injection using `inject()` function
-- Proper cleanup with `takeUntilDestroyed()`
-- Modern template control flow (`@if`, `@for`)
+Prérequis:
 
-**Internationalization**
+- Node.js `22.x`
+- Ex Libris Cloud App CLI (`eca`)
 
-- Translation service usage in components
-- Translation pipe usage in templates
-- Pre-configured English and German translations
-
-**Code Quality**
-
-- ESLint configuration with Angular-specific rules
-- Prettier for code formatting
-- NPM scripts for linting, formatting, and development
-
-## Prerequisites
-
-- Node.js 22.x (see `.nvmrc`)
-- Ex Libris Cloud App CLI: `npm install -g @exlibris/exl-cloudapp-cli`
-- Access to an Alma sandbox instance
-
-## Setup
-
-1. Copy all files (including hidden files) to your new project directory
-
-1. Install dependencies:
-
-   ```bash
-   npm install
-   ```
-
-1. Edit `manifest.json` with your app details:
-
-   ```json
-   {
-     "id": "your-app-id",
-     "title": "Your App Title",
-     "subtitle": "Short description",
-     "author": "Your Name"
-   }
-   ```
-
-1. Copy and edit the config file:
-
-   ```bash
-   cp config.template.json config.json
-   ```
-
-   Update `config.json` with your institution details:
-
-   ```json
-   {
-     "env": "https://your-institution.exlibrisgroup.com/institution/41SLSP_YOUR-CODE",
-     "port": 4200
-   }
-   ```
-
-## Development
-
-Start the development server:
+Installation:
 
 ```bash
-eca start
+npm install
 ```
 
-The app runs at `http://localhost:4200` and proxies to your configured Alma instance.
-
-### Common Commands
-
-- `eca start` - Start development server
-- `eca build` - Build for production
-- `npm run lint` - Check code with ESLint
-- `npm run lint:fix` - Auto-fix linting issues
-- `npm run format` - Format code with Prettier
-- `npm test` - Run tests
-
-## Troubleshooting
-
-**Port in use**: Change the `port` value in `config.json`
-
-**ECA command not found**: Install the CLI globally:
+Lancement dev:
 
 ```bash
-npm install -g @exlibris/exl-cloudapp-cli
+npm start
 ```
 
-**Node version mismatch**: Use the version from `.nvmrc`:
+Build:
 
 ```bash
-nvm use
+npm run build
 ```
 
-## Resources
+## Structure du code
 
-- [Ex Libris Cloud Apps Documentation](https://developers.exlibrisgroup.com/cloudapps/)
-- [Ex Libris Developer Network](https://developers.exlibrisgroup.com/)
-- [Angular Documentation](https://angular.dev/)
+Code principal dans `cloudapp/src/app`:
+
+- `main/`: feature principale (liste des entités, détail notice, recherche IdRef, formulaires MARC)
+- `services/`: services transverses (auth, init, requêtes NZ, IdRef, etc.)
+- `models/`: modèles métier (`*.model.ts`)
+- `configuration/`: écran de config app (`proxyUrl`)
+- `settings/`: écran de settings utilisateur (`pageSize`, signature, etc.)
+
+Fichiers pivots:
+
+- `main/main-facade.service.ts`: orchestration haut niveau de la vue principale
+- `services/nzquery.service.ts`: appels Alma/NZ et mutation des notices
+- `services/idref.service.ts`: appels IdRef + état résultat/détail
+- `main/entity-detail/idref-record/idref-record.service.ts`: construction de requêtes IdRef depuis le contexte MARC
+
+## Flux de données (référence)
+
+Flux cible actuellement en place:
+
+1. Composant UI émet une intention utilisateur (`search`, `select`, `delete`, `update`)
+2. Service de feature/facade orchestre la logique
+3. Service de données effectue l'appel HTTP
+4. Les signaux d'état (`signal`, `computed`) sont mis à jour
+5. Le composant lit uniquement le state et réagit
+
+Convention importante:
+
+- Les composants doivent rester orientés UI (pas de logique métier lourde).
+- La construction des requêtes et règles MARC doit rester dans les services métier.
+- Les abonnements RxJS dans les composants doivent utiliser `takeUntilDestroyed()`.
+
+## Routes
+
+- `#/` → vue principale
+- `#/settings` → paramètres utilisateur
+- `#/config` → configuration application (protégée par `ConfigurationGuard`)
+
+## Scripts utiles
+
+- `npm start` : lance `eca start`
+- `npm run build` : lance `eca build`
+- `npm run lint` : vérification ESLint
+- `npm run lint:fix` : correction ESLint automatique
+- `npm run format` : formatage Prettier
+- `npm test` : tests via `eca test`
+
+## Conventions de maintenance
+
+- Préférer `*.model.ts` pour les modèles de domaine.
+- Éviter les `subscribe()` imbriqués; composer les flux RxJS.
+- Éviter les logs de debug permanents dans les services métier.
+- Toute nouvelle feature doit expliciter: `UI intent -> orchestration -> data service -> state`.
+
+## Ressources
+
+- https://developers.exlibrisgroup.com/cloudapps/
+- https://angular.dev/
+
+## Contribution
+
+- Voir `CONTRIBUTING.md` pour les conventions de structure, de flux de données et de PR.
