@@ -1,6 +1,6 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map, Observable } from 'rxjs';
+import { catchError, EMPTY, map, Observable, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { IdrefRecords, MARC_STRUCTURE, MarcStructureValues } from '../models/idref-model';
 import { BibRecordField } from '../models/bib-records';
@@ -66,11 +66,33 @@ export class IdrefService {
 	}
 
 	public searchFromQuery(query: string): void {
-		this.searchAuthorities(query).subscribe({
-			next: (r) => this.idrefResult.set(r),
-			error: (e) =>
-				this.alert.error(this.translate.instant('error.httpError' + e), { autoClose: true }),
-		});
+		this.searchFromQuery$(query).subscribe();
+	}
+
+	public searchFromQuery$(query: string): Observable<IdrefRecords> {
+		return this.searchAuthorities(query).pipe(
+			tap((r) => this.idrefResult.set(r)),
+			catchError((e) => {
+				this.alert.error(this.translate.instant('error.httpError' + e), { autoClose: true });
+
+				return EMPTY;
+			})
+		);
+	}
+
+	public loadAuthorityDetail(ppn: string): void {
+		this.loadAuthorityDetail$(ppn).subscribe();
+	}
+
+	public loadAuthorityDetail$(ppn: string): Observable<Document> {
+		return this.searchWithPPN(ppn).pipe(
+			tap((detail) => this.idrefAuthorityDetail.set(detail)),
+			catchError((e) => {
+				this.alert.error(this.translate.instant('error.httpError' + e), { autoClose: true });
+
+				return EMPTY;
+			})
+		);
 	}
 
 	// Retourne la structure MARC liée à l'entrée sélectionnée.

@@ -115,18 +115,12 @@ export class IdrefRecordComponent {
 			searchIndex: string;
 			constructedQuery: string;
 		};
-		const query = this.idrefRecordService.buildQueryFromFormValues(
-			values.searchIndex,
-			values.constructedQuery
-		);
 
-		this.idrefService.searchFromQuery(query);
+		this.idrefRecordService.searchFromFormValues(values.searchIndex, values.constructedQuery);
 	}
 
 	public showDetails(ppn: string): void {
-		this.idrefService
-			.searchWithPPN(ppn)
-			.subscribe((e) => this.idrefService.idrefAuthorityDetail.set(e));
+		this.idrefService.loadAuthorityDetail(ppn);
 	}
 
 	@ViewChild(MatPaginator)

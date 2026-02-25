@@ -71,6 +71,20 @@ export class IdrefRecordService {
 		this.formConstructedQuery.set(constructedQuery);
 	}
 
+	public searchFromFormValues(searchIndex: string, constructedQuery: string): void {
+		const query = this.buildQueryFromFormValues(searchIndex, constructedQuery);
+
+		this.idrefService.searchFromQuery(query);
+	}
+
+	public searchFromCurrentEntryContext(): void {
+		const searchIndex = this.idrefService.getMarcStructure()?.label ?? '';
+		const constructedQueryValue = this.buildQueryInputValue()();
+
+		this.setFormValues(searchIndex, constructedQueryValue);
+		this.searchFromFormValues(searchIndex, constructedQueryValue);
+	}
+
 	/**
 	 * Construit la query Solr à partir des valeurs du formulaire de recherche
 	 */
