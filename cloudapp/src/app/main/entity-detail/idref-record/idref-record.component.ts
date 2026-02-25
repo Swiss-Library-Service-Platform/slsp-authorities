@@ -9,6 +9,7 @@ import { IdrefRecordService } from './idref-record.service';
 import { CloudAppSettingsService } from '@exlibris/exl-cloudapp-angular-lib';
 import { Settings } from '../../../models/setting';
 import { IconService } from '../../../services/icon.service';
+import { debounceTime, distinctUntilChanged } from 'rxjs';
 
 @Component({
 	selector: 'app-idref-record',
@@ -87,6 +88,11 @@ export class IdrefRecordComponent {
 		this.searchForm.get('constructedQuery')?.valueChanges.subscribe((value) => {
 			this.idrefRecordService.formConstructedQuery.set(value);
 		});
+
+		this.searchForm
+			.get('constructedQuery')
+			?.valueChanges.pipe(debounceTime(300), distinctUntilChanged())
+			.subscribe(() => this.onSearch());
 	}
 
 	public onStrictSearchChange(event: Event): void {

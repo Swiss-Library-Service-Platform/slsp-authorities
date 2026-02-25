@@ -10,7 +10,7 @@
 				<option [value]="indexLabel">{{ indexLabel }}</option>
 			}
 		</select>
-		<input placeholder="query" formControlName="constructedQuery" />
+		<input placeholder="query" formControlName="constructedQuery" (keydown.enter)="onSearch()" />
 		<mat-icon color="primary" fontIcon="search" (click)="onSearch()"></mat-icon>
 	</div>
 </form>
