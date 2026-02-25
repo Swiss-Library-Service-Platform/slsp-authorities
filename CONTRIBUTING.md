@@ -23,7 +23,15 @@ Flux attendu:
 
 - Dans les composants, utiliser `takeUntilDestroyed()` pour les abonnements.
 - Éviter les `subscribe()` imbriqués; préférer `switchMap`, `forkJoin`, `catchError`, `finalize`.
+- Les services de données doivent exposer des méthodes en `Observable` (`*$(...)`) et ne pas masquer les `subscribe()` internes.
 - Garder les side effects UI (alertes, loaders) au niveau façade/feature, pas dans les utilitaires purs.
+
+## Nommage et structure
+
+- Utiliser `camelCase` cohérent pour les méthodes (`addRecord`, pas `addrecord`).
+- Préférer les noms explicites (`searchIndexes`, pas `searchIndexs`).
+- Standardiser les fichiers de modèles en `*.model.ts`.
+- Ne pas ajouter de nouveaux fichiers dans `cloudapp/src/app/main/services` (dossier historique).
 
 ## Règles de code
 

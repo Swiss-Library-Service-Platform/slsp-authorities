@@ -19,7 +19,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs';
 })
 export class IdrefRecordComponent {
 	public selectedDoc: Doc | null = null;
-	public searchIndexs = IDREF_FILTER_MAP;
+	public searchIndexes = IDREF_FILTER_MAP;
 
 	private idrefService = inject(IdrefService);
 	private idrefRecordService = inject(IdrefRecordService);
@@ -53,7 +53,7 @@ export class IdrefRecordComponent {
 		inject(IconService);
 
 		// S'assure que la clé 'all' existe.
-		this.searchIndexs.set('all', 'all'); // Ou '' si un "sans index" réel est requis.
+		this.searchIndexes.set('all', 'all'); // Ou '' si un "sans index" réel est requis.
 
 		this.settingsService.get().pipe(takeUntilDestroyed()).subscribe((settings) => {
 			this.pageSize.set((settings as Settings).pageSize);
@@ -121,7 +121,7 @@ export class IdrefRecordComponent {
 	}
 
 	public showDetails(ppn: string): void {
-		this.idrefService.loadAuthorityDetail(ppn);
+		this.idrefService.loadAuthorityDetail$(ppn).subscribe();
 	}
 
 	@ViewChild(MatPaginator)

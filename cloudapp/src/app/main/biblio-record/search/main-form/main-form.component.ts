@@ -140,14 +140,14 @@ export class MainFormComponent implements AfterViewInit {
 		if (match) {
 			const ppn = match[1];
 
-			this.idrefService.loadAuthorityDetail(ppn);
+			this.idrefService.loadAuthorityDetail$(ppn).subscribe();
 		} else {
 			this.idrefRecordService.searchFromCurrentEntryContext();
 		}
 	}
 
-	public addrecord(): void {
-		this.searchService.addrecord(this.searchForm.value, () => this.resetFormFields());
+	public addRecord(): void {
+		this.searchService.addRecord(this.searchForm.value, () => this.resetFormFields());
 	}
 
 	public updateFieldIfFound(): void {

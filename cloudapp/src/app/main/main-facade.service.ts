@@ -103,7 +103,7 @@ export class MainFacadeService {
 
 	public selectEntity(entity: Entity): void {
 		this.recordService.selectedEntity.set(entity);
-		this.nzQuery.refreshSelectedEntityDetails();
+		this.nzQuery.refreshSelectedEntityDetails$().subscribe();
 	}
 
 	public refresh(): Observable<RefreshPageResponse> {
@@ -117,6 +117,6 @@ export class MainFacadeService {
 	}
 
 	public refreshSelectedEntityDetails(): void {
-		this.nzQuery.refreshSelectedEntityDetails();
+		this.nzQuery.refreshSelectedEntityDetails$().subscribe();
 	}
 }

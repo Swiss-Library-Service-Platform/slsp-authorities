@@ -6,7 +6,7 @@
 	</div>
 	<div class="search-form__inputs">
 		<select class="searchIndex" formControlName="searchIndex">
-			@for (indexLabel of searchIndexs.keys(); track indexLabel) {
+			@for (indexLabel of searchIndexes.keys(); track indexLabel) {
 				<option [value]="indexLabel">{{ indexLabel }}</option>
 			}
 		</select>

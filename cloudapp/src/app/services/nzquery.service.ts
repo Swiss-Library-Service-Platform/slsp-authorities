@@ -5,7 +5,7 @@ import {
 	Entity,
 	HttpMethod,
 } from '@exlibris/exl-cloudapp-angular-lib';
-import { Observable, switchMap, catchError, EMPTY, finalize, of, throwError, take } from 'rxjs';
+import { Observable, switchMap, catchError, EMPTY, finalize, of, throwError, take, tap } from 'rxjs';
 import { NzBibRecord, DataField, BibRecordField } from '../models/bib-records';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthenticationService } from './authentication.service';
@@ -222,19 +222,16 @@ export class NZQueryService {
 		);
 	}
 
-	public refreshSelectedEntityDetails(): void {
+	public refreshSelectedEntityDetails$(): Observable<NzBibRecord> {
 		const entity = this.recordService.selectedEntity();
 
 		if (!entity) {
-			return;
+			return EMPTY;
 		}
 
-		this.getBibRecord(entity).subscribe({
-			next: (bib) => this.recordService.selectedEntityDetails.set(bib),
-			error: (err) => {
-				console.error('Erreur refreshSelectedEntityDetails', err);
-			},
-		});
+		return this.getBibRecord(entity).pipe(
+			tap((bib) => this.recordService.selectedEntityDetails.set(bib))
+		);
 	}
 
 	/**

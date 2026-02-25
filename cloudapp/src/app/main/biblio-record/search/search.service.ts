@@ -110,7 +110,7 @@ export class SearchService {
         next: () => {
           this.reset();
           onSuccess?.();
-          this.nzQueryService.refreshSelectedEntityDetails();
+          this.nzQueryService.refreshSelectedEntityDetails$().subscribe();
           this.alert.success(this.translate.instant('search.recordAdded'), { delay: 1000 });
         },
       });
@@ -161,7 +161,7 @@ export class SearchService {
         next: () => {
           this.reset();
           onSuccess?.();
-          this.nzQueryService.refreshSelectedEntityDetails();
+          this.nzQueryService.refreshSelectedEntityDetails$().subscribe();
           this.alert.success(this.translate.instant('search.recordAdded'), { delay: 1000 });
         },
       });
@@ -171,7 +171,7 @@ export class SearchService {
    * Ajoute ou met à jour un enregistrement.
    * Tente d'abord une mise à jour ; si le champ n'existe pas, le crée.
    */
-  public addrecord(formValues: FormValues, onSuccess?: () => void): void {
+  public addRecord(formValues: FormValues, onSuccess?: () => void): void {
     this.loader.show();
 
     const reference = this.referenceCurrentField.getSavedCurrentEntry();
@@ -219,7 +219,7 @@ export class SearchService {
         next: () => {
           this.reset();
           onSuccess?.();
-          this.nzQueryService.refreshSelectedEntityDetails();
+          this.nzQueryService.refreshSelectedEntityDetails$().subscribe();
           this.alert.success(this.translate.instant('search.recordAdded'), { delay: 1000 });
         },
       });

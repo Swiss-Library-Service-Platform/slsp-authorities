@@ -60,7 +60,7 @@ export class IdrefRecordService {
 		// Lance la recherche.
 		const query = this.buildQueryFromFormValues(searchIndex, constructedQueryValue);
 
-		this.idrefService.searchFromQuery(query);
+		this.idrefService.searchFromQuery$(query).subscribe();
 	}
 
 	/**
@@ -74,7 +74,7 @@ export class IdrefRecordService {
 	public searchFromFormValues(searchIndex: string, constructedQuery: string): void {
 		const query = this.buildQueryFromFormValues(searchIndex, constructedQuery);
 
-		this.idrefService.searchFromQuery(query);
+		this.idrefService.searchFromQuery$(query).subscribe();
 	}
 
 	public searchFromCurrentEntryContext(): void {

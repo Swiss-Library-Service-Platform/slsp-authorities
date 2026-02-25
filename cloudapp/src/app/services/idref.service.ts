@@ -1,6 +1,6 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { catchError, EMPTY, map, Observable, tap } from 'rxjs';
+import { catchError, EMPTY, map, Observable, take, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { IdrefRecords, MARC_STRUCTURE, MarcStructureValues } from '../models/idref-model';
 import { BibRecordField } from '../models/bib-records';
@@ -27,10 +27,10 @@ export class IdrefService {
 	private http = inject(HttpClient);
 	private settingsService = inject(CloudAppSettingsService);
 	private solr = '/Sru/Solr';
-	private searchRowNumber: number | undefined;
+	private searchRowNumber = 10;
 
 	public constructor() {
-		this.settingsService.get().subscribe((settings) => {
+		this.settingsService.get().pipe(take(1)).subscribe((settings) => {
 			this.searchRowNumber = (settings as Settings).searchRowNumber;
 		});
 	}
@@ -65,10 +65,6 @@ export class IdrefService {
 		);
 	}
 
-	public searchFromQuery(query: string): void {
-		this.searchFromQuery$(query).subscribe();
-	}
-
 	public searchFromQuery$(query: string): Observable<IdrefRecords> {
 		return this.searchAuthorities(query).pipe(
 			tap((r) => this.idrefResult.set(r)),
@@ -78,10 +74,6 @@ export class IdrefService {
 				return EMPTY;
 			})
 		);
-	}
-
-	public loadAuthorityDetail(ppn: string): void {
-		this.loadAuthorityDetail$(ppn).subscribe();
 	}
 
 	public loadAuthorityDetail$(ppn: string): Observable<Document> {
