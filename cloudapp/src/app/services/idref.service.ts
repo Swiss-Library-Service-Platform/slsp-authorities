@@ -6,7 +6,7 @@ import { IdrefRecords, MARC_STRUCTURE, MarcStructureValues } from '../models/idr
 import { BibRecordField } from '../models/bib-records';
 import { TranslateService } from '@ngx-translate/core';
 import { AlertService, CloudAppSettingsService } from '@exlibris/exl-cloudapp-angular-lib';
-import { Settings } from '../models/setting';
+import { Settings } from '../models/settings.model';
 
 @Injectable({ providedIn: 'root' })
 export class IdrefService {

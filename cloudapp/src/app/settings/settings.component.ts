@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { AlertService, CloudAppSettingsService, FormGroupUtil } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
-import { Settings } from '../models/setting';
+import { Settings } from '../models/settings.model';
 
 @Component({
   selector: 'app-settings',

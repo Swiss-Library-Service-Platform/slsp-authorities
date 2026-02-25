@@ -8,7 +8,7 @@ import { Doc, IDREF_FILTER_MAP, IDREF_RECORDTYPE_TO_ICON_MAP } from '../../../mo
 import { IdrefService } from '../../../services/idref.service';
 import { IdrefRecordService } from './idref-record.service';
 import { CloudAppSettingsService } from '@exlibris/exl-cloudapp-angular-lib';
-import { Settings } from '../../../models/setting';
+import { Settings } from '../../../models/settings.model';
 import { IconService } from '../../../services/icon.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
@@ -24,7 +24,6 @@ export class IdrefRecordComponent {
 	private idrefService = inject(IdrefService);
 	private idrefRecordService = inject(IdrefRecordService);
 	private settingsService = inject(CloudAppSettingsService);
-	private readonly iconService = inject(IconService);
 	private fb = inject(FormBuilder);
 
 	public idrefResult = this.idrefService.idrefResult;
@@ -51,6 +50,8 @@ export class IdrefRecordComponent {
 	private _paginator?: MatPaginator;
 
 	public constructor() {
+		inject(IconService);
+
 		// S'assure que la clé 'all' existe.
 		this.searchIndexs.set('all', 'all'); // Ou '' si un "sans index" réel est requis.
 

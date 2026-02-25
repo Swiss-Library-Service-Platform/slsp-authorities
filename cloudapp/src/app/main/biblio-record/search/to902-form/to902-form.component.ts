@@ -7,7 +7,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { FormValues } from '../model';
 import { CloudAppEventsService, CloudAppSettingsService } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
-import { Settings } from '../../../../models/setting';
+import { Settings } from '../../../../models/settings.model';
 
 export enum to902$$aFields {
 	nouveau = 'IDREF-NOUV',

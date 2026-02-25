@@ -1,13 +1,13 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { of, map, tap, take, catchError, shareReplay, finalize, forkJoin, mapTo, switchMap } from 'rxjs';
 import { Observable } from 'rxjs';
-import { Settings } from '../models/setting';
+import { Settings } from '../models/settings.model';
 import {
 	CloudAppConfigService,
 	CloudAppSettingsService,
 } from '@exlibris/exl-cloudapp-angular-lib';
 import { LoadingIndicatorService } from './loading-indicator.service';
-import { Config } from '../models/config';
+import { Config } from '../models/config.model';
 
 @Injectable({
 	providedIn: 'root',

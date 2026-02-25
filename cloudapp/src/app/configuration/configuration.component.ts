@@ -6,7 +6,7 @@ import {
 	FormGroupUtil,
 } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
-import { Config } from '../models/config';
+import { Config } from '../models/config.model';
 
 @Component({
 	selector: 'app-configuration',
