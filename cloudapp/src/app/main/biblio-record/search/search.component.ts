@@ -1,5 +1,5 @@
 import { Component, inject, input } from '@angular/core';
-import { NzBibRecord } from '../../../models/bib-records';
+import { NzBibRecord } from '../../../models/bib-record.model';
 import { SearchService } from './search.service';
 
 

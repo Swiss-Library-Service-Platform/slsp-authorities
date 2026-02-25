@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BibRecordField } from '../../../models/bib-records';
+import { BibRecordField } from '../../../models/bib-record.model';
 
 @Injectable({
 	providedIn: 'root',

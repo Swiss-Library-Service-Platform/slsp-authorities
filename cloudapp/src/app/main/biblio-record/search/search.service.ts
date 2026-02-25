@@ -4,7 +4,7 @@ import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 import { catchError, EMPTY, finalize } from 'rxjs';
 import { IdrefService } from '../../../services/idref.service';
 import { FormValues, SearchMode, SearchMode902 } from './model';
-import { BibRecordField, DataField } from '../../../models/bib-records';
+import { BibRecordField, DataField } from '../../../models/bib-record.model';
 import { NZQueryService } from '../../../services/nzquery.service';
 import { BiblioReferencedEntryService } from '../../../services/biblio-referenced-entry.service';
 import { LoadingIndicatorService } from '../../../services/loading-indicator.service';
@@ -27,7 +27,7 @@ export class SearchService {
   private referenceCurrentField = inject(BiblioReferencedEntryService);
   private loader = inject(LoadingIndicatorService);
 
-  public NZSelectedEntry = this.idrefService.NZSelectedEntry;
+  public nzSelectedEntry = this.idrefService.nzSelectedEntry;
   public flattenedValue = this.idrefService.flattenedValue;
   public isTo902FormVisible = signal(false);
 
@@ -64,16 +64,16 @@ export class SearchService {
   }
 
   /**
-   * Set the NZSelectedEntry in the idref service
+  * Set the selected NZ entry in the idref service
    */
-  public setNZSelectedEntry(values: FormValues): void {
+  public setNzSelectedEntry(values: FormValues): void {
     let subfields = values.subfields;
 
     if (!subfields.includes('$$')) {
       subfields = '$$a ' + subfields;
     }
 
-    this.NZSelectedEntry.set({
+    this.nzSelectedEntry.set({
       change: '',
       tag: values.tag,
       ind1: values.ind1,
@@ -243,7 +243,7 @@ export class SearchService {
   public clear(resetFormCallback?: () => void): void {
     this.isTo902FormVisible.set(false);
     this.searchMode.set(SearchMode.AddField);
-    this.NZSelectedEntry.set(undefined);
+    this.nzSelectedEntry.set(undefined);
 
     if (resetFormCallback) {
       resetFormCallback();

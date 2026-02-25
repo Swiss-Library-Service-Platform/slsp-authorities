@@ -4,7 +4,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { MatPaginator } from '@angular/material/paginator';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { Doc, IDREF_FILTER_MAP, IDREF_RECORDTYPE_TO_ICON_MAP } from '../../../models/idref-model';
+import { Doc, IDREF_FILTER_MAP, IDREF_RECORDTYPE_TO_ICON_MAP } from '../../../models/idref.model';
 import { IdrefService } from '../../../services/idref.service';
 import { IdrefRecordService } from './idref-record.service';
 import { CloudAppSettingsService } from '@exlibris/exl-cloudapp-angular-lib';
@@ -27,7 +27,7 @@ export class IdrefRecordComponent {
 	private fb = inject(FormBuilder);
 
 	public idrefResult = this.idrefService.idrefResult;
-	public NZSelectedEntry = this.idrefService.NZSelectedEntry;
+	public nzSelectedEntry = this.idrefService.nzSelectedEntry;
 	public iconMap = IDREF_RECORDTYPE_TO_ICON_MAP;
 
 	// Pagination.

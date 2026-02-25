@@ -1,6 +1,6 @@
 import { Component, computed, inject, ViewChild} from '@angular/core';
 import { BiblioRecordComponent } from '../biblio-record/biblio-record.component';
-import { tagGroups } from '../../models/idref-model';
+import { tagGroups } from '../../models/idref.model';
 import { MainFacadeService } from '../main-facade.service';
 
 // Composant central de la Cloud App : recherche IdRef, notice bibliographique NZ et notice d'autorité IdRef.

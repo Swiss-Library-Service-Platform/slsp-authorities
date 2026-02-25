@@ -2,8 +2,8 @@ import { computed, inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, EMPTY, map, Observable, take, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { IdrefRecords, MARC_STRUCTURE, MarcStructureValues } from '../models/idref-model';
-import { BibRecordField } from '../models/bib-records';
+import { IdrefRecords, MARC_STRUCTURE, MarcStructureValues } from '../models/idref.model';
+import { BibRecordField } from '../models/bib-record.model';
 import { TranslateService } from '@ngx-translate/core';
 import { AlertService, CloudAppSettingsService } from '@exlibris/exl-cloudapp-angular-lib';
 import { Settings } from '../models/settings.model';
@@ -12,12 +12,12 @@ import { Settings } from '../models/settings.model';
 export class IdrefService {
 	// Résultat de la recherche IdRef.
 	public idrefResult = signal<IdrefRecords | undefined>(undefined);
-	public NZSelectedEntry = signal<BibRecordField | undefined>(undefined);
+	public nzSelectedEntry = signal<BibRecordField | undefined>(undefined);
 	public idrefAuthorityDetail = signal<Document | undefined>(undefined);
 
 	// Concaténation des sous-champs en une chaîne unique.
 	public flattenedValue = computed(() =>
-		this.NZSelectedEntry()
+		this.nzSelectedEntry()
 			?.subfields.map((v) => `$$${v.code} ${v.value}`)
 			.join(' ')
 	);
@@ -90,10 +90,10 @@ export class IdrefService {
 	// Retourne la structure MARC liée à l'entrée sélectionnée.
 	public getMarcStructure(): MarcStructureValues | undefined {
 		const codes: string[] = [];
-		const tag = this.NZSelectedEntry()?.tag;
-		const ind1 = this.NZSelectedEntry()?.ind1;
-		const ind2 = this.NZSelectedEntry()?.ind2;
-		const value = this.NZSelectedEntry()?.subfields;
+		const tag = this.nzSelectedEntry()?.tag;
+		const ind1 = this.nzSelectedEntry()?.ind1;
+		const ind2 = this.nzSelectedEntry()?.ind2;
+		const value = this.nzSelectedEntry()?.subfields;
 
 		value?.forEach((subfield) => codes.push(subfield.code.replace('$$', '')));
 
@@ -115,7 +115,7 @@ export class IdrefService {
 
 	public reset(): void {
 		this.idrefResult.set(undefined);
-		this.NZSelectedEntry.set(undefined);
+		this.nzSelectedEntry.set(undefined);
 		this.idrefAuthorityDetail.set(undefined);
 	}
 }

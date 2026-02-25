@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 import { Injectable, inject, Signal, computed, signal } from '@angular/core';
-import { Doc, IDREF_FILTER_MAP, IDREF_RECORDTYPE_MAP } from '../../../models/idref-model';
+import { Doc, IDREF_FILTER_MAP, IDREF_RECORDTYPE_MAP } from '../../../models/idref.model';
 import { IdrefService } from '../../../services/idref.service';
-import { BibRecordField } from '../../../models/bib-records';
+import { BibRecordField } from '../../../models/bib-record.model';
 
 @Injectable({
 	providedIn: 'root',
@@ -31,7 +31,7 @@ export class IdrefRecordService {
 	 */
 	public buildQueryInputValue(): Signal<string> {
 		return computed(() => {
-			const filterValues = this.idrefService.NZSelectedEntry()?.subfields;
+			const filterValues = this.idrefService.nzSelectedEntry()?.subfields;
 			const persnameValue = filterValues?.find((value) => value.code === 'a')?.value ?? '';
 			const dates = filterValues?.find((value) => value.code === 'd')?.value ?? '';
 
@@ -48,7 +48,7 @@ export class IdrefRecordService {
 	 */
 	public setFormValuesFromEntry(entry: BibRecordField): void {
 		// Met à jour l'entrée sélectionnée.
-		this.idrefService.NZSelectedEntry.set({ ...entry });
+		this.idrefService.nzSelectedEntry.set({ ...entry });
 
 		// Récupère les valeurs calculées à partir des signaux.
 		const searchIndex = this.idrefService.getMarcStructure()?.label ?? '';
@@ -135,7 +135,7 @@ export class IdrefRecordService {
 	 * Met à jour l'entry sélectionnée avec le PPN fourni
 	 */
 	public updateSelectedEntryWithPPN(doc: Doc): void {
-		const selectedEntry = this.idrefService.NZSelectedEntry();
+		const selectedEntry = this.idrefService.nzSelectedEntry();
 		const ppn_z = doc.ppn_z;
 		const affcourt_z = doc.affcourt_z;
 
@@ -195,7 +195,7 @@ export class IdrefRecordService {
 		};
 
 		// Met à jour le signal.
-		this.idrefService.NZSelectedEntry.set(newEntry);
+		this.idrefService.nzSelectedEntry.set(newEntry);
 	}
 
 	public reset(): void {

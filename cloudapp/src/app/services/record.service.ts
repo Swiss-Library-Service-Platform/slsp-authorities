@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { Entity } from '@exlibris/exl-cloudapp-angular-lib';
-import { NzBibRecord } from '../models/bib-records';
+import { NzBibRecord } from '../models/bib-record.model';
 
 
 @Injectable({

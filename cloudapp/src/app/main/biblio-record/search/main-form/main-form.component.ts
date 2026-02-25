@@ -3,7 +3,7 @@ import { AfterViewInit, Component, ElementRef, ViewChild, effect, inject, input 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { distinctUntilChanged } from 'rxjs';
-import { NzBibRecord } from '../../../../models/bib-records';
+import { NzBibRecord } from '../../../../models/bib-record.model';
 import { IdrefService } from '../../../../services/idref.service';
 import { SearchService } from '../search.service';
 import { IdrefRecordService } from '../../../entity-detail/idref-record/idref-record.service';
@@ -29,7 +29,7 @@ export class MainFormComponent implements AfterViewInit {
 
 	public readonly searchMode = this.searchService.searchMode;
 	public readonly isTo902FormVisible = this.searchService.isTo902FormVisible;
-	public readonly NZSelectedEntry = this.searchService.NZSelectedEntry;
+	public readonly nzSelectedEntry = this.searchService.nzSelectedEntry;
 	public readonly flattenedValue = this.searchService.flattenedValue;
 
 	public constructor() {
@@ -46,7 +46,7 @@ export class MainFormComponent implements AfterViewInit {
 			.subscribe(() => this.scheduleSubfieldsRender());
 
 		effect(() => {
-			const entry = this.NZSelectedEntry();
+			const entry = this.nzSelectedEntry();
 
 			if (entry) {
 				this.searchForm.patchValue(
@@ -131,7 +131,7 @@ export class MainFormComponent implements AfterViewInit {
 			subfields: string;
 		};
 
-		this.searchService.setNZSelectedEntry(values);
+		this.searchService.setNzSelectedEntry(values);
 
 		const subfields = values.subfields;
 		const regex = /\$\$0 \(IDREF\)(\d+)/;

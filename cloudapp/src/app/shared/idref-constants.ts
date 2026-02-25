@@ -1,5 +1,5 @@
-import { BibRecordField } from '../models/bib-records';
-import { MarcStructureValues } from '../models/idref-model';
+import { BibRecordField } from '../models/bib-record.model';
+import { MarcStructureValues } from '../models/idref.model';
 
 export const IDREF_RECORDTYPE_TO_ICON_MAP = new Map<string, string>([
 	['a', 'personne'],

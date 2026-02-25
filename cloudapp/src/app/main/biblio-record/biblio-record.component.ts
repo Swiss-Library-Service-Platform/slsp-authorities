@@ -1,8 +1,8 @@
 import { Component, computed, inject, input, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteDialogComponent } from './delete-dialog/delete-dialog.component';
-import { BibRecordField, NzBibRecord } from '../../models/bib-records';
-import { MARC_STRUCTURE_KEY } from '../../models/idref-model';
+import { BibRecordField, NzBibRecord } from '../../models/bib-record.model';
+import { MARC_STRUCTURE_KEY } from '../../models/idref.model';
 import { BiblioReferencedEntryService } from '../../services/biblio-referenced-entry.service';
 import { IdrefService } from '../../services/idref.service';
 import { SearchService } from './search/search.service';
@@ -55,7 +55,7 @@ export class BiblioRecordComponent {
 
 	public pushToInput(entry: BibRecordField): void {
 		this.selectedBibRecordField = entry;
-		this.idrefService.NZSelectedEntry.set({ ...entry });
+		this.idrefService.nzSelectedEntry.set({ ...entry });
 		this.searchService.closeTo902();
 		this.searchService.searchMode902.set(SearchMode902.Add902);
 

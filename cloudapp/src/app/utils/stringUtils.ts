@@ -1,4 +1,4 @@
-import { BibRecordField, ControlField, DataField, MarcRecord, SubField } from "../models/bib-records";
+import { BibRecordField, ControlField, DataField, MarcRecord, SubField } from "../models/bib-record.model";
 export class StringUtils {
   public static xmlToMarcRecord(xml: string): MarcRecord {
     const parser = new DOMParser();

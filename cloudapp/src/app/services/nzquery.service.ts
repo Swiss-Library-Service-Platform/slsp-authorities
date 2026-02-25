@@ -6,7 +6,7 @@ import {
 	HttpMethod,
 } from '@exlibris/exl-cloudapp-angular-lib';
 import { Observable, switchMap, catchError, EMPTY, finalize, of, throwError, take, tap } from 'rxjs';
-import { NzBibRecord, DataField, BibRecordField } from '../models/bib-records';
+import { NzBibRecord, DataField, BibRecordField } from '../models/bib-record.model';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthenticationService } from './authentication.service';
 import { LoadingIndicatorService } from './loading-indicator.service';

@@ -2,7 +2,7 @@ import { Component, Inject, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { CloudAppEventsService, AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
-import { BibRecordField } from '../../../models/bib-records';
+import { BibRecordField } from '../../../models/bib-record.model';
 import { NZQueryService } from '../../../services/nzquery.service';
 import { RecordService } from '../../../services/record.service';
 import { LoadingIndicatorService } from '../../../services/loading-indicator.service';

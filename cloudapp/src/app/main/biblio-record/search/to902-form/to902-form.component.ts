@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 import { Component, computed, effect, inject, input, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NzBibRecord } from '../../../../models/bib-records';
+import { NzBibRecord } from '../../../../models/bib-record.model';
 import { SearchService } from '../search.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { FormValues } from '../model';
@@ -35,17 +35,17 @@ export class To902FormComponent {
 
 	public readonly searchMode902 = this.searchService.searchMode902;
 	public readonly searchMode = this.searchService.searchMode;
-	public readonly NZSelectedEntry = this.searchService.NZSelectedEntry;
+	public readonly nzSelectedEntry = this.searchService.nzSelectedEntry;
 	public userSignature = signal('');
 	public IZCode = signal('');
 
 	public defaultPurpose = computed(() => {
-		if (this.NZSelectedEntry()?.tag === '902') {
-			return `${this.NZSelectedEntry()?.subfields.find((f) => f.code === 'a')?.value}`;
+		if (this.nzSelectedEntry()?.tag === '902') {
+			return `${this.nzSelectedEntry()?.subfields.find((f) => f.code === 'a')?.value}`;
 		}
 
 		if (
-			this.NZSelectedEntry()?.subfields.find((f) => f.code === '0' && f.value.includes('IDREF'))
+			this.nzSelectedEntry()?.subfields.find((f) => f.code === '0' && f.value.includes('IDREF'))
 		) {
 			return to902$$aFields.correction;
 		}
@@ -56,15 +56,15 @@ export class To902FormComponent {
 	// TODO: externaliser le contenu dans une configuration pour faciliter son évolution sans modification du code.
 
 	public predifinedContent = computed(() => {
-		if (this.NZSelectedEntry()?.tag === '902') {
-			return `${this.NZSelectedEntry()?.subfields.find((f) => f.code === 'b')?.value}`;
+		if (this.nzSelectedEntry()?.tag === '902') {
+			return `${this.nzSelectedEntry()?.subfields.find((f) => f.code === 'b')?.value}`;
 		}
 
 		const purpose = this.searchForm.get('purpose')?.value;
 
 		if (purpose === to902$$aFields.correction) {
 			return this.translate.instant('search.to902.predefined.correction', {
-				link: this.NZSelectedEntry()?.subfields.find((f) => f.code === '0')?.value,
+				link: this.nzSelectedEntry()?.subfields.find((f) => f.code === '0')?.value,
 			});
 		} else if (purpose === to902$$aFields.nouveau) {
 			return this.translate.instant('search.to902.predefined.nouveau');
@@ -94,7 +94,7 @@ export class To902FormComponent {
 		});
 
 		effect(() => {
-			const entry = this.NZSelectedEntry();
+			const entry = this.nzSelectedEntry();
 
 			if (entry) {
 				const purpose = this.defaultPurpose();
