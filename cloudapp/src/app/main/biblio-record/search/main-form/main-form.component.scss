@@ -35,6 +35,73 @@
     text-align: left;
 }
 
+.input-section {
+    align-items: flex-start;
+    flex-wrap: nowrap;
+}
+
+.input-section .tagInput {
+    color: rgb(128, 0, 128);
+    width: calc(3ch + 10px);
+    min-width: calc(3ch + 10px);
+    text-align: center;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.input-section .indInput {
+    color: rgb(0, 128, 0);
+    width: calc(1ch + 10px);
+    min-width: calc(1ch + 10px);
+    text-align: center;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.subfields-wrapper {
+    position: relative;
+    flex: 1 1 auto;
+    min-width: 140px;
+}
+
+.subfields-highlight {
+    position: absolute;
+    inset: 0;
+    padding: 4px 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: #fff;
+    box-sizing: border-box;
+    font-size: 14px;
+    line-height: 1.2;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow: hidden;
+    color: #000;
+    pointer-events: none;
+}
+
+:host ::ng-deep .subfields-highlight .subfield-token-blue {
+    color: rgb(0, 0, 255);
+}
+
+
+.input-section .subfieldsInput {
+    min-height: 28px;
+    height: 28px;
+    padding: 4px 8px;
+    width: 100%;
+    border: 1px solid transparent;
+    background: transparent;
+    color: transparent;
+    caret-color: #000;
+    overflow: hidden;
+    resize: none;
+    align-self: flex-start;
+    position: relative;
+    z-index: 1;
+}
+
 
 
 .search-icon {
@@ -52,7 +119,7 @@
 .input-section .tagInput,
 .input-section .indInput {
     height: 28px;
-    padding: 4px 8px;
+    padding: 4px 0;
     box-sizing: border-box;
     display: inline-block;
     line-height: 1;

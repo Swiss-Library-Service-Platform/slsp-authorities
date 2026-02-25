@@ -8,7 +8,17 @@
 
 			<input class="indInput" formControlName="ind2" />
 
-			<textarea class="subfieldsInput" placeholder="subfields" formControlName="subfields" rows="2"></textarea>
+			<div class="subfields-wrapper">
+				<div class="subfields-highlight" [innerHTML]="highlightedSubfields"></div>
+				<textarea
+					#subfieldsTextarea
+					class="subfieldsInput"
+					placeholder="subfields"
+					formControlName="subfields"
+					rows="1"
+					(input)="onSubfieldsInput($event)"
+				></textarea>
+			</div>
 
 			<mat-icon color="primary" fontIcon="search" (click)="onSearch()" class="search-icon"></mat-icon>
 		</div>

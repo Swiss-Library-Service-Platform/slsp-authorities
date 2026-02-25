@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/member-ordering */
-import { Component, inject, effect, input } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild, effect, inject, input } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { NzBibRecord } from '../../../../models/bib-records';
 import { IdrefService } from '../../../../services/idref.service';
@@ -11,10 +11,12 @@ import { IdrefRecordService } from '../../../entity-detail/idref-record/idref-re
 	templateUrl: './main-form.component.html',
 	styleUrl: './main-form.component.scss',
 })
-export class MainFormComponent {
+export class MainFormComponent implements AfterViewInit {
 	public entity = input.required<NzBibRecord | undefined>();
 
 	public searchForm: FormGroup;
+	public highlightedSubfields = '';
+	@ViewChild('subfieldsTextarea') private subfieldsTextarea?: ElementRef<HTMLTextAreaElement>;
 
 	private idrefService = inject(IdrefService);
 	private searchService = inject(searchService);
@@ -47,8 +49,51 @@ export class MainFormComponent {
 					},
 					{ emitEvent: false }
 				);
+				this.autoResizeSubfields();
+				this.updateSubfieldsHighlight();
 			}
 		});
+	}
+
+	public ngAfterViewInit(): void {
+		this.autoResizeSubfields();
+		this.updateSubfieldsHighlight();
+	}
+
+	public onSubfieldsInput(event: Event): void {
+		this.autoResizeSubfields(event);
+		this.updateSubfieldsHighlight();
+	}
+
+	public autoResizeSubfields(event?: Event): void {
+		const textarea = (event?.target as HTMLTextAreaElement | null) ?? this.subfieldsTextarea?.nativeElement;
+
+		if (!textarea) {
+			return;
+		}
+
+		textarea.style.height = 'auto';
+		textarea.style.height = `${textarea.scrollHeight}px`;
+	}
+
+	private updateSubfieldsHighlight(): void {
+		const subfields = (this.searchForm.get('subfields')?.value as string | null) ?? '';
+		const escaped = this.escapeHtml(subfields);
+
+		this.highlightedSubfields = escaped.replace(
+			/(\$\$.)/g,
+			'<span class="subfield-token-blue">$1</span>'
+		);
+	}
+
+	private escapeHtml(value: string): string {
+		return value
+			.replace(/&/g, '&amp;')
+			.replace(/</g, '&lt;')
+			.replace(/>/g, '&gt;')
+			.replace(/\"/g, '&quot;')
+			.replace(/'/g, '&#39;')
+			.replace(/\n/g, '<br/>');
 	}
 
 	public onSearch(): void {
@@ -104,6 +149,10 @@ export class MainFormComponent {
 	}
 
 	public clear(): void {
-		this.searchService.clear(() => this.searchForm.reset());
+		this.searchService.clear(() => {
+			this.searchForm.reset();
+			this.autoResizeSubfields();
+			this.updateSubfieldsHighlight();
+		});
 	}
 }
