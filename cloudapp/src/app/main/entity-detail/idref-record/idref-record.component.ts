@@ -30,7 +30,7 @@ export class IdrefRecordComponent {
 	public NZSelectedEntry = this.idrefService.NZSelectedEntry;
 	public iconMap = IDREF_RECORDTYPE_TO_ICON_MAP;
 
-	// Pagination
+	// Pagination.
 	private pageIndex = signal(0);
 	public pageSize = signal(10);
 
@@ -50,21 +50,21 @@ export class IdrefRecordComponent {
 	private _paginator?: MatPaginator;
 
 	public constructor() {
-		// S'assurer que la clé 'all' existe bien
-		this.searchIndexs.set('all', 'all'); // ou '' si "sans index" réel
+		// S'assure que la clé 'all' existe.
+		this.searchIndexs.set('all', 'all'); // Ou '' si un "sans index" réel est requis.
 
 		this.settingsService.get().subscribe((settings) => {
 			this.pageSize.set((settings as Settings).pageSize);
 		});
 
-		// ✅ Init du form : select = 'all'
+		// Initialise le formulaire avec `searchIndex = 'all'`.
 		this.searchForm = this.fb.group({
 			searchIndex: ['all'],
 			constructedQuery: [''],
 			isStrictSearch: false,
 		});
 
-		// ✅ Unique effect : sync signaux du service → formulaire
+		// Synchronise les signaux du service vers le formulaire.
 		effect(() => {
 			const searchIndex = this.idrefRecordService.formSearchIndex();
 			const constructedQuery = this.idrefRecordService.formConstructedQuery();
@@ -80,7 +80,7 @@ export class IdrefRecordComponent {
 			);
 		});
 
-		// ✅ Sync formulaire → signaux du service
+		// Synchronise le formulaire vers les signaux du service.
 		this.searchForm.get('searchIndex')?.valueChanges.subscribe((value) => {
 			this.idrefRecordService.formSearchIndex.set(value);
 		});

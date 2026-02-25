@@ -126,14 +126,14 @@ export class searchService {
     const reference = this.referenceCurrentField.getSavedCurrentEntry();
 
     if (!reference) {
-      this.alert.error(this.translate.instant('search.noSelectedEntry'), { delay: 1000 });
+      this.alert.error(this.translate.instant('search.noSelectedEntry'), { delay: 1000, autoClose: true });
       this.loader.hide();
 
       return;
     }
 
     if (reference && !this.isUpdateAllowed(reference)) {
-      this.alert.warn(this.translate.instant('search.updateNotAllowed'), { delay: 1000 });
+      this.alert.warn(this.translate.instant('search.updateNotAllowed'), { delay: 1000, autoClose: true });
       this.loader.hide();
       
       return;
@@ -177,7 +177,7 @@ export class searchService {
     const reference = this.referenceCurrentField.getSavedCurrentEntry();
 
     if (!reference) {
-      this.alert.error(this.translate.instant('search.noSelectedEntry'), { delay: 1000 });
+      this.alert.error(this.translate.instant('search.noSelectedEntry'), { delay: 1000, autoClose: true });
       this.loader.hide();
 
       return;

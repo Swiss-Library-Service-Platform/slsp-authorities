@@ -90,18 +90,18 @@
       align-items: flex-start;
 
       > span:first-child {
-        white-space: nowrap;       // ✅ clé sur une seule ligne
+        white-space: nowrap;       // Clé sur une seule ligne.
         font-weight: bold;
-        width: 120px;              // ✅ largeur fixe pour la clé
-        flex-shrink: 0;            // ✅ empêche la clé de se réduire
+        width: 120px;              // Largeur fixe pour la clé.
+        flex-shrink: 0;            // Empêche la clé de se réduire.
       }
 
       > span:last-child {
-        flex: 1;                   // ✅ prend tout l’espace restant
-        overflow-y: auto;          // ✅ scroll si dépasse
+        flex: 1;                   // Prend tout l’espace restant.
+        overflow-y: auto;          // Active le défilement en cas de dépassement.
         display: block;
         line-height: 1em;
-        word-break: break-word;    // ✅ coupe proprement les mots
+        word-break: break-word;    // Coupe proprement les mots.
       }
     }
   }

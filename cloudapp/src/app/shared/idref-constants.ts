@@ -57,7 +57,7 @@ export const MARC_STRUCTURE = new Map<string, MarcStructureValues>([
 
 	['655|  ', { label: 'Forme / genre', filters: ['formgenreheading'], recordtypes: ['u','v'] }],
 
-	//this is just for showing 902 fields in the bir record components
+	// Utilisé uniquement pour afficher les champs 902 dans le composant de notices bibliographiques.
 	['902|  ', { label: '', filters: [''], recordtypes: ['']}],
 ]);
 
@@ -88,12 +88,12 @@ export function getIdrefRecordsFromBibRecordField(entry: BibRecordField): { labe
 		subfields.push(v.code);
 	});
 
-	//utile pour le sous sous champs 650|1 |a,t et 650|0 |a,t 
+	// Utile pour les sous-champs 650|1 |a,t et 650|0 |a,t.
 	const subfieldsStr = subfields.sort().join(',');
 	let result = MARC_STRUCTURE.get(`${tag}|${ind1}${ind2}|${subfieldsStr}`);
 
 	if (result) return result;
-	//le cas le plus commun il y a seulement le tag et les indexes qui importent
+	// Cas le plus courant : seuls le tag et les index sont pris en compte.
 	result = MARC_STRUCTURE.get(`${tag}|${ind1}${ind2}`);
 
 	if (result) return result;
@@ -107,7 +107,7 @@ function buildIdrefFilterMap(): Map<string, string> {
 
     for (const { label, filters } of MARC_STRUCTURE.values()) {
         if (!label || !filters?.length) continue;
-        // On ne set qu'une seule fois par label
+		// Définit une seule fois la valeur par label.
 
         if (!map.has(label)) {
             map.set(label, filters[0]);

@@ -10,7 +10,7 @@ import { BibRecordField } from '../../../models/bib-records';
 export class IdrefRecordService {
 	private idrefService = inject(IdrefService);
 
-	// Formonnées du formulaire
+	// Données du formulaire.
 	public formSearchIndex = signal<string>('all');
 	public formConstructedQuery = signal<string>('');
 	public formIsStrictSearch = signal<boolean>(false);
@@ -47,17 +47,17 @@ export class IdrefRecordService {
 	 * Définit les valeurs du formulaire à partir d'une entry et lance la recherche
 	 */
 	public setFormValuesFromEntry(entry: BibRecordField): void {
-		// Mettre à jour l'entry sélectionnée
+		// Met à jour l'entrée sélectionnée.
 		this.idrefService.NZSelectedEntry.set({ ...entry });
 
-		// Obtenir les valeurs calculées à partir des signaux
+		// Récupère les valeurs calculées à partir des signaux.
 		const searchIndex = this.idrefService.getMarcStructure()?.label ?? '';
 		const constructedQueryValue = this.buildQueryInputValue()();
 
-		// Mettre à jour les signaux du formulaire
+		// Met à jour les signaux du formulaire.
 		this.setFormValues(searchIndex, constructedQueryValue);
 
-		// Lancer la recherche
+		// Lance la recherche.
 		const query = this.buildQueryFromFormValues(searchIndex, constructedQueryValue);
 
 		this.idrefService.searchFromQuery(query);
@@ -125,23 +125,23 @@ export class IdrefRecordService {
 		const ppn_z = doc.ppn_z;
 		const affcourt_z = doc.affcourt_z;
 
-		//TODO: c'est le cas où on crée un nouveaux champ dans la notice biblio
+		// TODO: gérer le cas de création d'un nouveau champ dans la notice bibliographique.
 		if (!selectedEntry) {
 			return;
 		}
 
-		// On clone le tableau pour rester "immutable"
+		// Clone le tableau pour conserver l'immuabilité.
 		const newValues = [...selectedEntry.subfields];
 		const currentPPNIndex = newValues.findIndex((subfield) => subfield.code === '0');
 
 		if (currentPPNIndex !== -1) {
-			// Mise à jour de la valeur existante
+			// Met à jour la valeur existante.
 			newValues[currentPPNIndex] = {
 				...newValues[currentPPNIndex],
 				value: `(IDREF)${ppn_z}`,
 			};
 		} else {
-			// Ajout d'un nouveau sous-champ $$0
+			// Ajoute un nouveau sous-champ $$0.
 			newValues.push({
 				code: '0',
 				value: `(IDREF)${ppn_z}`,
@@ -151,13 +151,13 @@ export class IdrefRecordService {
 		const current$$aIndex = newValues.findIndex((subfield) => subfield.code === 'a');
 
 		if (current$$aIndex !== -1) {
-			// Mise à jour de la valeur existante
+			// Met à jour la valeur existante.
 			newValues[current$$aIndex] = {
 				...newValues[current$$aIndex],
 				value: `${affcourt_z}`,
 			};
 		} else {
-			// Ajout d'un nouveau sous-champ $$0
+			// Ajoute un nouveau sous-champ $$a.
 			newValues.push({
 				code: 'a',
 				value: `${affcourt_z.split(',')[0]}`,
@@ -168,7 +168,7 @@ export class IdrefRecordService {
 			selectedEntry.tag.match(/^6\d\d$/) &&
 			!newValues.some((subfield) => subfield.code === '2')
 		) {
-			// Ajout d'un nouveau sous-champ $$2
+			// Ajoute un nouveau sous-champ $$2.
 			newValues.push({
 				code: '2',
 				value: `idref`,
@@ -180,7 +180,7 @@ export class IdrefRecordService {
 			subfields: newValues,
 		};
 
-		// Mise à jour du signal
+		// Met à jour le signal.
 		this.idrefService.NZSelectedEntry.set(newEntry);
 	}
 

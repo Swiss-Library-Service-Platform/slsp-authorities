@@ -1,4 +1,4 @@
-// Types and Solr response interfaces
+// Types et interfaces de réponse Solr.
 export interface Params {
 	wt: string;
 	q: string;
@@ -52,7 +52,7 @@ export interface Response {
 	docs: Doc[];
 }
 
-//réponse d'une requette sur idref via Solr
+// Réponse d'une requête IdRef via Solr.
 export interface IdrefRecords {
 	responseHeader: ResponseHeader;
 	response: Response;
@@ -64,5 +64,5 @@ export interface MarcStructureValues{
 	recordtypes: string[];
 }
 
-// Re-export shared constants/utilities to keep existing import paths stable
+// Réexporte les constantes/utilitaires partagés pour conserver les chemins d'import existants.
 export { tagGroups, MARC_STRUCTURE, MARC_STRUCTURE_KEY, getIdrefRecordsFromBibRecordField, IDREF_FILTER_MAP, IDREF_RECORDTYPE_MAP, IDREF_RECORDTYPE_TO_ICON_MAP } from '../shared/idref-constants';

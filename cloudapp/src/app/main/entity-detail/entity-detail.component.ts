@@ -3,7 +3,7 @@ import { BiblioRecordComponent } from '../biblio-record/biblio-record.component'
 import { tagGroups } from '../../models/idref-model';
 import { MainFacadeService } from '../main-facade.service';
 
-//Composant central de la cloudapp, il affiche le composant de recherche sur idref, le composant d'affichage des notices bibliographique de la NZ et le composant d'affichage des notices d'authorité de idref
+// Composant central de la Cloud App : recherche IdRef, notice bibliographique NZ et notice d'autorité IdRef.
 @Component({
 	selector: 'app-entity-detail',
 	templateUrl: './entity-detail.component.html',
@@ -29,7 +29,7 @@ export class EntityDetailComponent {
 			}
 		}
 
-		return '#f5f5f5'; // couleur par défaut
+		return '#f5f5f5'; // Couleur par défaut.
 	}
 
   public onSaveSuccess(): void {

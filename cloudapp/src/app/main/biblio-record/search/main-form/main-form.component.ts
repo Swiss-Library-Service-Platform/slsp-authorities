@@ -142,14 +142,14 @@ export class MainFormComponent implements AfterViewInit {
 
 			this.idrefService.searchWithPPN(ppn);
 		} else {
-			// Obtenir les valeurs calculées à partir des signaux
+			// Récupère les valeurs calculées à partir des signaux.
 			const searchIndex = this.idrefService.getMarcStructure()?.label ?? '';
 			const constructedQueryValue = this.idrefRecordService.buildQueryInputValue()();
 
-			// Mettre à jour les signaux du formulaire
+			// Met à jour les signaux du formulaire.
 			this.idrefRecordService.setFormValues(searchIndex, constructedQueryValue);
 
-			// Lancer la recherche
+			// Lance la recherche.
 			const query = this.idrefRecordService.buildQueryFromFormValues(
 				searchIndex,
 				constructedQueryValue

@@ -6,7 +6,7 @@ import { BibRecordField } from '../models/bib-records';
 })
 export class BiblioReferencedEntryService {
 
-  //on a besoin de sauvegarder la notice que l'on est en train de modifier car comme il n'y a pas d'id sur les champs
+	// Sauvegarde la notice en cours de modification, car les champs n'ont pas d'identifiant propre.
 
   private savedCurrentEntry = signal<BibRecordField | undefined>(undefined);
 

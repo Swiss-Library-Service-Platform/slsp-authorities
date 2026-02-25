@@ -10,12 +10,12 @@ import { Settings } from '../models/setting';
 
 @Injectable({ providedIn: 'root' })
 export class IdrefService {
-	// resultat de la recherche idref
+	// Résultat de la recherche IdRef.
 	public idrefResult = signal<IdrefRecords | undefined>(undefined);
 	public NZSelectedEntry = signal<BibRecordField | undefined>(undefined);
 	public idrefAuthorityDetail = signal<Document | undefined>(undefined);
 
-	//concaténation des strings des subfields
+	// Concaténation des sous-champs en une chaîne unique.
 	public flattenedValue = computed(() =>
 		this.NZSelectedEntry()
 			?.subfields.map((v) => `$$${v.code} ${v.value}`)
@@ -35,7 +35,7 @@ export class IdrefService {
 		});
 	}
 
-	//permet de faire des recherches génériques dans idref (peut-être à améliorer car pour le moment on ne peut pas ajouter d'autres options que wt)
+	// Lance une recherche générique dans IdRef.
 	public searchAuthorities(query: string): Observable<IdrefRecords> {
 		const params = {
 			q: query,
@@ -53,7 +53,7 @@ export class IdrefService {
 		});
 	}
 	public searchWithPPN(ppn: string): Observable<Document> {
-		//this.searchAuthorities(`ppn_z:${ppn}`).subscribe({next: r => this.idrefResult.set(r)})
+		// this.searchAuthorities(`ppn_z:${ppn}`).subscribe({ next: r => this.idrefResult.set(r) });
 
 		return this.http.get(`${environment.idrefUrl}/${ppn}.xml`, { responseType: 'text' }).pipe(
 			map((xmlString) => {
@@ -73,7 +73,7 @@ export class IdrefService {
 		});
 	}
 
-	//permet de récuperer la strucutre lié
+	// Retourne la structure MARC liée à l'entrée sélectionnée.
 	public getMarcStructure(): MarcStructureValues | undefined {
 		const codes: string[] = [];
 		const tag = this.NZSelectedEntry()?.tag;
@@ -89,7 +89,7 @@ export class IdrefService {
 		if (result) {
 			return result;
 		} else {
-			//si pas de subfields on regarde les indicateurs
+			// S'il n'y a pas de sous-champs, recherche par indicateurs.
 			result = MARC_STRUCTURE.get(`${tag}|${ind1}${ind2}`);
 
 			if (result) return result;

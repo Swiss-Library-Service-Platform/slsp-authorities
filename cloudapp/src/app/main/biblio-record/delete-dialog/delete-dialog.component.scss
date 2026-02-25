@@ -39,9 +39,9 @@
     gap: 4px;
     /* Petit espace entre les icônes */
     padding-left: 0;
-    /* Optionnel : pour coller au bord */
+    /* Optionnel : alignement au bord */
     
-    width: 60px;          // à ajuster selon la taille de tes icônes
+    width: 60px;          // Ajuster selon la taille des icônes.
     flex: 0 0 60px;
 
   }
@@ -53,8 +53,8 @@
 
   
   .marc-row.marc-row--active {
-    background-color: #e3f2fd;   // bleu léger type Material
-    // optionnel : bordure ou autre
+    background-color: #e3f2fd;   // Bleu léger (style Material).
+    // Optionnel : bordure ou style complémentaire.
     // border-left: 4px solid #1976d2;
   }
 

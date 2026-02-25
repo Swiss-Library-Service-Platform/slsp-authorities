@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-// main.component.ts
 import { Component, inject, OnInit } from '@angular/core';
 import { MainFacadeService } from './main-facade.service';
 import { LoadingIndicatorService } from '../services/loading-indicator.service';
@@ -19,7 +18,7 @@ export class MainComponent implements OnInit {
 
 
 	public openIdref(event: MouseEvent): void {
-		event.preventDefault(); // Empêche la navigation interceptée par l'host
+		event.preventDefault(); // Empêche la navigation interceptée par l'hôte.
 		window.location.assign('https://www.idref.fr/');
 	}
 

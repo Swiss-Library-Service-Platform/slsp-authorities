@@ -1,4 +1,4 @@
-//type du renvoie d'une requette sur: almaws/v+/bibs/{mms_id} dans la NZ
+// Type de retour d'une requête sur `almaws/v1/bibs/{mms_id}` dans la NZ.
 export interface NzBibRecord {
   mms_id: string;
   record_format: string;

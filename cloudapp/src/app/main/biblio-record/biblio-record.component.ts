@@ -11,7 +11,7 @@ import { IdrefRecordService } from '../entity-detail/idref-record/idref-record.s
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
 
-//Composant pour afficher les notices bibliographique provenant de la NZ
+// Composant d'affichage des notices bibliographiques provenant de la NZ.
 @Component({
 	selector: 'app-biblio-record',
 	templateUrl: './biblio-record.component.html',
@@ -28,7 +28,7 @@ export class BiblioRecordComponent {
 	private idrefRecordService = inject(IdrefRecordService);
 	private alertService = inject(AlertService);
 	private translate = inject(TranslateService);
-	// ✅ BehaviorSubject pour allowedTags
+	// Signaux des tags MARC autorisés.
 	private allowedTags = signal(MARC_STRUCTURE_KEY);
 
 	// eslint-disable-next-line @typescript-eslint/member-ordering
@@ -42,7 +42,7 @@ export class BiblioRecordComponent {
 			return [];
 		});
 
-	//retourne les tag de la notice bibliographique sur lesquels on peut faire une recherche
+	// Retourne les tags de la notice bibliographique utilisables pour la recherche.
 	public getIdrefAllowedTags(): string[] {
 		return MARC_STRUCTURE_KEY;
 	}
@@ -87,7 +87,7 @@ export class BiblioRecordComponent {
 		this.searchService.closeTo902();
 		this.searchService.searchMode902.set(SearchMode902.Add902);
 
-		//on gere le cas du 902
+		// Gère le cas particulier du champ 902.
 		if (entry.tag === '902') {
 			this.searchService.searchMode902.set(SearchMode902.Modify902);
 			this.searchService.showTo902();
@@ -115,16 +115,16 @@ export class BiblioRecordComponent {
 			data: { entry },
 		});
 
-		// no action required after dialog close
+		// Aucune action supplémentaire après la fermeture du dialogue.
 		dialogRef.afterClosed().subscribe();
 	}
 
-	// ✅ Méthode pour mettre à jour allowedTags
+	// Met à jour la liste des tags affichés.
 	public showDetails(): void {
 		if (this.allowedTags().length > 0) {
 			this.allowedTags.set([]);
 		} else {
-			//on récupère toutes les clés de MARC_STRUCTURE et on les mets dans un tableau pour les afficher dans le html
+			// Récupère toutes les clés de MARC_STRUCTURE pour les afficher dans le template.
 			this.allowedTags.set(MARC_STRUCTURE_KEY);
 		}
 	}

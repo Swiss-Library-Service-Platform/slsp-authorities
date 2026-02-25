@@ -33,6 +33,7 @@
 		"recordAdded": "The record has been updated.",
 		"acceptRefreshModal": "Warning ! Don't forget to click on the accept refresh.",
 		"deleteNotAllowed": "You can't delete this type of field.",
+		"updateNotAllowed": "You can't update this type of field.",
 		"updateRecord": "Update",
 		"hideTo902": "Hide",
 		"showTo902": "Create 902",

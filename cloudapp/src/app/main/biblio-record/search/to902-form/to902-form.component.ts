@@ -52,7 +52,7 @@ export class To902FormComponent {
 		return to902$$aFields.nouveau;
 	});
 
-	//TODO: faire en sorte que le content soit tiré d'un fichier de configuration pour pouvoir le faire évoluer facilement sans toucher au code, par exemple en mettant des templates de champs à ajouter selon le purpose choisi
+	// TODO: externaliser le contenu dans une configuration pour faciliter son évolution sans modification du code.
 
 	public predifinedContent = computed(() => {
 		if (this.NZSelectedEntry()?.tag === '902') {
@@ -73,11 +73,11 @@ export class To902FormComponent {
 	});
 
 	public constructor() {
-		this.settingsService.get().subscribe(settings => {
-   			this.userSignature.set((settings as Settings).userSignature);
-  		});
+		this.settingsService.get().subscribe((settings) => {
+			this.userSignature.set((settings as Settings).userSignature);
+		});
 		this.eventService.getInitData().subscribe((initData) => {
-			//tout ce qui est après le premier _
+			// Conserve uniquement la partie après le premier `_`.
 			console.log('Init data received: ', initData);
 
 			const instCode = initData.instCode.split('_')[1] || initData.instCode;
@@ -103,7 +103,7 @@ export class To902FormComponent {
 				this.searchForm.patchValue(
 					{
 						subfields: this.predifinedContent(),
-						purpose, // ⚠️ plus de [ ... ], c'est une string
+						purpose, // Valeur scalaire (string), pas de tableau.
 						userSignature: this.userSignature(),
 					},
 					{ emitEvent: false }
@@ -115,7 +115,7 @@ export class To902FormComponent {
 	public updateFieldIfFound(): void {
 		const purpose = this.searchForm.get('purpose')?.value;
 		const rawValue = this.searchForm.getRawValue() as FormValues;
-		//date au format aaaammjj
+		// Date au format `aaaammjj`.
 		const date = new Date().toISOString().slice(0, 10).replace(/-/g, '');
 		const finalValues: FormValues = {
 			tag: rawValue.tag,
@@ -130,7 +130,7 @@ export class To902FormComponent {
 	public createFieldIfNotFound(): void {
 		const purpose = this.searchForm.get('purpose')?.value;
 		const rawValue = this.searchForm.getRawValue() as FormValues;
-		//date au format aaaammjj
+		// Date au format `aaaammjj`.
 		const date = new Date().toISOString().slice(0, 10).replace(/-/g, '');
 		const finalValues: FormValues = {
 			tag: rawValue.tag,

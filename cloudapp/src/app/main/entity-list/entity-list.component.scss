@@ -1,11 +1,11 @@
 .entities-list {
-  // Cible les items Angular Material MDC
+  // Cible les éléments Angular Material (MDC).
   .mat-mdc-list-item {
     height: 30px;
     border-radius: 0%;
     padding-bottom: 0%;
 
-    // Alternance de couleur de fond (odd/even)
+    // Alterne la couleur de fond (odd/even).
     &:nth-child(odd) {
       background-color: #ffffff;
     }
@@ -14,19 +14,19 @@
       background-color: #f5f5f5;
     }
 
-    // Hover
+    // État au survol.
     &:hover {
       background-color: #eaf2f6;;
       cursor: pointer;
     }
 
-    // Contenu interne : alignement horizontal et vertical
+    // Contenu interne : alignement horizontal et vertical.
     .mdc-list-item__content {
       display: flex;
       align-items: center;
     }
 
-    // Icône
+    // Icône.
     mat-icon {
       margin-right: 8px;
       font-size: 25px;
@@ -35,16 +35,16 @@
       color: #4164a4;
     }
 
-    // ID mis en avant
+    // Identifiant mis en avant.
     .entity-id {
       font-weight: 600;
       color: #4164a4;
       margin-right: 4px;
       white-space: nowrap;
-      min-width: 80px; // optionnel : alignement vertical de tous les IDs
+      min-width: 80px; // Optionnel : alignement vertical de tous les identifiants.
     }
 
-    // Description tronquée correctement
+    // Description tronquée proprement.
     .entity-description {
       flex: 1;
       overflow: hidden;

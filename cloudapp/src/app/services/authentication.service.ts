@@ -23,23 +23,23 @@ export class AuthenticationService {
 	public readonly ready$: Observable<void>;
 	public readonly hasRoles$: Observable<boolean>;
 	public readonly institutionAllowed$: Observable<boolean>;
-	//Services
+	// Services.
 	private eventsService = inject(CloudAppEventsService);
 	private http = inject(HttpClient);
 	private initService = inject(InitService);
 	private proxyUrl: string | undefined;
 
-	//httpOptions
+	// Options HTTP.
 	private httpOptions!: { headers: HttpHeaders; params: { isProdEnvironment: boolean } };
 	private xmlHttpOptions!: { headers: HttpHeaders; params: { isProdEnvironment: boolean } };
 
-	/** 🔁 Initialisation (token + httpOptions), faite une seule fois */
+	/** Initialise le token et les options HTTP une seule fois. */
 	private init$: Observable<void>;
 	private accessState$: Observable<{ hasRoles: boolean; allowed: boolean }>;
 
 	public constructor() {
 		this.init$ = this.createInit$();
-		this.ready$ = this.init$.pipe(take(1)); // garantit 1 seule émission
+		this.ready$ = this.init$.pipe(take(1)); // Garantit une seule émission.
 		this.hasRoles$ = this.createUserRolesCheck$();
 		this.institutionAllowed$ = this.createInstitutionAllowedCheck$();
 		this.accessState$ = forkJoin({
@@ -49,20 +49,20 @@ export class AuthenticationService {
 	}
 
 	// ---------------------------
-	// 🔐 Vérifications d'accès
+	// VÉRIFICATIONS D'ACCÈS
 	// ---------------------------
 
-	/** ✅ Attend l'init avant d'appeler l'API rôles */
+	/** Attend l'initialisation avant l'appel à l'API des rôles. */
 	public checkUserRoles$(): Observable<boolean> {
 		return this.hasRoles$;
 	}
 
-	/** ✅ Attend l'init avant d'appeler l'API d’autorisation d’IZ */
+	/** Attend l'initialisation avant l'appel à l'API d'autorisation d'IZ. */
 	public isInstitutionAllowed$(): Observable<boolean> {
 		return this.institutionAllowed$;
 	}
 
-	/** S'assure que tout est prêt & autorisé */
+	/** Vérifie que l'initialisation est terminée et que l'accès est autorisé. */
 	public ensureAccess$(): Observable<void> {
 		return this.accessState$.pipe(
 			switchMap(({ hasRoles, allowed }) => {
@@ -87,7 +87,7 @@ export class AuthenticationService {
 		return this.xmlHttpOptions;
 	}
 
-	/** ⚙️ Construit httpOptions + proxyUrl une fois */
+	/** Construit `httpOptions` et `proxyUrl` une seule fois. */
 	private createInit$(): Observable<void> {
 		return forkJoin({
 			config: this.initService.getConfig$().pipe(take(1)),

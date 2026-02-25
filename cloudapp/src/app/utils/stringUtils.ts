@@ -2,16 +2,16 @@ import { BibRecordField, ControlField, DataField, MarcRecord, SubField } from ".
 export class StringUtils {
   public static xmlToMarcRecord(xml: string): MarcRecord {
     const parser = new DOMParser();
-    const doc = parser.parseFromString(xml, 'application/xml');  // Gestion des erreurs XML
+    const doc = parser.parseFromString(xml, 'application/xml'); // Gestion des erreurs XML.
     const parserError = doc.getElementsByTagName('parsererror')[0];
 
     if (parserError) {
       throw new Error('XML invalide : ' + parserError.textContent);
     }
 
-    // LEADER
+    // Leader.
     const leaderElement = doc.getElementsByTagName('leader')[0];
-    const leader = leaderElement?.textContent?.trim() ?? '';  // CONTROLFIELDS
+    const leader = leaderElement?.textContent?.trim() ?? ''; // Controlfields.
     const controlFields: ControlField[] = [];
     const controlFieldNodes = doc.getElementsByTagName('controlfield');
 
@@ -24,7 +24,7 @@ export class StringUtils {
       });
     }
 
-    // DATAFIELDS
+    // Datafields.
     const dataFields: DataField[] = [];
     const dataFieldNodes = doc.getElementsByTagName('datafield');
 
@@ -57,18 +57,18 @@ export class StringUtils {
   }
 
   public static marcRecordToXml(record: MarcRecord): string {
-    const doc = document.implementation.createDocument('', '', null);  // Racine <record>
+    const doc = document.implementation.createDocument('', '', null); // Racine <record>.
     const recordElement = doc.createElement('record');
 
     doc.appendChild(recordElement);
 
-    // 1) <leader>
+    // 1) <leader>.
     const leaderElement = doc.createElement('leader');
 
     leaderElement.textContent = record.leader;
     recordElement.appendChild(leaderElement);
 
-    // 2) <controlfield> dans l'ordre du tableau
+    // 2) <controlfield> dans l'ordre du tableau.
     for (const cf of record.controlFields) {
       const cfElement = doc.createElement('controlfield');
 
@@ -77,16 +77,16 @@ export class StringUtils {
       recordElement.appendChild(cfElement);
     }
 
-    // 3) <datafield> dans l'ordre du tableau
+    // 3) <datafield> dans l'ordre du tableau.
     for (const df of record.dataFields) {
       const dfElement = doc.createElement('datafield');
 
-      // 👉 Ordre des attributs : ind1, ind2, tag
+      // Ordre des attributs : ind1, ind2, tag.
       dfElement.setAttribute('ind1', df.ind1 || ' ');
       dfElement.setAttribute('ind2', df.ind2 || ' ');
       dfElement.setAttribute('tag', df.tag);
 
-      // 👉 Puis les subfields dans l'ordre du tableau
+      // Puis les subfields dans l'ordre du tableau.
       for (const sf of df.subfields) {
         const sfElement = doc.createElement('subfield');
 
@@ -101,7 +101,7 @@ export class StringUtils {
     const serializer = new XMLSerializer();
     const xmlString = serializer.serializeToString(doc);
 
-    // (optionnel) Si tu veux la déclaration XML :
+    // Optionnel : ajouter la déclaration XML.
     // return '<?xml version="1.0" encoding="UTF-8"?>\n' + xmlString;
 
     return xmlString;
@@ -110,14 +110,14 @@ export class StringUtils {
   public static parseSubfieldsString(subfieldsStr: string): SubField[] {
     if (!subfieldsStr) return [];
 
-    // On découpe sur `$$` et on enlève le premier éventuel chunk vide
+    // Découpe sur `$$` et supprime le premier segment vide éventuel.
     return subfieldsStr
       .split('$$')
       .map(part => part.trim())
       .filter(part => part.length > 0)
       .map(part => {
-        const code = part.charAt(0);           // ex : 'a'
-        const value = part.slice(1).trim();    // ex : ' Videau, Valérie' -> 'Videau, Valérie'
+        const code = part.charAt(0); // Ex. : 'a'.
+        const value = part.slice(1).trim(); // Ex. : ' Videau, Valérie' -> 'Videau, Valérie'.
 
         return { code, value };
       });

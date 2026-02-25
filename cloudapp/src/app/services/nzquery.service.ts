@@ -19,7 +19,7 @@ import { InitService } from './init.service';
 	providedIn: 'root',
 })
 export class NZQueryService {
-	//Services
+	// Services.
 	private loader = inject(LoadingIndicatorService);
 	private alert = inject(AlertService);
 	private translate = inject(TranslateService);
@@ -37,7 +37,7 @@ export class NZQueryService {
 	}
 
 	// ---------------------------
-	// 📚 Appel NZ : Bib record
+	// APPEL NZ : NOTICE BIBLIOGRAPHIQUE
 	// ---------------------------
 
 	/** Récupère la notice bib de la NZ pour l'entité sélectionnée */
@@ -67,8 +67,8 @@ export class NZQueryService {
 	}
 
 	/**
-	 * Met à jour un champ uniquement si il existe.
-	 * Renvoie une erreur si le champ n'est pas trouvé.
+	 * Met à jour un champ uniquement s'il existe.
+	 * Renvoie une erreur si le champ est introuvable.
 	 */
 	public updateFieldIfExists(
 		selectedEntry: BibRecordField,
@@ -115,7 +115,7 @@ export class NZQueryService {
 			catchError((error) => {
 				const errorMsg = error?.message || error?.statusText || 'Unknown error';
 
-				// Propagate our specific control errors so callers can react
+				// Propage les erreurs de contrôle pour permettre un traitement côté appelant.
 				if (error?.message === 'FIELD_NOT_FOUND' || error?.message === 'FIELD_ALREADY_EXISTS') {
 					return throwError(() => error);
 				}
@@ -130,7 +130,7 @@ export class NZQueryService {
 	}
 
 	/**
-	 * Crée un champ uniquement si il n'existe pas encore.
+	 * Crée un champ uniquement s'il n'existe pas encore.
 	 * Renvoie une erreur si le champ existe déjà.
 	 */
 	public createFieldIfNotExists(updatedDataField: DataField): Observable<NzBibRecord> {
@@ -151,7 +151,7 @@ export class NZQueryService {
 					.get<NzBibRecord>(this.buildBibUrl(nzMmsId), this.authenticationService.getHttpOptions())
 					.pipe(
 						switchMap((bib) => {
-							// Always add the new DataField, even if a similar one already exists
+							// Ajoute toujours le nouveau DataField, même si un champ similaire existe déjà.
 							const marcRecord = StringUtils.xmlToMarcRecord(bib.anies[0]);
 
 							marcRecord.dataFields.push(updatedDataField);
@@ -180,7 +180,7 @@ export class NZQueryService {
 
 	public deleteBibRecord(selectedEntry: BibRecordField): Observable<NzBibRecord> {
 		return this.authenticationService.ensureAccess$().pipe(
-			// 1. Récupérer l'ID Alma (nzMmsId) depuis l'entité
+			// 1. Récupère l'ID Alma (nzMmsId) depuis l'entité.
 			switchMap(() => {
 				const entity = this.recordService.selectedEntity();
 
@@ -191,12 +191,12 @@ export class NZQueryService {
 				return this.getNzMmsIdFromEntity(entity);
 			}),
 
-			// 2. Récupérer le Bib le plus à jour
+			// 2. Récupère la notice bibliographique la plus à jour.
 			switchMap((nzMmsId) =>
 				this.http
 					.get<NzBibRecord>(this.buildBibUrl(nzMmsId), this.authenticationService.getHttpOptions())
 					.pipe(
-						// 3. Mettre à jour le Bib et faire le PUT
+						// 3. Met à jour la notice puis envoie le PUT.
 						switchMap((bib) => {
 							const updatedMarcXml = this.buildDeletedMarcXml(bib, selectedEntry);
 
@@ -209,7 +209,7 @@ export class NZQueryService {
 					)
 			),
 
-			// 4. Gestion d’erreur globale
+			// 4. Gère les erreurs globales.
 			catchError((error) => {
 				const errorMsg = error?.message || error?.statusText || 'Unknown error';
 
@@ -259,10 +259,10 @@ export class NZQueryService {
 		);
 
 		if (index !== -1) {
-			// Mise à jour
+			// Mise à jour.
 			marcRecord.dataFields[index] = updatedDataField;
 		} else {
-			// Ajout si non trouvé
+			// Ajout si le champ est introuvable.
 			marcRecord.dataFields.push(updatedDataField);
 		}
 
@@ -271,13 +271,13 @@ export class NZQueryService {
 
 	private buildDeletedMarcXml(bib: NzBibRecord, selectedEntry: BibRecordField): string {
 		const marcRecord = StringUtils.xmlToMarcRecord(bib.anies[0]);
-		// Trouver l'index du champ à supprimer
+		// Trouve l'index du champ à supprimer.
 		const index = marcRecord.dataFields.findIndex((field) =>
 			StringUtils.areDataFieldsEqual(field, selectedEntry)
 		);
 
 		if (index !== -1) {
-			// Suppression du DataField correspondant
+			// Supprime le DataField correspondant.
 			marcRecord.dataFields.splice(index, 1);
 		}
 
@@ -285,7 +285,7 @@ export class NZQueryService {
 	}
 
 	/**
-	 * Retrieves the NZ MMS ID from the given entity.
+	 * Récupère le NZ MMS ID à partir de l'entité fournie.
 	 */
 	private getNzMmsIdFromEntity(entity: Entity): Observable<string> {
 		const id = entity.id;

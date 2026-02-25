@@ -15,7 +15,7 @@ import { searchService } from './biblio-record/search/search.service';
 	providedIn: 'root',
 })
 export class MainFacadeService {
-	/** roles & institution */
+	/** Rôles et autorisations institutionnelles. */
 	public hasCatalogerRole = signal(false);
 	public isInstitutionAllowed = signal(false);
 
@@ -51,14 +51,14 @@ export class MainFacadeService {
 		)
 	);
 
-	/** expose selected entity */
+	/** Expose l'entité sélectionnée. */
 	public selectedEntity = computed(() => this.recordService.selectedEntity());
 
-	/** expose selected entity details */
+	/** Expose les détails de l'entité sélectionnée. */
 	public selectedEntityDetails = computed(() => this.recordService.selectedEntityDetails());
 
 	// ------------------
-	// INIT LOGIC
+	// LOGIQUE D'INITIALISATION
 	// ------------------
 
 	public init(): void {
@@ -98,7 +98,7 @@ export class MainFacadeService {
 	}
 
 	// ------------------
-	// USER ACTIONS
+	// ACTIONS UTILISATEUR
 	// ------------------
 
 	public selectEntity(entity: Entity): void {

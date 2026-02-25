@@ -13,16 +13,16 @@ import { Config } from '../models/config';
 	providedIn: 'root',
 })
 export class InitService {
-	// Public members
+	// Membres publics.
 	public loader = inject(LoadingIndicatorService);
 
-	// Signal pour tracker l'état d'initialisation
+	// Signal de suivi de l'état d'initialisation.
 	public initialized = signal(false);
 
-	// Observable qui se termine quand l'initialisation est complète
+	// Observable qui se complète quand l'initialisation est terminée.
 	public initialized$: Observable<void>;
 
-	// Private members
+	// Membres privés.
 	private settingsService = inject(CloudAppSettingsService);
 	private configService = inject(CloudAppConfigService);
 	private settingsReady$: Observable<Settings>;
