@@ -1,12 +1,12 @@
 import { Component, Inject, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { CloudAppEventsService, AlertService } from '@exlibris/exl-cloudapp-angular-lib';
+import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
 import { BibRecordField } from '../../../models/bib-record.model';
 import { NZQueryService } from '../../../services/nzquery.service';
-import { RecordService } from '../../../services/record.service';
 import { LoadingIndicatorService } from '../../../services/loading-indicator.service';
 import { EMPTY, catchError, finalize, switchMap } from 'rxjs';
+import { SearchService } from '../search/search.service';
 
 
 @Component({
@@ -20,8 +20,7 @@ export class DeleteDialogComponent {
   
   public dialogRef= inject(MatDialogRef<DeleteDialogComponent>);
   private nzQueryService = inject(NZQueryService);
-  private eventsService = inject(CloudAppEventsService);
-  private recordService = inject(RecordService);
+  private searchService = inject(SearchService);
   private alert = inject(AlertService);
   private translate = inject(TranslateService);
   private loader = inject(LoadingIndicatorService);
@@ -49,7 +48,7 @@ export class DeleteDialogComponent {
     this.nzQueryService
       .deleteBibRecord(this.data.entry)
       .pipe(
-        switchMap(() => this.eventsService.refreshPage()),
+        switchMap(() => this.nzQueryService.refreshSelectedEntityDetails$()),
         catchError(() => {
           this.alert.error(this.translate.instant('error.restApiError'), { autoClose: false });
 
@@ -61,7 +60,8 @@ export class DeleteDialogComponent {
         })
       )
       .subscribe(() => {
-        this.recordService.resetSelectedEntity();
+        this.searchService.reset();
+        this.searchService.requestFormsReset();
         this.alert.info(this.translate.instant('proxyService.deleteSuccess'));
       });
   }

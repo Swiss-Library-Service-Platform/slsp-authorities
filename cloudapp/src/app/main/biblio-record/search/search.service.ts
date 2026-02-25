@@ -30,6 +30,7 @@ export class SearchService {
   public nzSelectedEntry = this.idrefService.nzSelectedEntry;
   public flattenedValue = this.idrefService.flattenedValue;
   public isTo902FormVisible = signal(false);
+  public formResetNonce = signal(0);
 
 
   /**
@@ -256,6 +257,11 @@ export class SearchService {
     this.searchMode.set(SearchMode.AddField);
     this.idrefService.reset();
   }
+
+  public requestFormsReset(): void {
+    this.formResetNonce.update((value) => value + 1);
+  }
+
   private isUpdateAllowed(bibRecordField: BibRecordField): boolean {
     // Extract subfield code '0' and get values between parentheses
     const subfieldZeroValues = bibRecordField.subfields

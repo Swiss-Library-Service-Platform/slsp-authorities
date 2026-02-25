@@ -32,6 +32,7 @@ export class MainFormComponent implements AfterViewInit {
 	public readonly isTo902FormVisible = this.searchService.isTo902FormVisible;
 	public readonly nzSelectedEntry = this.searchService.nzSelectedEntry;
 	public readonly flattenedValue = this.searchService.flattenedValue;
+	public readonly formResetNonce = this.searchService.formResetNonce;
 
 	public constructor() {
 		this.searchForm = this.fb.group({
@@ -61,6 +62,11 @@ export class MainFormComponent implements AfterViewInit {
 				);
 				this.scheduleSubfieldsRender();
 			}
+		});
+
+		effect(() => {
+			this.formResetNonce();
+			this.resetFormFields();
 		});
 	}
 
