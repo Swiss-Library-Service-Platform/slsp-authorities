@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 import { AfterViewInit, Component, ElementRef, ViewChild, effect, inject, input } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { distinctUntilChanged } from 'rxjs';
 import { NzBibRecord } from '../../../../models/bib-records';
 import { IdrefService } from '../../../../services/idref.service';
 import { searchService } from '../search.service';
@@ -16,6 +18,8 @@ export class MainFormComponent implements AfterViewInit {
 
 	public searchForm: FormGroup;
 	public highlightedSubfields = '';
+	private lastHighlightedValue = '';
+	private highlightFramePending = false;
 	@ViewChild('subfieldsTextarea') private subfieldsTextarea?: ElementRef<HTMLTextAreaElement>;
 
 	private idrefService = inject(IdrefService);
@@ -36,6 +40,11 @@ export class MainFormComponent implements AfterViewInit {
 			subfields: [''],
 		});
 
+		this.searchForm
+			.get('subfields')
+			?.valueChanges.pipe(distinctUntilChanged(), takeUntilDestroyed())
+			.subscribe(() => this.scheduleSubfieldsRender());
+
 		effect(() => {
 			const entry = this.NZSelectedEntry();
 
@@ -49,20 +58,31 @@ export class MainFormComponent implements AfterViewInit {
 					},
 					{ emitEvent: false }
 				);
-				this.autoResizeSubfields();
-				this.updateSubfieldsHighlight();
+				this.scheduleSubfieldsRender();
 			}
 		});
 	}
 
 	public ngAfterViewInit(): void {
-		this.autoResizeSubfields();
-		this.updateSubfieldsHighlight();
+		this.scheduleSubfieldsRender();
 	}
 
 	public onSubfieldsInput(event: Event): void {
+		this.scheduleSubfieldsRender(event);
+	}
+
+	private scheduleSubfieldsRender(event?: Event): void {
 		this.autoResizeSubfields(event);
-		this.updateSubfieldsHighlight();
+
+		if (this.highlightFramePending) {
+			return;
+		}
+
+		this.highlightFramePending = true;
+		requestAnimationFrame(() => {
+			this.highlightFramePending = false;
+			this.updateSubfieldsHighlight();
+		});
 	}
 
 	public autoResizeSubfields(event?: Event): void {
@@ -78,6 +98,13 @@ export class MainFormComponent implements AfterViewInit {
 
 	private updateSubfieldsHighlight(): void {
 		const subfields = (this.searchForm.get('subfields')?.value as string | null) ?? '';
+
+		if (subfields === this.lastHighlightedValue) {
+			return;
+		}
+
+		this.lastHighlightedValue = subfields;
+
 		const escaped = this.escapeHtml(subfields);
 
 		this.highlightedSubfields = escaped.replace(
@@ -151,8 +178,8 @@ export class MainFormComponent implements AfterViewInit {
 	public clear(): void {
 		this.searchService.clear(() => {
 			this.searchForm.reset();
-			this.autoResizeSubfields();
-			this.updateSubfieldsHighlight();
+			this.lastHighlightedValue = '';
+			this.scheduleSubfieldsRender();
 		});
 	}
 }

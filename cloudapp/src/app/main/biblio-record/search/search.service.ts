@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 import { Injectable, inject, signal } from '@angular/core';
-import { AlertService, CloudAppEventsService } from '@exlibris/exl-cloudapp-angular-lib';
-import { catchError, of, switchMap, tap } from 'rxjs';
+import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
+import { catchError, EMPTY, finalize } from 'rxjs';
 import { IdrefService } from '../../../services/idref.service';
 import { FormValues, SearchMode, SearchMode902 } from './model';
 import { BibRecordField, DataField } from '../../../models/bib-records';
@@ -22,7 +22,6 @@ export class searchService {
 
   private idrefService = inject(IdrefService);
   private nzQueryService = inject(NZQueryService);
-  private eventsService = inject(CloudAppEventsService);
   private translate = inject(TranslateService);
   private alert = inject(AlertService);
   private referenceCurrentField = inject(BiblioReferencedEntryService);
@@ -97,21 +96,20 @@ export class searchService {
     this.nzQueryService
       .createFieldIfNotExists(formatedValues)
       .pipe(
-        switchMap(() => this.eventsService.refreshPage()),
+        finalize(() => this.loader.hide()),
         catchError((err) => {
           this.alert.warn(this.translate.instant('search.acceptRefreshModal'), {
             delay: 1000,
           });
           console.error('Erreur createFieldIfNotExists:', err);
 
-          return of(null);
+          return EMPTY;
         })
       )
       .subscribe({
-        complete: () => {
+        next: () => {
           this.reset();
           this.nzQueryService.refreshSelectedEntityDetails();
-          this.loader.hide();
           this.alert.success(this.translate.instant('search.recordAdded'), { delay: 1000 });
           console.log('complete createFieldIfNotFound');
         },
@@ -149,21 +147,20 @@ export class searchService {
     this.nzQueryService
       .updateFieldIfExists(reference, formatedValues)
       .pipe(
-        switchMap(() => this.eventsService.refreshPage()),
+        finalize(() => this.loader.hide()),
         catchError((err) => {
           this.alert.warn(this.translate.instant('search.acceptRefreshModal'), {
             delay: 1000,
           });
           console.error('Erreur updateFieldIfExists:', err);
 
-          return of(null);
+          return EMPTY;
         })
       )
       .subscribe({
-        complete: () => {
+        next: () => {
           this.reset();
           this.nzQueryService.refreshSelectedEntityDetails();
-          this.loader.hide();
           this.alert.success(this.translate.instant('search.recordAdded'), { delay: 1000 });
           console.log('complete updateFieldIfFound');
         },
@@ -196,18 +193,16 @@ export class searchService {
     this.nzQueryService
       .updateFieldIfExists(reference, formatedValues)
       .pipe(
-        switchMap(() => this.eventsService.refreshPage()),
+        finalize(() => this.loader.hide()),
         catchError((err) => {
           if (err?.message === 'FIELD_NOT_FOUND') {
             // Champ non trouvé -> créer
             return this.nzQueryService.createFieldIfNotExists( formatedValues).pipe(
-              tap(() => this.alert.success(this.translate.instant('search.recordAdded'), { delay: 1000 })),
-              switchMap(() => this.eventsService.refreshPage()),
               catchError((err2) => {
                 this.alert.warn(this.translate.instant('search.acceptRefreshModal'), { delay: 1000 });
                 console.error('Erreur lors de la création du champ:', err2);
 
-                return of(null);
+                return EMPTY;
               }),
             );
           }
@@ -217,14 +212,13 @@ export class searchService {
           });
           console.error('Erreur updateFieldIfExists:', err);
 
-          return of(null);
+          return EMPTY;
         })
       )
       .subscribe({
-        complete: () => {
+        next: () => {
           this.reset();
           this.nzQueryService.refreshSelectedEntityDetails();
-          this.loader.hide();
           this.alert.success(this.translate.instant('search.recordAdded'), { delay: 1000 });
           console.log('complete addrecord');
         },
