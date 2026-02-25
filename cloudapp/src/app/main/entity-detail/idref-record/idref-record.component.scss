@@ -1,3 +1,54 @@
+.search-form {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-bottom: 16px;
+
+  &__checkbox {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    input[type="checkbox"] {
+      cursor: pointer;
+    }
+
+    label {
+      cursor: pointer;
+      margin: 0;
+    }
+  }
+
+  &__inputs {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    select.searchIndex {
+      padding: 6px 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    input[type="text"],
+    input:not([type]) {
+      flex: 1;
+      padding: 6px 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    mat-icon {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+}
+
 .idrefmarc {
   border-collapse: collapse;
   font-family: Arial Unicode MS, Arial, sans-serif;

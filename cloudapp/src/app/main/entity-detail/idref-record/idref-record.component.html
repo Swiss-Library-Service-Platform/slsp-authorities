@@ -1,14 +1,18 @@
 <h2>{{ 'idrefRecord.title' | translate }}</h2>
-<form [formGroup]="searchForm">
-	<select class="searchIndex" formControlName="searchIndex">
-		@for (indexLabel of searchIndexs.keys(); track indexLabel) {
-			<option [value]="indexLabel">{{ indexLabel }}</option>
-		}
-	</select>
-	<input placeholder="query" formControlName="constructedQuery" />
-	<mat-icon color="primary" fontIcon="search" (click)="onSearch()"></mat-icon>
-	<input type="checkbox" formControlName="isStrictSearch" (change)="onStrictSearchChange($event)"/>
-	<label for="isStrictSearch">{{ 'idrefRecord.isStrictSearch' | translate }}</label>
+<form [formGroup]="searchForm" class="search-form">
+	<div class="search-form__checkbox">
+		<input type="checkbox" id="isStrictSearch" formControlName="isStrictSearch" (change)="onStrictSearchChange($event)"/>
+		<label for="isStrictSearch">{{ 'idrefRecord.isStrictSearch' | translate }}</label>
+	</div>
+	<div class="search-form__inputs">
+		<select class="searchIndex" formControlName="searchIndex">
+			@for (indexLabel of searchIndexs.keys(); track indexLabel) {
+				<option [value]="indexLabel">{{ indexLabel }}</option>
+			}
+		</select>
+		<input placeholder="query" formControlName="constructedQuery" />
+		<mat-icon color="primary" fontIcon="search" (click)="onSearch()"></mat-icon>
+	</div>
 </form>
 
 @if (idrefResult()) {
