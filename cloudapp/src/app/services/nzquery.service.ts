@@ -1,9 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import {
 	AlertService,
-	CloudAppRestService,
 	Entity,
-	HttpMethod,
 } from '@exlibris/exl-cloudapp-angular-lib';
 import { Observable, switchMap, catchError, EMPTY, finalize, of, throwError, take, tap } from 'rxjs';
 import { NzBibRecord, DataField, BibRecordField } from '../models/bib-record.model';
@@ -24,7 +22,6 @@ export class NZQueryService {
 	private alert = inject(AlertService);
 	private translate = inject(TranslateService);
 	private authenticationService = inject(AuthenticationService);
-	private restService = inject(CloudAppRestService);
 	private http = inject(HttpClient);
 	private recordService = inject(RecordService);
 	private initService = inject(InitService);
@@ -269,12 +266,8 @@ export class NZQueryService {
 			return of(id);
 		}
 
-		return this.restService
-			.call({
-				method: HttpMethod.GET,
-				url: entity.link,
-				queryParams: { view: 'brief' },
-			})
+		return this.http
+			.get<NzBibRecord>(this.buildBibUrl(id), this.authenticationService.getHttpOptions())
 			.pipe(
 				switchMap((response) => {
 					const nzMmsId: string = response?.linked_record_id?.value;
