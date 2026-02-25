@@ -66,6 +66,12 @@ export class BiblioRecordComponent {
 			return 'marc-row--status-idref';
 		}
 
+		const hasRero = subfieldZeroValues.some((value) => value.includes('(RERO)'));
+
+		if (hasRero) {
+			return 'marc-row--status-rero';
+		}
+
 		const hasParenthesizedValue = subfieldZeroValues.some((value) => /\([^)]*\)/.test(value));
 
 		if (hasParenthesizedValue) {

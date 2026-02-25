@@ -72,6 +72,16 @@
     background-color: #dcf4dc;
   }
 
+  .marc-row.marc-row--status-rero:nth-child(odd) {
+    background-color: #eca665;
+    cursor: pointer;
+  }
+
+  .marc-row.marc-row--status-rero:nth-child(even) {
+    background-color: #f3bd8a;
+    cursor: pointer;
+  }
+
   .marc-row.marc-row--status-other:nth-child(odd) {
     background-color: #cfcfcf;
   }
@@ -80,7 +90,7 @@
     background-color: #e3e3e3;
   }
 
-  .marc-row:not(.marc-row--status-missing):not(.marc-row--status-idref):not(.marc-row--status-other):hover {
+  .marc-row:not(.marc-row--status-missing):not(.marc-row--status-idref):not(.marc-row--status-rero):not(.marc-row--status-other):hover {
       background-color: #dce8ef;
       cursor: pointer;
     }
@@ -102,6 +112,16 @@
 
   .marc-row.marc-row--status-idref:nth-child(even):hover {
     background-color: #c6eac6;
+    cursor: pointer;
+  }
+
+  .marc-row.marc-row--status-rero:nth-child(odd):hover {
+    background-color: #ec9b4f;
+    cursor: pointer;
+  }
+
+  .marc-row.marc-row--status-rero:nth-child(even):hover {
+    background-color: #f1b277;
     cursor: pointer;
   }
 
