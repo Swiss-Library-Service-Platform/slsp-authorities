@@ -2,11 +2,11 @@
 	<div class="mode-label">{{ searchMode() }}</div>
 	<form [formGroup]="searchForm" class="search-form">
 		<div class="input-section">
-			<input class="tagInput" placeholder="tag" formControlName="tag" />
+			<input class="tagInput" placeholder="tag" formControlName="tag" (keydown.enter)="$event.preventDefault()"/>
 
-			<input class="indInput" formControlName="ind1" />
+			<input class="indInput" formControlName="ind1" (keydown.enter)="$event.preventDefault()"/>
 
-			<input class="indInput" formControlName="ind2" />
+			<input class="indInput" formControlName="ind2" (keydown.enter)="$event.preventDefault()" />
 
 			<div class="subfields-wrapper">
 				<div class="subfields-highlight" [innerHTML]="highlightedSubfields"></div>
@@ -17,6 +17,7 @@
 					formControlName="subfields"
 					rows="1"
 					(input)="onSubfieldsInput($event)"
+					(keydown.enter)="$event.preventDefault(); onSearch()"
 				></textarea>
 			</div>
 
