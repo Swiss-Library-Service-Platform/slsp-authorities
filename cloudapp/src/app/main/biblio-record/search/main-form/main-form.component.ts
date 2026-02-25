@@ -5,7 +5,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { distinctUntilChanged } from 'rxjs';
 import { NzBibRecord } from '../../../../models/bib-records';
 import { IdrefService } from '../../../../services/idref.service';
-import { searchService } from '../search.service';
+import { SearchService } from '../search.service';
 import { IdrefRecordService } from '../../../entity-detail/idref-record/idref-record.service';
 
 @Component({
@@ -23,7 +23,7 @@ export class MainFormComponent implements AfterViewInit {
 	@ViewChild('subfieldsTextarea') private subfieldsTextarea?: ElementRef<HTMLTextAreaElement>;
 
 	private idrefService = inject(IdrefService);
-	private searchService = inject(searchService);
+	private searchService = inject(SearchService);
 	private idrefRecordService = inject(IdrefRecordService);
 	private fb = inject(FormBuilder);
 

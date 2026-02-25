@@ -5,11 +5,12 @@ import { BibRecordField, NzBibRecord } from '../../models/bib-records';
 import { MARC_STRUCTURE_KEY } from '../../models/idref-model';
 import { BiblioReferencedEntryService } from '../../services/biblio-referenced-entry.service';
 import { IdrefService } from '../../services/idref.service';
-import { searchService } from './search/search.service';
+import { SearchService } from './search/search.service';
 import { SearchMode, SearchMode902 } from './search/model';
 import { IdrefRecordService } from '../entity-detail/idref-record/idref-record.service';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
+import { BiblioRecordMarcService } from './domain/biblio-record-marc.service';
 
 // Composant d'affichage des notices bibliographiques provenant de la NZ.
 @Component({
@@ -22,12 +23,13 @@ export class BiblioRecordComponent {
 	public selectedEntity = input.required<NzBibRecord | undefined>();
 	public dialog = inject(MatDialog);
 	private readonly idrefAllowedTags = new Set(MARC_STRUCTURE_KEY);
-	private searchService = inject(searchService);
+	private searchService = inject(SearchService);
 	private idrefService = inject(IdrefService);
 	private referenceCurrentField = inject(BiblioReferencedEntryService);
 	private idrefRecordService = inject(IdrefRecordService);
 	private alertService = inject(AlertService);
 	private translate = inject(TranslateService);
+	private marcService = inject(BiblioRecordMarcService);
 	// Signaux des tags MARC autorisés.
 	private allowedTags = signal(MARC_STRUCTURE_KEY);
 
@@ -36,7 +38,7 @@ export class BiblioRecordComponent {
 			const anie = this.selectedEntity()?.anies[0];
 
 			if(typeof anie === 'string'){
-				return this.updateMarcFields(anie, this.allowedTags());
+				return this.marcService.updateMarcFields(anie, this.allowedTags());
 			}
 
 			return [];
@@ -48,37 +50,7 @@ export class BiblioRecordComponent {
 	}
 
 	public getMarcRowStatusClass(entry: BibRecordField): string | null {
-		if (!this.idrefAllowedTags.has(entry.tag)) {
-			return null;
-		}
-
-		const subfieldZeroValues = entry.subfields
-			.filter((subfield) => subfield.code === '0')
-			.map((subfield) => subfield.value);
-
-		if (subfieldZeroValues.length === 0) {
-			return 'marc-row--status-missing';
-		}
-
-		const hasIdref = subfieldZeroValues.some((value) => value.includes('(IDREF)'));
-
-		if (hasIdref) {
-			return 'marc-row--status-idref';
-		}
-
-		const hasRero = subfieldZeroValues.some((value) => value.includes('(RERO)'));
-
-		if (hasRero) {
-			return 'marc-row--status-rero';
-		}
-
-		const hasParenthesizedValue = subfieldZeroValues.some((value) => /\([^)]*\)/.test(value));
-
-		if (hasParenthesizedValue) {
-			return 'marc-row--status-other';
-		}
-
-		return 'marc-row--status-missing';
+		return this.marcService.getMarcRowStatusClass(entry, this.idrefAllowedTags);
 	}
 
 	public pushToInput(entry: BibRecordField): void {
@@ -104,7 +76,7 @@ export class BiblioRecordComponent {
 	}
 
 	public deleteField(entry: BibRecordField): void {
-		if (!this.isDeleteAllowed(entry)) {
+		if (!this.marcService.isDeleteAllowed(entry)) {
 			this.alertService.warn(this.translate.instant('search.deleteNotAllowed'), { delay: 3000, autoClose: true });
 
 			return;
@@ -127,86 +99,5 @@ export class BiblioRecordComponent {
 			// Récupère toutes les clés de MARC_STRUCTURE pour les afficher dans le template.
 			this.allowedTags.set(MARC_STRUCTURE_KEY);
 		}
-	}
-
-	private isDeleteAllowed(entry: BibRecordField): boolean {
-		const subfieldZeroValues = entry.subfields
-			.filter((subfield) => subfield.code === '0')
-			.map((subfield) => subfield.value.trim());
-
-		if (subfieldZeroValues.length === 0) {
-			return true;
-		}
-
-		return subfieldZeroValues.every((value) => value.includes('(IDREF)') || value.includes('(RERO)'));
-	}
-
-	private updateMarcFields(xmlString: string, allowedTagsArray: string[]): BibRecordField[] {
-		const xmlRecord = new DOMParser().parseFromString(xmlString, 'text/xml');
-		const record: Element = xmlRecord.getElementsByTagName('record')[0];
-
-		if (!record) {
-			return [];
-		}
-
-		const fields: Element[] = Array.from(record.childNodes).filter(
-			(node): node is Element => node.nodeType === Node.ELEMENT_NODE
-		);
-		const filteredFields =
-			allowedTagsArray.length > 0
-				? fields.filter((field) => allowedTagsArray.includes(field.getAttribute('tag') ?? ''))
-				: fields;
-		const marcFields = filteredFields.map((field) => {
-			const entry: BibRecordField = {
-				change: '',
-				tag: '',
-				ind1: '',
-				ind2: '',
-				subfields: [],
-			};
-
-			if (field.tagName === 'leader') {
-				entry.change = 'NONE';
-				entry.tag = 'LDR';
-				entry.ind1 = ' ';
-				entry.ind2 = ' ';
-				entry.subfields = [{ code: '', value: (field.textContent ?? '').replace(/ /g, '#') }];
-
-				return entry;
-			}
-
-			const tag: string = field.getAttribute('tag') ?? '';
-
-			entry.tag = tag;
-
-			if (field.tagName === 'controlfield') {
-				entry.ind1 = ' ';
-				entry.ind2 = ' ';
-				entry.subfields = [{ code: '', value: (field.textContent ?? '').replace(/ /g, '#') }];
-
-				return entry;
-			}
-
-			if (field.tagName === 'datafield') {
-				entry.ind1 = field.getAttribute('ind1') ?? '';
-				entry.ind2 = field.getAttribute('ind2') ?? '';
-
-				const valueMap: { code: string; value: string }[] = [];
-
-				Array.from(field.childNodes)
-					.filter((node): node is Element => node.nodeType === Node.ELEMENT_NODE)
-					.forEach((subfield) => {
-						valueMap.push({
-							code: subfield.getAttribute('code') ?? '',
-							value: subfield.textContent ?? '',
-						});
-					});
-				entry.subfields = valueMap;
-			}
-
-			return entry;
-		});
-
-		return marcFields;
 	}
 }

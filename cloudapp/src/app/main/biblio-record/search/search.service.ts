@@ -14,7 +14,7 @@ import { StringUtils } from '../../../utils/stringUtils';
 @Injectable({
   providedIn: 'root'
 })
-export class searchService {
+export class SearchService {
 
 
   public searchMode = signal<SearchMode>(SearchMode.AddField);

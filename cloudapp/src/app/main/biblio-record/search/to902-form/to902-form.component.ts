@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 import { Component, computed, effect, inject, input, signal } from '@angular/core';
 import { NzBibRecord } from '../../../../models/bib-records';
-import { searchService } from '../search.service';
+import { SearchService } from '../search.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { FormValues } from '../model';
 import { CloudAppEventsService, CloudAppSettingsService } from '@exlibris/exl-cloudapp-angular-lib';
@@ -26,7 +26,7 @@ export class To902FormComponent {
 
 	public to902Purpose = Object.values(to902$$aFields);
 
-	private searchService = inject(searchService);
+	private searchService = inject(SearchService);
 	private settingsService = inject(CloudAppSettingsService);
 	private eventService = inject(CloudAppEventsService);
 	private translate = inject(TranslateService);

@@ -1,6 +1,6 @@
 import { Component, inject, input } from '@angular/core';
 import { NzBibRecord } from '../../../models/bib-records';
-import { searchService } from './search.service';
+import { SearchService } from './search.service';
 
 
 @Component({
@@ -8,9 +8,9 @@ import { searchService } from './search.service';
 	templateUrl: './search.component.html',
 	styleUrls: ['./search.component.scss'],
 })
-export class searchComponent {
+export class SearchComponent {
 
 	public entity = input.required<NzBibRecord | undefined>();
-	public isTo902FormVisible = inject(searchService).isTo902FormVisible;
-	public searchMode902 = inject(searchService).searchMode902;
+	public isTo902FormVisible = inject(SearchService).isTo902FormVisible;
+	public searchMode902 = inject(SearchService).searchMode902;
 }
