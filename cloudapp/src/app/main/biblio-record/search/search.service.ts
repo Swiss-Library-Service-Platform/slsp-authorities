@@ -85,7 +85,7 @@ export class SearchService {
   /**
    * Crée un champ uniquement s'il n'existe pas.
    */
-  public createFieldIfNotFound(formValues: FormValues): void {
+  public createFieldIfNotFound(formValues: FormValues, onSuccess?: () => void): void {
     this.loader.show();
     
     const formatedValues = {
@@ -109,6 +109,7 @@ export class SearchService {
       .subscribe({
         next: () => {
           this.reset();
+          onSuccess?.();
           this.nzQueryService.refreshSelectedEntityDetails();
           this.alert.success(this.translate.instant('search.recordAdded'), { delay: 1000 });
           console.log('complete createFieldIfNotFound');
@@ -119,7 +120,7 @@ export class SearchService {
   /**
    * Met à jour un champ uniquement s'il existe.
    */
-  public updateFieldIfFound(formValues: FormValues): void {
+  public updateFieldIfFound(formValues: FormValues, onSuccess?: () => void): void {
 
     this.loader.show();
 
@@ -160,6 +161,7 @@ export class SearchService {
       .subscribe({
         next: () => {
           this.reset();
+          onSuccess?.();
           this.nzQueryService.refreshSelectedEntityDetails();
           this.alert.success(this.translate.instant('search.recordAdded'), { delay: 1000 });
           console.log('complete updateFieldIfFound');
@@ -171,7 +173,7 @@ export class SearchService {
    * Ajoute ou met à jour un enregistrement.
    * Tente d'abord une mise à jour ; si le champ n'existe pas, le crée.
    */
-  public addrecord(formValues: FormValues): void {
+  public addrecord(formValues: FormValues, onSuccess?: () => void): void {
     this.loader.show();
 
     const reference = this.referenceCurrentField.getSavedCurrentEntry();
@@ -218,6 +220,7 @@ export class SearchService {
       .subscribe({
         next: () => {
           this.reset();
+          onSuccess?.();
           this.nzQueryService.refreshSelectedEntityDetails();
           this.alert.success(this.translate.instant('search.recordAdded'), { delay: 1000 });
           console.log('complete addrecord');

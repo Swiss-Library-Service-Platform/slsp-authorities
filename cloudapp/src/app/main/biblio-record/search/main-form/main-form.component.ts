@@ -18,7 +18,7 @@ export class MainFormComponent implements AfterViewInit {
 
 	public searchForm: FormGroup;
 	public highlightedSubfields = '';
-	private lastHighlightedValue = '';
+	private lastHighlightedValue: string | null = null;
 	private highlightFramePending = false;
 	@ViewChild('subfieldsTextarea') private subfieldsTextarea?: ElementRef<HTMLTextAreaElement>;
 
@@ -160,15 +160,15 @@ export class MainFormComponent implements AfterViewInit {
 	}
 
 	public addrecord(): void {
-		this.searchService.addrecord(this.searchForm.value);
+		this.searchService.addrecord(this.searchForm.value, () => this.resetFormFields());
 	}
 
 	public updateFieldIfFound(): void {
-		this.searchService.updateFieldIfFound(this.searchForm.value);
+		this.searchService.updateFieldIfFound(this.searchForm.value, () => this.resetFormFields());
 	}
 
 	public createFieldIfNotFound(): void {
-		this.searchService.createFieldIfNotFound(this.searchForm.value);
+		this.searchService.createFieldIfNotFound(this.searchForm.value, () => this.resetFormFields());
 	}
 
 	public showTo902(): void {
@@ -177,9 +177,22 @@ export class MainFormComponent implements AfterViewInit {
 
 	public clear(): void {
 		this.searchService.clear(() => {
-			this.searchForm.reset();
-			this.lastHighlightedValue = '';
-			this.scheduleSubfieldsRender();
+			this.resetFormFields();
 		});
+	}
+
+	private resetFormFields(): void {
+		this.searchForm.reset(
+			{
+				tag: '',
+				ind1: '',
+				ind2: '',
+				subfields: '',
+			},
+			{ emitEvent: false }
+		);
+		this.lastHighlightedValue = null;
+		this.highlightedSubfields = '';
+		this.scheduleSubfieldsRender();
 	}
 }
