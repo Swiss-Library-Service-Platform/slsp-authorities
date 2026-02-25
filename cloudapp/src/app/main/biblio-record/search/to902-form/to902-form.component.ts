@@ -5,6 +5,7 @@ import { searchService } from '../search.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { FormValues } from '../model';
 import { CloudAppEventsService, CloudAppSettingsService } from '@exlibris/exl-cloudapp-angular-lib';
+import { TranslateService } from '@ngx-translate/core';
 import { Settings } from '../../../../models/setting';
 
 export enum to902$$aFields {
@@ -28,6 +29,7 @@ export class To902FormComponent {
 	private searchService = inject(searchService);
 	private settingsService = inject(CloudAppSettingsService);
 	private eventService = inject(CloudAppEventsService);
+	private translate = inject(TranslateService);
 	private fb = inject(FormBuilder);
 
 	public readonly searchMode902 = this.searchService.searchMode902;
@@ -60,11 +62,13 @@ export class To902FormComponent {
 		const purpose = this.searchForm.get('purpose')?.value;
 
 		if (purpose === to902$$aFields.correction) {
-			return `The link to idref should be: ${this.NZSelectedEntry()?.subfields.find((f) => f.code === '0')?.value}`;
+			return this.translate.instant('search.to902.predefined.correction', {
+				link: this.NZSelectedEntry()?.subfields.find((f) => f.code === '0')?.value,
+			});
 		} else if (purpose === to902$$aFields.nouveau) {
-			return `It is Necessary to add a link to the record in idref.`;
+			return this.translate.instant('search.to902.predefined.nouveau');
 		} else {
-			return `The record is a duplicate of an existing one in idref.`;
+			return this.translate.instant('search.to902.predefined.doublon');
 		}
 	});
 

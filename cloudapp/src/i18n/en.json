@@ -7,6 +7,7 @@
 		"resetButtonLabel": "Reset",
 		"noEntities": "No entities",
 		"searchButtonLabel": "Idref search",
+		"idrefLogoAlt": "IdRef logo",
 		"noActiveRecordInMetadataEditor": "No active record, please open a bibliographical record in the Metadata editor",
 		"entity": {
 			"description": "Description",
@@ -31,9 +32,29 @@
 		"noSelectedEntry": "There is no selected entry",
 		"recordAdded": "The record has been updated.",
 		"acceptRefreshModal": "Warning ! Don't forget to click on the accept refresh.",
+		"deleteNotAllowed": "You can't delete this type of field.",
 		"updateRecord": "Update",
 		"hideTo902": "Hide",
-		"showTo902": "Create 902"
+		"showTo902": "Create 902",
+		"mode": {
+			"addField": "Add field",
+			"update": "Update field"
+		},
+		"mode902": {
+			"add902": "Create 902",
+			"update902": "Update 902"
+		},
+		"form": {
+			"tagPlaceholder": "tag",
+			"subfieldsPlaceholder": "subfields"
+		},
+		"to902": {
+			"predefined": {
+				"correction": "The link to idref should be: {{link}}",
+				"nouveau": "It is necessary to add a link to the record in idref.",
+				"doublon": "The record is a duplicate of an existing one in idref."
+			}
+		}
 
 	},
 	"biblioRecord":{
@@ -47,7 +68,21 @@
 		"paginatorNext": "next page",
 		"NoCurrentSearch": "There are no search results yet.",
 		"view": "View",
-		"isStrictSearch": "Strict"
+		"isStrictSearch": "Strict",
+		"queryPlaceholder": "query",
+		"selectPageAria": "Select page",
+		"searchIndex": {
+			"all": "All",
+			"person": "Person",
+			"collectivity": "Collectivity",
+			"congress": "Conference",
+			"family": "Family",
+			"uniformTitle": "Uniform title",
+			"authorTitle": "Author / title",
+			"subject": "Subject",
+			"geographicName": "Geographic name",
+			"formGenre": "Form / genre"
+		}
 	},
 	"idrefEntryDetails": {
 		"title": "Details of Idref entry",
@@ -69,12 +104,22 @@
 		"searchRowNumber": "IdRef query size",
 		"proxyUrl": "Proxy URL",
 		"userSignature": "User Signature",
-		"save": "Save"
+		"save": "Save",
+		"remove": "Remove",
+		"messages": {
+			"saveSuccess": "Settings saved",
+			"saveError": "Error saving settings"
+		}
 	},
 	"config" : {
 		"return": "Return",
 		"generalTitle": "IZ configuration",
 		"proxyUrl": "Proxy URL",
-		"save": "Save"
+		"save": "Save",
+		"remove": "Remove",
+		"messages": {
+			"saveSuccess": "Configuration saved",
+			"saveError": "Error saving configuration"
+		}
 	}
 }

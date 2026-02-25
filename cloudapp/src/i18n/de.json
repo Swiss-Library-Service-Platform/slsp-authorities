@@ -7,6 +7,7 @@
 		"resetButtonLabel": "Zurücksetzen",
 		"noEntities": "Keine Elemente",
 		"searchButtonLabel": "Idref-Suche",
+		"idrefLogoAlt": "IdRef-Logo",
 		"noActiveRecordInMetadataEditor": "Kein aktiver Datensatz, bitte öffnen Sie einen bibliografischen Datensatz im Metadaten-Editor.",
 		"entity": {
 			"description": "Beschreibung",
@@ -33,7 +34,26 @@
 		"acceptRefreshModal": "Achtung! Vergessen Sie nicht, auf 'Aktualisierung akzeptieren' zu klicken.",
 		"updateRecord": "Aktualisieren",
 		"hideTo902": "Ausblenden",
-		"showTo902": "902 erstellen"
+		"showTo902": "902 erstellen",
+		"mode": {
+			"addField": "Feld hinzufügen",
+			"update": "Feld aktualisieren"
+		},
+		"mode902": {
+			"add902": "902 erstellen",
+			"update902": "902 aktualisieren"
+		},
+		"form": {
+			"tagPlaceholder": "Tag",
+			"subfieldsPlaceholder": "Unterfelder"
+		},
+		"to902": {
+			"predefined": {
+				"correction": "Der Link zu IdRef sollte sein: {{link}}",
+				"nouveau": "Es ist erforderlich, einen Link zum Datensatz in IdRef hinzuzufügen.",
+				"doublon": "Der Datensatz ist ein Duplikat eines bestehenden Datensatzes in IdRef."
+			}
+		}
 	},
 	"biblioRecord": {
 		"title": "Autoritätsbezogene Felder",
@@ -46,7 +66,21 @@
 		"paginatorNext": "nächste Seite",
 		"NoCurrentSearch": "Es liegen noch keine Suchergebnisse vor.",
 		"view": "Anzeigen",
-		"isStrictSearch": "Strikt"
+		"isStrictSearch": "Strikt",
+		"queryPlaceholder": "Suchanfrage",
+		"selectPageAria": "Seite auswählen",
+		"searchIndex": {
+			"all": "Alle",
+			"person": "Person",
+			"collectivity": "Körperschaft",
+			"congress": "Kongress",
+			"family": "Familie",
+			"uniformTitle": "Einheitstitel",
+			"authorTitle": "Autor / Titel",
+			"subject": "Thema",
+			"geographicName": "Geografischer Name",
+			"formGenre": "Form / Genre"
+		}
 	},
 	"idrefEntryDetails": {
 		"title": "Details des Idref-Eintrags",
@@ -68,6 +102,22 @@
 		"searchRowNumber": "IdRef-Abfragegröße",
 		"proxyUrl": "Proxy-URL",
 		"userSignature": "Benutzersignatur",
-		"save": "Speichern"
+		"save": "Speichern",
+		"remove": "Entfernen",
+		"messages": {
+			"saveSuccess": "Einstellungen gespeichert",
+			"saveError": "Fehler beim Speichern der Einstellungen"
+		}
+	},
+	"config" : {
+		"return": "Zurück",
+		"generalTitle": "IZ-Konfiguration",
+		"proxyUrl": "Proxy-URL",
+		"save": "Speichern",
+		"remove": "Entfernen",
+		"messages": {
+			"saveSuccess": "Konfiguration gespeichert",
+			"saveError": "Fehler beim Speichern der Konfiguration"
+		}
 	}
 }

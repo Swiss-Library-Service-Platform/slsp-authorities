@@ -5,6 +5,7 @@ import {
 	CloudAppConfigService,
 	FormGroupUtil,
 } from '@exlibris/exl-cloudapp-angular-lib';
+import { TranslateService } from '@ngx-translate/core';
 import { Config } from '../models/config';
 
 @Component({
@@ -17,6 +18,7 @@ export class ConfigurationComponent implements OnInit {
 	public saving = false;
 	private configService = inject(CloudAppConfigService);
 	private alert = inject(AlertService);
+  private translate = inject(TranslateService);
 
   public relaunchApp(): void {
     window.location.assign(`${window.location.origin}${window.location.pathname}${window.location.search}`);
@@ -32,11 +34,11 @@ export class ConfigurationComponent implements OnInit {
     this.saving = true;
     this.configService.set(this.form.value).subscribe({
       next: () => {
-        this.alert.success('Configuration saved');
+        this.alert.success(this.translate.instant('config.messages.saveSuccess'));
         this.saving = false;
       },
       error: (err) => {
-        this.alert.error('Error saving configuration', err);
+        this.alert.error(this.translate.instant('config.messages.saveError'), err);
         this.saving = false;
       }
     });

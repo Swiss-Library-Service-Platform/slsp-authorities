@@ -7,6 +7,7 @@
 		"resetButtonLabel": "Réinitialiser",
 		"noEntities": "Aucune entité",
 		"searchButtonLabel": "Recherche IdRef",
+		"idrefLogoAlt": "Logo IdRef",
 		"noActiveRecordInMetadataEditor": "Aucun enregistrement actif, veuillez ouvrir une notice bibliographique dans l'éditeur de métadonnées",
 		"entity": {
 			"description": "Description",
@@ -33,7 +34,26 @@
 		"acceptRefreshModal": "Attention ! N'oubliez pas de cliquer sur accepter l'actualisation.",
 		"updateRecord": "Mettre à jour",
 		"hideTo902": "Masquer",
-		"showTo902": "Créer 902"
+		"showTo902": "Créer 902",
+		"mode": {
+			"addField": "Ajout de zone",
+			"update": "Mise à jour de zone"
+		},
+		"mode902": {
+			"add902": "Créer 902",
+			"update902": "Mettre à jour 902"
+		},
+		"form": {
+			"tagPlaceholder": "zone",
+			"subfieldsPlaceholder": "sous-zones"
+		},
+		"to902": {
+			"predefined": {
+				"correction": "Le lien vers IdRef devrait être : {{link}}",
+				"nouveau": "Il est nécessaire d'ajouter un lien vers la notice dans IdRef.",
+				"doublon": "La notice est un doublon d'une notice existante dans IdRef."
+			}
+		}
 	},
 	"biblioRecord": {
 		"title": "Zones liées aux autorités",
@@ -46,7 +66,21 @@
 		"paginatorNext": "page suivante",
 		"NoCurrentSearch": "Il n'y a pas encore de résultats de recherche.",
 		"view": "Voir",
-		"isStrictSearch": "Stricte"
+		"isStrictSearch": "Stricte",
+		"queryPlaceholder": "requête",
+		"selectPageAria": "Sélectionner la page",
+		"searchIndex": {
+			"all": "Tous",
+			"person": "Personne",
+			"collectivity": "Collectivité",
+			"congress": "Congrès",
+			"family": "Famille",
+			"uniformTitle": "Titre uniforme",
+			"authorTitle": "Auteur / titre",
+			"subject": "Sujet",
+			"geographicName": "Nom géographique",
+			"formGenre": "Forme / genre"
+		}
 	},
 	"idrefEntryDetails": {
 		"title": "Détails de l'entrée Idref",
@@ -68,6 +102,22 @@
 		"searchRowNumber": "Taille de la requête IdRef",
 		"proxyUrl": "URL du proxy",
 		"userSignature": "Signature utilisateur",
-		"save": "Enregistrer"
+		"save": "Enregistrer",
+		"remove": "Supprimer",
+		"messages": {
+			"saveSuccess": "Paramètres enregistrés",
+			"saveError": "Erreur lors de l'enregistrement des paramètres"
+		}
+	},
+	"config" : {
+		"return": "Retour",
+		"generalTitle": "Configuration IZ",
+		"proxyUrl": "URL du proxy",
+		"save": "Enregistrer",
+		"remove": "Supprimer",
+		"messages": {
+			"saveSuccess": "Configuration enregistrée",
+			"saveError": "Erreur lors de l'enregistrement de la configuration"
+		}
 	}
 }

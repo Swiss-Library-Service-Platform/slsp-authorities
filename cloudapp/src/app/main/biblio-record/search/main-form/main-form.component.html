@@ -1,8 +1,8 @@
 <div class="main-search-form" [ngClass]="'search-mode-' + searchMode()">
-	<div class="mode-label">{{ searchMode() }}</div>
+	<div class="mode-label">{{ ('search.mode.' + searchMode()) | translate }}</div>
 	<form [formGroup]="searchForm" class="search-form">
 		<div class="input-section">
-			<input class="tagInput" placeholder="tag" formControlName="tag" (keydown.enter)="$event.preventDefault()"/>
+			<input class="tagInput" [placeholder]="'search.form.tagPlaceholder' | translate" formControlName="tag" (keydown.enter)="$event.preventDefault()"/>
 
 			<input class="indInput" formControlName="ind1" (keydown.enter)="$event.preventDefault()"/>
 
@@ -13,7 +13,7 @@
 				<textarea
 					#subfieldsTextarea
 					class="subfieldsInput"
-					placeholder="subfields"
+					[placeholder]="'search.form.subfieldsPlaceholder' | translate"
 					formControlName="subfields"
 					rows="1"
 					(input)="onSubfieldsInput($event)"

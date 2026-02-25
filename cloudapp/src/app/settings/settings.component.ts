@@ -1,6 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { AlertService, CloudAppSettingsService, FormGroupUtil } from '@exlibris/exl-cloudapp-angular-lib';
+import { TranslateService } from '@ngx-translate/core';
 import { Settings } from '../models/setting';
 
 @Component({
@@ -15,6 +16,7 @@ export class SettingsComponent implements OnInit{
 
   private settingsService = inject(CloudAppSettingsService);
   private alert = inject(AlertService);
+  private translate = inject(TranslateService);
 
   public relaunchApp(): void {
     window.location.assign(`${window.location.origin}${window.location.pathname}${window.location.search}`);
@@ -31,11 +33,11 @@ export class SettingsComponent implements OnInit{
     this.saving = true;
     this.settingsService.set(this.form.value).subscribe({
       next: () => {
-        this.alert.success('Settings saved');
+        this.alert.success(this.translate.instant('settings.messages.saveSuccess'));
         this.saving = false;
       },
       error: (err) => {
-        this.alert.error('Error saving settings', err);
+        this.alert.error(this.translate.instant('settings.messages.saveError'), err);
         this.saving = false;
       }
     });
