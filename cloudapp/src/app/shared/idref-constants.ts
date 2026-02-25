@@ -4,13 +4,15 @@ import { MarcStructureValues } from '../models/idref-model';
 export const IDREF_RECORDTYPE_TO_ICON_MAP = new Map<string, string>([
 	['a', 'personne'],
 	['b', 'congres'],
+	['s', 'congres'],
 	['e', 'famille'],
 	['f', 'titre_uniforme'],
 	['h', 'auteur_titre'],
 	['j', 'sujet'],
 	['d', 'nom_marque'],
 	['c', 'nom_geographique'],
-	['v', 'forme_genre'], 
+	['v', 'forme_genre'],
+	['u', 'forme_genre'],  
 ]);
 export const tagGroups: {
 	[groupName: string]: { tags: string[]; color: string };
