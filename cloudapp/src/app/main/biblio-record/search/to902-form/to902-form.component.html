@@ -5,8 +5,8 @@
 			<mat-icon>close</mat-icon>
 		</button>
 	</div>
-	<form [formGroup]="searchForm">
-		<div class="to902-row">
+	<form [formGroup]="searchForm" class="search-form">
+		<div class="to902-row input-section">
 			<input class="to902-tag tag" [placeholder]="'search.form.tagPlaceholder' | translate" formControlName="tag" />
 			<input class="to902-ind ind" formControlName="ind1" />
 			<input class="to902-ind ind" formControlName="ind2" />
@@ -19,7 +19,7 @@
 			<span class="to902-label subfield">$$5:</span>
 			<input class="to902-userSignature" formControlName="userSignature" />
 		</div>
-		<div class="to902-row">
+		<div class="to902-row to902-subfield-row input-section">
 			<span class="to902-label subfield">$$b:</span>
 			<textarea
 				class="to902-textarea"

@@ -19,26 +19,46 @@
     font-size: 14px;
 }
 
+.search-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+    width: 100% !important;
+    margin: 0 !important;
+    text-align: left;
+}
+
 .to902-row {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
+    flex-wrap: nowrap;
 }
 
 .to902-tag {
     margin-right: 5px;
     flex: 0 0 auto;
-    width: 3ch;
+    width: calc(3ch + 10px);
+    min-width: calc(3ch + 10px);
+    text-align: center;
+    padding-left: 0;
+    padding-right: 0;
 }
 
 .to902-userSignature {
     margin-right: 5px;
     flex: 0 0 auto;
-    width: 4ch;
+    width: calc(4ch + 10px);
+    min-width: calc(4ch + 10px);
 }
 
 .to902-ind {
     flex: 0 0 auto;
-    width: 1ch;
+    width: calc(1ch + 10px);
+    min-width: calc(1ch + 10px);
+    text-align: center;
+    padding-left: 0;
+    padding-right: 0;
 }
 
 .to902-label {
@@ -46,14 +66,41 @@
     margin-left: 2px;
     margin-right: 2px;
     flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    height: 28px;
+    line-height: 1;
 }
 
 .to902-select {
     flex: 1 1 auto;
+    min-height: 28px;
+    height: 28px;
+    padding: 4px 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    line-height: 1;
+    box-sizing: border-box;
 }
 
 .to902-textarea {
     flex: 1 1 auto;
+    min-width: 140px;
+    min-height: 28px;
+    height: auto;
+    padding: 4px 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.2;
+    box-sizing: border-box;
+    resize: vertical;
+}
+
+.to902-subfield-row {
+    width: 100%;
 }
 
 .to902-close-button {
@@ -65,11 +112,34 @@
 .button-section {
     display: flex;
     gap: 8px;
+    flex-wrap: nowrap;
     justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    margin: 0 !important;
+    text-align: left;
 }
 
 .button-section button {
     flex: 0 0 auto;
+}
+
+.to902-row input,
+.to902-row .to902-tag,
+.to902-row .to902-ind,
+.to902-row .to902-userSignature {
+    height: 28px;
+    padding: 4px 0;
+    box-sizing: border-box;
+    display: inline-block;
+    line-height: 1;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+.to902-row > * {
+    margin: 0;
+    vertical-align: middle;
 }
 
 input:disabled {

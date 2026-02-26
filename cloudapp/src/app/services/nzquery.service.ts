@@ -229,7 +229,7 @@ export class NZQueryService {
 		}
 
 		return this.getBibRecord(entity).pipe(
-			tap((bib) => this.recordService.selectedEntityDetails.set(bib))
+			tap((bib) => this.recordService.selectedEntityDetails.set(bib)),
 		);
 	}
 

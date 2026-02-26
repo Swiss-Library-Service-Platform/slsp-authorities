@@ -77,7 +77,10 @@ export class To902FormComponent {
 
 	public constructor() {
 		this.settingsService.get().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((settings) => {
-			this.userSignature.set((settings as Settings).userSignature);
+			const signature = (settings as Settings).userSignature;
+
+			this.userSignature.set(signature);
+			this.searchForm?.patchValue({ userSignature: `${signature}` }, { emitEvent: false });
 		});
 		this.eventService.getInitData().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((initData) => {
 			// Conserve uniquement la partie après le premier `_`.
@@ -91,7 +94,7 @@ export class To902FormComponent {
 			ind1: [{ value: ' ', disabled: true }],
 			ind2: [{ value: ' ', disabled: true }],
 			purpose: [this.defaultPurpose()],
-			userSignature: [this.userSignature()],
+			userSignature: [{ value: `${this.userSignature()}`, disabled: true }],
 			subfields: [''],
 		});
 
@@ -105,7 +108,7 @@ export class To902FormComponent {
 					{
 						subfields: this.predifinedContent(),
 						purpose, // Valeur scalaire (string), pas de tableau.
-						userSignature: this.userSignature(),
+						userSignature: `${this.userSignature()}`,
 					},
 					{ emitEvent: false }
 				);
