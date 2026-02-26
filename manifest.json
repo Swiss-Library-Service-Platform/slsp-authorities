@@ -11,7 +11,10 @@
          "https://catalog.hathitrust.org/",
          "https://www.idref.fr/",
          "https://proxy02.swisscovery.network/"
-      ]
+      ],
+      "sandbox": {
+         "popups": true
+      }
    },
    "fullscreen": {
       "allow": true,

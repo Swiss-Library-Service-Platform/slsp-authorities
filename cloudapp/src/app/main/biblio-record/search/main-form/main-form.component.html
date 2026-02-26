@@ -1,5 +1,5 @@
 <div class="main-search-form" [ngClass]="'search-mode-' + searchMode()">
-	<div class="mode-label">{{ ('search.mode.' + searchMode()) | translate }}</div>
+	<h3 class="title">{{ ('search.mode.' + searchMode()) | translate }}</h3>
 	<form [formGroup]="searchForm" class="search-form">
 		<div class="input-section">
 			<input class="tagInput" [placeholder]="'search.form.tagPlaceholder' | translate" formControlName="tag" (keydown.enter)="$event.preventDefault()"/>

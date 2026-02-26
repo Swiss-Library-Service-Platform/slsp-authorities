@@ -37,16 +37,16 @@
 		"hideTo902": "Masquer",
 		"showTo902": "Créer 902",
 		"mode": {
-			"addField": "Ajout de zone",
-			"update": "Mise à jour de zone"
+			"addField": "Ajout",
+			"update": "Mise à jour"
 		},
 		"mode902": {
 			"add902": "Créer 902",
 			"update902": "Mettre à jour 902"
 		},
 		"form": {
-			"tagPlaceholder": "zone",
-			"subfieldsPlaceholder": "sous-zones"
+			"tagPlaceholder": "tag",
+			"subfieldsPlaceholder": "sous-champ"
 		},
 		"to902": {
 			"predefined": {
@@ -60,11 +60,11 @@
 		}
 	},
 	"biblioRecord": {
-		"title": "Zones liées aux autorités",
+		"title": "Champs liés aux autorités",
 		"notImplemented": "Pas encore implémenté"
 	},
 	"idrefRecord": {
-		"title": "Recherche Idref",
+		"title": "Recherche IdRef",
 		"select": "Sélectionner",
 		"noIdrefAuthority": "Aucune notice d'autorité n'est liée à ce PPN.",
 		"paginatorNext": "page suivante",
@@ -87,7 +87,7 @@
 		}
 	},
 	"idrefEntryDetails": {
-		"title": "Détails de l'entrée Idref",
+		"title": "Détails de l'entrée IdRef",
 		"NoCurrentDetails": "Effectuez une recherche pour afficher les détails"
 	},
 	"deleteDialog": {
