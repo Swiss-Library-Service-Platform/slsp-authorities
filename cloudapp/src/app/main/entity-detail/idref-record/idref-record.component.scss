@@ -23,6 +23,8 @@
     display: flex;
     align-items: center;
     gap: 4px;
+    width: 100%;
+    min-width: 0;
 
     select.searchIndex {
       padding: 6px 8px;
@@ -34,10 +36,13 @@
     input[type="text"],
     input:not([type]) {
       flex: 1;
+      min-width: 0;
+      width: 100%;
       padding: 6px 8px;
       border: 1px solid #ccc;
       border-radius: 4px;
       font-size: 14px;
+      box-sizing: border-box;
     }
 
     mat-icon {
