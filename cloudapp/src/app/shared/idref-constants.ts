@@ -57,8 +57,9 @@ export const MARC_STRUCTURE = new Map<string, MarcStructureValues>([
 
 	['655|  ', { label: 'Forme / genre', filters: ['formgenreheading'], recordtypes: ['u','v'] }],
 
-	// Utilisé uniquement pour afficher les champs 902 dans le composant de notices bibliographiques.
+	// Utilisé uniquement pour afficher les champs 902 et 880 dans le composant de notices bibliographiques.
 	['902|  ', { label: '', filters: [''], recordtypes: ['']}],
+	['880|  ', { label: '', filters: [''], recordtypes: ['']}],
 ]);
 
 function getMarStructureKey(): string[] {
