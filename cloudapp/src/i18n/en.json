@@ -55,6 +55,9 @@
 				"correction": "The link to idref should be: {{link}}",
 				"nouveau": "It is necessary to add a link to the record in idref.",
 				"doublon": "The record is a duplicate of an existing one in idref."
+			},
+			"error": {
+				"emptySignature": "User signature is empty, please fill it in the settings."
 			}
 		}
 

@@ -5,7 +5,7 @@ import { NzBibRecord } from '../../../../models/bib-record.model';
 import { SearchService } from '../search.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { FormValues } from '../model';
-import { CloudAppEventsService, CloudAppSettingsService } from '@exlibris/exl-cloudapp-angular-lib';
+import { AlertService, CloudAppEventsService, CloudAppSettingsService } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
 import { Settings } from '../../../../models/settings.model';
 
@@ -33,6 +33,7 @@ export class To902FormComponent {
 	private translate = inject(TranslateService);
 	private fb = inject(FormBuilder);
 	private destroyRef = inject(DestroyRef);
+	private alert = inject(AlertService);
 
 	public readonly searchMode902 = this.searchService.searchMode902;
 	public readonly searchMode = this.searchService.searchMode;
@@ -113,6 +114,12 @@ export class To902FormComponent {
 	}
 
 	public updateFieldIfFound(): void {
+		if(this.userSignature() === ''){
+			this.alert.error(this.translate.instant('search.to902.error.emptySignature'), {autoClose: false});
+
+			return;
+		}
+
 		const purpose = this.searchForm.get('purpose')?.value;
 		const rawValue = this.searchForm.getRawValue() as FormValues;
 		// Date au format `aaaammjj`.
@@ -128,6 +135,12 @@ export class To902FormComponent {
 	}
 
 	public createFieldIfNotFound(): void {
+		if(this.userSignature() === ''){
+			this.alert.error(this.translate.instant('search.to902.error.emptySignature'), {autoClose: false});
+
+			return;
+		}
+
 		const purpose = this.searchForm.get('purpose')?.value;
 		const rawValue = this.searchForm.getRawValue() as FormValues;
 		// Date au format `aaaammjj`.

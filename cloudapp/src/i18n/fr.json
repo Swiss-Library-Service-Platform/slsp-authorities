@@ -53,6 +53,9 @@
 				"correction": "Le lien vers IdRef devrait être : {{link}}",
 				"nouveau": "Il est nécessaire d'ajouter un lien vers la notice dans IdRef.",
 				"doublon": "La notice est un doublon d'une notice existante dans IdRef."
+			},
+			"error": {
+				"emptySignature": "La signature utilisateur est vide, veuillez la remplir dans les paramètres."
 			}
 		}
 	},
