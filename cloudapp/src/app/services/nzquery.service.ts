@@ -10,10 +10,11 @@ import { NzBibRecord, DataField, BibRecordField } from '../models/bib-record.mod
 import { TranslateService } from '@ngx-translate/core';
 import { AuthenticationService } from './authentication.service';
 import { LoadingIndicatorService } from './loading-indicator.service';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { RecordService } from './record.service';
 import { StringUtils } from '../utils/stringUtils';
 import { InitService } from './init.service';
+import { ProxyError } from '../models/proxy-error.model';
 
 @Injectable({
 	providedIn: 'root',
@@ -52,11 +53,9 @@ export class NZQueryService {
 					this.authenticationService.getHttpOptions()
 				)
 			),
-			catchError((error) => {
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				const errorMsg = (error as any)?.message || (error as any)?.statusText || 'Unknown error';
+			catchError(() => {
 
-				this.alert.error(this.translate.instant('error.restApiError', [errorMsg]), {
+				this.alert.error(this.translate.instant('error.proxyErrorMmsIdNotFound', [entity.id]), {
 					autoClose: false,
 				});
 
@@ -113,14 +112,14 @@ export class NZQueryService {
 					)
 			),
 			catchError((error) => {
-				const errorMsg = error?.message || error?.statusText || 'Unknown error';
+				const errorMsg = this.extractErrorMessage(error);
 
 				// Propage les erreurs de contrôle pour permettre un traitement côté appelant.
 				if (error?.message === 'FIELD_NOT_FOUND' || error?.message === 'FIELD_ALREADY_EXISTS') {
 					return throwError(() => error);
 				}
 
-				this.alert.error(this.translate.instant('error.restApiError', [errorMsg]), {
+				this.alert.error(this.translate.instant('error.proxyErrorMmsIdNotFound', [errorMsg]), {
 					autoClose: false,
 				});
 
@@ -167,9 +166,9 @@ export class NZQueryService {
 					)
 			),
 			catchError((error) => {
-				const errorMsg = error?.message || error?.statusText || 'Unknown error';
+				const errorMsg = this.extractErrorMessage(error);
 
-				this.alert.error(this.translate.instant('error.restApiError', [errorMsg]), {
+				this.alert.error(this.translate.instant('error.proxyErrorMmsIdNotFound', [errorMsg]), {
 					autoClose: false,
 				});
 
@@ -211,9 +210,9 @@ export class NZQueryService {
 
 			// 4. Gère les erreurs globales.
 			catchError((error) => {
-				const errorMsg = error?.message || error?.statusText || 'Unknown error';
+				const errorMsg = this.extractErrorMessage(error);
 
-				this.alert.error(this.translate.instant('error.restApiError', [errorMsg]), {
+				this.alert.error(this.translate.instant('error.proxyErrorMmsIdNotFound', [errorMsg]), {
 					autoClose: false,
 				});
 
@@ -265,6 +264,8 @@ export class NZQueryService {
 	private getNzMmsIdFromEntity(entity: Entity): Observable<string> {
 		const id = entity.id;
 
+		console.log(entity);
+
 		if (entity.link.indexOf('?nz_mms_id') >= 0) {
 			return of(id);
 		}
@@ -285,5 +286,50 @@ export class NZQueryService {
 				}),
 				catchError(() => of(entity.id))
 			);
+	}
+
+	private extractErrorMessage(error: unknown): string {
+		const httpError = error as HttpErrorResponse;
+		const proxyPayload = this.parseProxyError(httpError?.error);
+
+		if (proxyPayload?.errorsExist && proxyPayload.errorList?.error?.length) {
+			const firstError = proxyPayload.errorList.error[0];
+
+			if (firstError?.trackingId) {
+				return `${firstError.errorMessage} (${firstError.trackingId})`;
+			}
+
+			return firstError.errorMessage;
+		}
+
+		return httpError?.message || httpError?.statusText || 'Unknown error';
+	}
+
+	private parseProxyError(payload: unknown): ProxyError | null {
+		let parsedPayload = payload;
+
+		if (typeof parsedPayload === 'string') {
+			try {
+				parsedPayload = JSON.parse(parsedPayload);
+			} catch {
+				return null;
+			}
+		}
+
+		if (!parsedPayload || typeof parsedPayload !== 'object') {
+			return null;
+		}
+
+		const candidate = parsedPayload as ProxyError;
+
+		if (typeof candidate.errorsExist !== 'boolean') {
+			return null;
+		}
+
+		if (!candidate.errorList || !Array.isArray(candidate.errorList.error)) {
+			return null;
+		}
+
+		return candidate;
 	}
 }

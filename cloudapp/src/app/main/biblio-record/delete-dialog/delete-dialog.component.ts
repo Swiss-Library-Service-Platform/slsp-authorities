@@ -50,7 +50,7 @@ export class DeleteDialogComponent {
       .pipe(
         switchMap(() => this.nzQueryService.refreshSelectedEntityDetails$()),
         catchError(() => {
-          this.alert.error(this.translate.instant('error.restApiError'), { autoClose: false });
+          this.alert.error(this.translate.instant('error.eventServiceError'), { autoClose: false });
 
           return EMPTY;
         }),

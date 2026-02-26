@@ -19,7 +19,8 @@
 	},
 	"error": {
 		"httpError": "Une erreur s'est produite avec la requête HTTP",
-		"restApiError": "Erreur API REST : {{0}}",
+		"proxyErrorMmsIdNotFound": "Une erreur s'est produite, il n'y a pas de notice correspondante au mms_id: {{0}} dans la NZ",
+		"eventServiceError": "Une erreur s'est produite avec le service d'événements d'Alma, il n'y a aucune entité ou détail à afficher",
 		"catalogerRoleError": "Vous avez besoin du rôle de catalogueur pour utiliser cette Cloud App",
 		"institutionAllowedError": "Votre institution n'est pas autorisée à utiliser cette Cloud App",
 		"noSelectedEntry": "Aucune entrée sélectionnée"

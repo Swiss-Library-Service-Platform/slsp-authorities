@@ -42,7 +42,7 @@ export class MainFacadeService {
 			}),
 
 			catchError((error) => {
-				this.alert.error(this.translate.instant('error.restApiError', [(error as Error).message]), {
+				this.alert.error(this.translate.instant('error.eventServiceError', [(error as Error).message]), {
 					autoClose: false,
 				});
 

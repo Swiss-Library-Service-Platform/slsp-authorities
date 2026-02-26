@@ -19,10 +19,11 @@
 	},
 	"error": {
 		"httpError": "There is an error with the http request",
-		"restApiError": "REST API error: {{0}}",
+		"eventServiceError": "There is an error with the event service of Alma, there is no entities or details to display",
 		"catalogerRoleError": "You need cataloger role in order to use this cloud app",
 		"institutionAllowedError": "Your institution isn't allowed to use this cloud app",
-		"noSelectedEntry": "There is no selected entry"
+		"noSelectedEntry": "There is no selected entry",
+		"proxyErrorMmsIdNotFound": "An error occurred, there is no record corresponding to the mms_id: {{0}} in the NZ"
 	},
 	"search":{
 		"addToRecord": "Add",

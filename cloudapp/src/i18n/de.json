@@ -19,7 +19,7 @@
 	},
 	"error": {
 		"httpError": "Bei der HTTP-Anfrage ist ein Fehler aufgetreten",
-		"restApiError": "REST-API-Fehler: {{0}}",
+		"proxyErrorMmsIdNotFound": "REST-API-Fehler: {{0}}",
 		"catalogerRoleError": "Sie benötigen die Katalogisiererrolle, um diese Cloud App zu verwenden",
 		"institutionAllowedError": "Ihre Institution ist nicht berechtigt, diese Cloud App zu verwenden",
 		"noSelectedEntry": "Kein Eintrag ausgewählt"
