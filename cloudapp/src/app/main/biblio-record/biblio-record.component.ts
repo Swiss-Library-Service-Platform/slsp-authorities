@@ -71,8 +71,8 @@ export class BiblioRecordComponent {
 		this.referenceCurrentField.setSavedCurrentEntry(entry);
 	}
 
-	public searchIdref(entry: BibRecordField): void {
-		this.idrefRecordService.setFormValuesFromEntry(entry);
+	public searchIdref(): void {
+		this.idrefRecordService.setFormValuesFromEntry();
 	}
 
 	public deleteField(entry: BibRecordField): void {

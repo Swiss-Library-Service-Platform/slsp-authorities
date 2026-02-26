@@ -21,7 +21,7 @@
 		<div class="marc-column marc-column-actions">
 			@if(getIdrefAllowedTags().includes(bibRecordField.tag)){
 
-			<button mat-icon-button color="primary" (click)="saveCurrentEntry(bibRecordField);pushToInput(bibRecordField); searchIdref(bibRecordField)" >
+			<button mat-icon-button color="primary" (click)="saveCurrentEntry(bibRecordField);pushToInput(bibRecordField); searchIdref()" >
 				<mat-icon>edit</mat-icon>
 			</button>
 			<button mat-icon-button color="primary" (click)="deleteField(bibRecordField)">

@@ -32,23 +32,19 @@ export class IdrefRecordService {
 	public buildQueryInputValue(): Signal<string> {
 		return computed(() => {
 			const filterValues = this.idrefService.nzSelectedEntry()?.subfields;
-			const persnameValue = filterValues?.find((value) => value.code === 'a')?.value ?? '';
-			const dates = filterValues?.find((value) => value.code === 'd')?.value ?? '';
+			const $$aValue = filterValues?.find((value) => value.code === 'a')?.value ?? '';
+			const $$dValue = filterValues?.find((value) => value.code === 'd')?.value ?? '';
+			const $$bValue = filterValues?.find((value) => value.code === 'b')?.value ?? '';
 
-			if (dates.length > 0) {
-				return `${persnameValue}, ${dates}`;
-			} else {
-				return persnameValue;
-			}
+			return `${$$aValue} ${$$bValue} ${$$dValue}`.trim();
+			
 		});
 	}
 
 	/**
 	 * Définit les valeurs du formulaire à partir d'une entry et lance la recherche
 	 */
-	public setFormValuesFromEntry(entry: BibRecordField): void {
-		// Met à jour l'entrée sélectionnée.
-		this.idrefService.nzSelectedEntry.set({ ...entry });
+	public setFormValuesFromEntry(): void {
 
 		// Récupère les valeurs calculées à partir des signaux.
 		const searchIndex = this.idrefService.getMarcStructure()?.label ?? '';
