@@ -89,30 +89,12 @@ export class IdrefRecordService {
 	 * Construit la query Solr à partir des valeurs du formulaire de recherche
 	 */
 	public buildQueryFromFormValues(searchIndex: string, constructedQuery: string): string {
-		const queryValues = constructedQuery.split(',');
-		let dateNaissance = '';
-		let dateMort = '';
-		let query = '';
+		let query = constructedQuery
+			.replace(/[.\-()\[\]{}]/g, '')
+			.replace(/[,\s]+/g, ' AND ')
+			.trim();
 
-		queryValues.forEach((value) => {
-			if (/\b\d{4}\b/.test(String(value))) {
-				const YEAR_REGEX = /\d{4}/g;
-				const matches = value.match(YEAR_REGEX) || [];
-
-				dateNaissance = matches[0] ? ` AND ${matches[0].trim()}` : '';
-				dateMort = matches[1] ? ` AND ${matches[1].trim()}` : '';
-			} else {
-				if (value.trim().length !== 0) {
-					if (query.length > 0) {
-						query = `${query} AND ${value.trim()}`;
-					} else {
-						query = value.trim();
-					}
-				}
-			}
-		});
-
-		query = `(${query}${dateNaissance}${dateMort})`;
+		query = `(${query.replace(/^(AND\s+)+|(\s+AND)+$/g, '')})`;
 
 		const recordTypeCharac = IDREF_RECORDTYPE_MAP.get(searchIndex);
 
