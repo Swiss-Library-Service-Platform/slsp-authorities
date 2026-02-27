@@ -37,7 +37,7 @@
 
 .input-section {
     align-items: flex-start;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
 }
 
 .input-section .tagInput {
@@ -61,7 +61,7 @@
 .subfields-wrapper {
     position: relative;
     flex: 1 1 auto;
-    min-width: 140px;
+    min-width: 0;
 }
 
 .subfields-highlight {
@@ -140,7 +140,7 @@
 .button-section {
     display: flex;
     gap: 8px;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     justify-content: flex-start;
     align-items: center;
     width: 100%;
@@ -150,4 +150,19 @@
 
 .main-search-form, .main-search-form * {
     text-align: left !important;
+}
+
+@media (max-width: 900px) {
+    .input-section {
+        gap: 6px;
+    }
+
+    .subfields-wrapper {
+        flex: 1 1 100%;
+        width: 100%;
+    }
+
+    .search-icon {
+        margin-left: 0;
+    }
 }

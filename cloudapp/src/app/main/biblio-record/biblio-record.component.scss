@@ -1,4 +1,6 @@
 .marc {
+  width: 100%;
+  min-width: 0;
   border-collapse: collapse;
   font-family: Arial Unicode MS, Arial, sans-serif;
   font-size: 13px;
@@ -10,6 +12,8 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    width: 100%;
+    min-width: 0;
     transition: background-color 120ms ease-in-out;
   }
 
@@ -18,6 +22,7 @@
     flex-direction: column;
     word-break: break-all;
     padding-left: 8px;
+    min-width: 0;
 
 
     .marc-column-value {
@@ -45,6 +50,11 @@
     width: 60px;          // Ajuster selon la taille des icônes.
     flex: 0 0 60px;
 
+  }
+
+  .marc-row > .marc-column:last-child {
+    flex: 1;
+    min-width: 0;
   }
 
 
@@ -159,6 +169,28 @@
   }
 
   .value {
-    width: fit-content;
+    display: block;
+    width: 100%;
+    min-width: 0;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+}
+
+@media (max-width: 900px) {
+  .marc {
+    .marc-row {
+      flex-wrap: wrap;
+      align-items: flex-start;
+      padding-bottom: 6px;
+    }
+
+    .marc-column-actions {
+      order: 99;
+      margin-left: auto;
+      width: auto;
+      flex: 0 0 auto;
+      padding-right: 8px;
+    }
   }
 }

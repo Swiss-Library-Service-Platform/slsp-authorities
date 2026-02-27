@@ -24,6 +24,7 @@
     .mdc-list-item__content {
       display: flex;
       align-items: center;
+      min-width: 0;
     }
 
     // Icône.
@@ -41,15 +42,29 @@
       color: #4164a4;
       margin-right: 4px;
       white-space: nowrap;
-      min-width: 80px; // Optionnel : alignement vertical de tous les identifiants.
+      min-width: 0;
+      flex: 0 1 auto;
     }
 
     // Description tronquée proprement.
     .entity-description {
       flex: 1;
+      min-width: 0;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .entities-list {
+    .mat-mdc-list-item {
+      .entity-id {
+        max-width: 35%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
     }
   }
 }
