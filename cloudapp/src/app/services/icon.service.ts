@@ -17,6 +17,7 @@ export class IconService {
   private registerIcons(): void {
     const icons: Record<string, string> = {
       congres: 'assets/icons/congres.svg',
+      collectivite: 'assets/icons/collectivite.svg',
       famille: 'assets/icons/famille.svg',
       personne: 'assets/icons/personne.svg',
       titre_uniforme: 'assets/icons/titre_uniforme.svg',

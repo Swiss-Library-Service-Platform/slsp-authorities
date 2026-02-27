@@ -3,7 +3,7 @@ import { MarcStructureValues } from '../models/idref.model';
 
 export const IDREF_RECORDTYPE_TO_ICON_MAP = new Map<string, string>([
 	['a', 'personne'],
-	['b', 'congres'],
+	['b', 'collectivite'],
 	['s', 'congres'],
 	['e', 'famille'],
 	['f', 'titre_uniforme'],
