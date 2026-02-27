@@ -64,6 +64,17 @@
     min-width: 0;
 }
 
+.subfields-highlight,
+.input-section .subfieldsInput {
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.2;
+    font-weight: 400;
+    letter-spacing: normal;
+    tab-size: 4;
+    box-sizing: border-box;
+}
+
 .subfields-highlight {
     position: absolute;
     inset: 0;
@@ -71,11 +82,9 @@
     border: 1px solid #ccc;
     border-radius: 4px;
     background: #fff;
-    box-sizing: border-box;
-    font-size: 14px;
-    line-height: 1.2;
     white-space: pre-wrap;
-    word-break: break-word;
+    overflow-wrap: break-word;
+    word-break: normal;
     overflow: hidden;
     color: #000;
     pointer-events: none;
@@ -100,6 +109,9 @@
     align-self: flex-start;
     position: relative;
     z-index: 1;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    word-break: normal;
 }
 
 
