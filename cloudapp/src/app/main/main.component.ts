@@ -14,12 +14,6 @@ export class MainComponent implements OnInit {
 		this.facade.init();
 	}
 
-
-	public openIdref(event: MouseEvent): void {
-		event.preventDefault(); // Empêche la navigation interceptée par l'hôte.
-		window.location.assign('https://www.idref.fr/');
-	}
-
 	public reset(): void {
 		this.facade.reset();
 	}

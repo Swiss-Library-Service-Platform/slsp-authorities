@@ -1,3 +1,48 @@
+.idref-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  h2 {
+    margin: 0;
+  }
+
+  &__logo-link {
+    display: inline-flex;
+    align-items: center;
+    margin-left: auto;
+    cursor: pointer;
+    text-decoration: none;
+
+    &::after {
+      content: "↗";
+      margin-left: 4px;
+      font-size: 12px;
+      line-height: 1;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    &:hover,
+    &:focus-visible {
+      &::after {
+        opacity: 1;
+      }
+
+      .idref-header__logo {
+        border-bottom: 1px solid currentColor;
+      }
+    }
+  }
+
+  &__logo {
+    display: block;
+    height: 28px;
+    width: auto;
+    border-bottom: 1px solid transparent;
+  }
+}
+
 .search-form {
   display: flex;
   flex-direction: column;

@@ -1,4 +1,9 @@
-<h2>{{ 'idrefRecord.title' | translate }}</h2>
+<div class="idref-header">
+	<h2>{{ 'idrefRecord.title' | translate }}</h2>
+	<a class="idref-header__logo-link" href="https://www.idref.fr/" target="_blank" rel="noopener noreferrer">
+		<img class="idref-header__logo" src="https://www.idref.fr/img/logo.png" alt="IdRef" />
+	</a>
+</div>
 <form [formGroup]="searchForm" class="search-form">
 	<div class="search-form__checkbox">
 		<input type="checkbox" id="isStrictSearch" formControlName="isStrictSearch" (change)="onStrictSearchChange($event)"/>

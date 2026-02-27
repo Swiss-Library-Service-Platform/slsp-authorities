@@ -1,13 +1,5 @@
 @if (facade.isInstitutionAllowed() && facade.hasCatalogerRole()) {
 	<div class="eca-actions">
-		<a href="https://www.idref.fr/" (click)="openIdref($event)">
-			<img
-				src="https://www.idref.fr/img/logo.png"
-				[alt]="'main.idrefLogoAlt' | translate"
-				style="width: 80px; height: auto; cursor: pointer"
-			/>
-		</a>
-
 		<button
 			mat-flat-button
 			color="secondary"
