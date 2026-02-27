@@ -88,7 +88,9 @@
 	},
 	"idrefEntryDetails": {
 		"title": "Détails de l'entrée IdRef",
-		"NoCurrentDetails": "Effectuez une recherche pour afficher les détails"
+		"NoCurrentDetails": "Effectuez une recherche pour afficher les détails",
+		"showRawXml": "Afficher le XML brut",
+		"hideRawXml": "Masquer le XML brut"
 	},
 	"deleteDialog": {
 		"title": "Confirmer la suppression",

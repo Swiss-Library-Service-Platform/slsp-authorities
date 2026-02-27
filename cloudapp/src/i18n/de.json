@@ -84,7 +84,9 @@
 	},
 	"idrefEntryDetails": {
 		"title": "Details des Idref-Eintrags",
-		"NoCurrentDetails": "Suchen Sie, um Details anzuzeigen"
+		"NoCurrentDetails": "Suchen Sie, um Details anzuzeigen",
+		"showRawXml": "Rohes XML anzeigen",
+		"hideRawXml": "Rohes XML ausblenden"
 	},
 	"deleteDialog": {
 		"title": "Löschen bestätigen",

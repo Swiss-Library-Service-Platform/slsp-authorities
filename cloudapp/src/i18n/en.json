@@ -91,7 +91,9 @@
 	},
 	"idrefEntryDetails": {
 		"title": "Details of Idref entry",
-		"NoCurrentDetails": "Search to view details"
+		"NoCurrentDetails": "Search to view details",
+		"showRawXml": "Show raw XML",
+		"hideRawXml": "Hide raw XML"
 	},
 	"deleteDialog": {
 		"title": "Validate delete",

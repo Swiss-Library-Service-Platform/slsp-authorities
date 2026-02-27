@@ -1,7 +1,42 @@
-<h2>{{ 'idrefEntryDetails.title' | translate }}</h2>
+<div class="idref-details-header">
+  <h2>{{ 'idrefEntryDetails.title' | translate }}</h2>
+  @if (rows().length > 0) {
+    <button color="primary" (click)="toggleRawXml()">
+      {{ (showRawXml() ? 'idrefEntryDetails.hideRawXml' : 'idrefEntryDetails.showRawXml') | translate }}
+    </button>
+  }
+</div>
 
-@if (xmlAsString()) {
-  <pre>{{ xmlAsString() }}</pre>
+@if (rows().length > 0) {
+  @if (showRawXml()) {
+    <pre class="raw-xml">{{ xmlAsString() }}</pre>
+  } @else {
+    <div class="idref-details">
+      @for (row of rows(); track $index) {
+        <div class="idref-details-row">
+          <div class="idref-details-column">
+            <span class="tag">{{ row.tag }}</span>
+          </div>
+          <div class="idref-details-column">
+            <span class="ind">{{ row.ind1 }}</span>
+          </div>
+          <div class="idref-details-column">
+            <span class="ind">{{ row.ind2 }}</span>
+          </div>
+          <div class="idref-details-column idref-details-column--main">
+            @for (subfield of row.subfields; track $index) {
+              <div class="idref-details-column-value">
+                @if (subfield.code) {
+                  <span class="subfield">{{ subfield.code }}</span>
+                }
+                <span class="value">{{ subfield.value }}</span>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
 }@else {
   <p>{{'idrefEntryDetails.NoCurrentDetails' | translate}}</p>
 }
