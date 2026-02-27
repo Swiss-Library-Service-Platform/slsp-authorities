@@ -45,7 +45,10 @@
 		},
 		"form": {
 			"tagPlaceholder": "Tag",
-			"subfieldsPlaceholder": "Unterfelder"
+			"subfieldsPlaceholder": "Unterfelder",
+			"error": {
+				"emptyTag": "Tag ist erforderlich."
+			}
 		},
 		"to902": {
 			"predefined": {

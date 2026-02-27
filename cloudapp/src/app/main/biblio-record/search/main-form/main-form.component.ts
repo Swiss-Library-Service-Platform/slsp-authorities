@@ -7,6 +7,8 @@ import { NzBibRecord } from '../../../../models/bib-record.model';
 import { IdrefService } from '../../../../services/idref.service';
 import { SearchService } from '../search.service';
 import { IdrefRecordService } from '../../../entity-detail/idref-record/idref-record.service';
+import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
 	selector: 'app-main-form',
@@ -27,6 +29,8 @@ export class MainFormComponent implements AfterViewInit {
 	private idrefRecordService = inject(IdrefRecordService);
 	private fb = inject(FormBuilder);
 	private destroyRef = inject(DestroyRef);
+	private alert = inject(AlertService);
+	private translate = inject(TranslateService);
 
 	public readonly searchMode = this.searchService.searchMode;
 	public readonly isTo902FormVisible = this.searchService.isTo902FormVisible;
@@ -154,15 +158,23 @@ export class MainFormComponent implements AfterViewInit {
 	}
 
 	public addRecord(): void {
-		this.searchService.addRecord(this.searchForm.value, () => this.resetFormFields());
+		this.searchService.addRecord(this.getNormalizedFormValues(), () => this.resetFormFields());
 	}
 
 	public updateFieldIfFound(): void {
-		this.searchService.updateFieldIfFound(this.searchForm.value, () => this.resetFormFields());
+		this.searchService.updateFieldIfFound(this.getNormalizedFormValues(), () => this.resetFormFields());
 	}
 
 	public createFieldIfNotFound(): void {
-		this.searchService.createFieldIfNotFound(this.searchForm.value, () => this.resetFormFields());
+		const values = this.getNormalizedFormValues();
+
+		if (!values.tag.trim()) {
+			this.alert.error(this.translate.instant('form.error.emptyTag'));
+
+			return;
+		}
+
+		this.searchService.createFieldIfNotFound(values, () => this.resetFormFields());
 	}
 
 	public showTo902(): void {
@@ -188,5 +200,16 @@ export class MainFormComponent implements AfterViewInit {
 		this.lastHighlightedValue = null;
 		this.highlightedSubfields = '';
 		this.scheduleSubfieldsRender();
+	}
+
+	private getNormalizedFormValues(): { tag: string; ind1: string; ind2: string; subfields: string } {
+		const values = this.searchForm.value as { tag: string; ind1: string; ind2: string; subfields: string };
+
+		return {
+			tag: values.tag ?? '',
+			ind1: values.ind1?.trim() ? values.ind1 : ' ',
+			ind2: values.ind2?.trim() ? values.ind2 : ' ',
+			subfields: values.subfields ?? '',
+		};
 	}
 }

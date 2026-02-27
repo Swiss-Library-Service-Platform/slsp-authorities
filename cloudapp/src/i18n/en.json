@@ -48,7 +48,11 @@
 		},
 		"form": {
 			"tagPlaceholder": "tag",
-			"subfieldsPlaceholder": "subfields"
+			"subfieldsPlaceholder": "subfields",
+			"error": {
+				"emptyTag": "Tag is required."
+			}
+
 		},
 		"to902": {
 			"predefined": {

@@ -46,7 +46,10 @@
 		},
 		"form": {
 			"tagPlaceholder": "tag",
-			"subfieldsPlaceholder": "sous-champ"
+			"subfieldsPlaceholder": "sous-champ",
+			"error": {
+				"emptyTag": "Le tag est requis."
+			}
 		},
 		"to902": {
 			"predefined": {
