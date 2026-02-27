@@ -11,6 +11,7 @@ import { IdrefRecordService } from '../entity-detail/idref-record/idref-record.s
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
 import { BiblioRecordMarcService } from './domain/biblio-record-marc.service';
+import { StringUtils } from '../../utils/stringUtils';
 
 // Composant d'affichage des notices bibliographiques provenant de la NZ.
 @Component({
@@ -30,6 +31,7 @@ export class BiblioRecordComponent {
 	private alertService = inject(AlertService);
 	private translate = inject(TranslateService);
 	private marcService = inject(BiblioRecordMarcService);
+	public readonly highlightedUpdatedField = this.searchService.highlightedUpdatedField;
 	// Signaux des tags MARC autorisés.
 	private allowedTags = signal(MARC_STRUCTURE_KEY);
 
@@ -51,6 +53,16 @@ export class BiblioRecordComponent {
 
 	public getMarcRowStatusClass(entry: BibRecordField): string | null {
 		return this.marcService.getMarcRowStatusClass(entry, this.idrefAllowedTags);
+	}
+
+	public isUpdatedField(entry: BibRecordField): boolean {
+		const updatedField = this.highlightedUpdatedField();
+
+		if (!updatedField) {
+			return false;
+		}
+
+		return StringUtils.areDataFieldsEqual(updatedField, entry);
 	}
 
 	public pushToInput(entry: BibRecordField): void {

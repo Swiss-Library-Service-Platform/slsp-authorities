@@ -31,6 +31,7 @@ export class SearchService {
   public flattenedValue = this.idrefService.flattenedValue;
   public isTo902FormVisible = signal(false);
   public formResetNonce = signal(0);
+  public highlightedUpdatedField = signal<DataField | null>(null);
 
 
   /**
@@ -89,10 +90,7 @@ export class SearchService {
   public createFieldIfNotFound(formValues: FormValues, onSuccess?: () => void): void {
     this.loader.show();
     
-    const formatedValues = {
-      ...formValues,
-      subfields: StringUtils.parseSubfieldsString(formValues.subfields),
-    } as DataField;
+    const formatedValues = this.buildDataField(formValues);
 
     this.nzQueryService
       .createFieldIfNotExists(formatedValues)
@@ -108,6 +106,7 @@ export class SearchService {
       )
       .subscribe({
         next: () => {
+          this.highlightedUpdatedField.set(formatedValues);
           this.reset();
           onSuccess?.();
           this.nzQueryService.refreshSelectedEntityDetails$().subscribe();
@@ -139,10 +138,7 @@ export class SearchService {
       return;
     }
 
-    const formatedValues = {
-      ...formValues,
-      subfields: StringUtils.parseSubfieldsString(formValues.subfields),
-    } as DataField;
+    const formatedValues = this.buildDataField(formValues);
 
     this.nzQueryService
       .updateFieldIfExists(reference, formatedValues)
@@ -158,6 +154,7 @@ export class SearchService {
       )
       .subscribe({
         next: () => {
+          this.highlightedUpdatedField.set(formatedValues);
           this.reset();
           onSuccess?.();
           this.nzQueryService.refreshSelectedEntityDetails$().subscribe();
@@ -182,10 +179,7 @@ export class SearchService {
       return;
     }
 
-    const formatedValues = {
-      ...formValues,
-      subfields: StringUtils.parseSubfieldsString(formValues.subfields),
-    } as DataField;
+    const formatedValues = this.buildDataField(formValues);
 
     // Premièrement, tenter de mettre à jour si le champ existe.
     // Si le champ n'est pas trouvé, on tente de le créer.
@@ -214,6 +208,7 @@ export class SearchService {
       )
       .subscribe({
         next: () => {
+          this.highlightedUpdatedField.set(formatedValues);
           this.reset();
           onSuccess?.();
           this.nzQueryService.refreshSelectedEntityDetails$().subscribe();
@@ -241,6 +236,7 @@ export class SearchService {
     this.isTo902FormVisible.set(false);
     this.searchMode.set(SearchMode.AddField);
     this.nzSelectedEntry.set(undefined);
+    this.highlightedUpdatedField.set(null);
 
     if (resetFormCallback) {
       resetFormCallback();
@@ -256,6 +252,19 @@ export class SearchService {
     this.searchMode902.set(SearchMode902.Add902); 
     this.searchMode.set(SearchMode.AddField);
     this.idrefService.reset();
+  }
+
+  private buildDataField(formValues: FormValues): DataField {
+    const normalizedSubfields = formValues.subfields.includes('$$')
+      ? formValues.subfields
+      : `$$a ${formValues.subfields}`;
+
+    return {
+      tag: formValues.tag,
+      ind1: formValues.ind1,
+      ind2: formValues.ind2,
+      subfields: StringUtils.parseSubfieldsString(normalizedSubfields),
+    };
   }
 
   public requestFormsReset(): void {
