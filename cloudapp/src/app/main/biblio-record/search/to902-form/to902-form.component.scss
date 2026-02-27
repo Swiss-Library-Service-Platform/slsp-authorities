@@ -116,6 +116,12 @@
 
 .to902-subfield-row {
     width: 100%;
+    flex-wrap: nowrap;
+    align-items: center;
+}
+
+.to902-subfield-row .to902-textarea {
+    width: auto;
 }
 
 .to902-close-button {
