@@ -2,7 +2,7 @@
 import { AfterViewInit, Component, DestroyRef, ElementRef, ViewChild, effect, inject, input } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { distinctUntilChanged } from 'rxjs';
+import { distinctUntilChanged, catchError, EMPTY } from 'rxjs';
 import { NzBibRecord } from '../../../../models/bib-record.model';
 import { IdrefService } from '../../../../services/idref.service';
 import { SearchService } from '../search.service';
@@ -151,7 +151,16 @@ export class MainFormComponent implements AfterViewInit {
 		if (match) {
 			const ppn = match[1];
 
-			this.idrefService.loadAuthorityDetail$(ppn).subscribe();
+			this.idrefService
+				.loadAuthorityDetail$(ppn)
+				.pipe(
+					catchError(() => {
+						this.alert.error(this.translate.instant('error.eventServiceError'), { autoClose: false });
+
+						return EMPTY;
+					})
+				)
+				.subscribe();
 		} else {
 			this.idrefRecordService.searchFromCurrentEntryContext();
 		}

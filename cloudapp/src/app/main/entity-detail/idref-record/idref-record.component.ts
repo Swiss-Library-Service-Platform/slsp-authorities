@@ -7,10 +7,11 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { Doc, IDREF_FILTER_MAP, IDREF_RECORDTYPE_TO_ICON_MAP } from '../../../models/idref.model';
 import { IdrefService } from '../../../services/idref.service';
 import { IdrefRecordService } from './idref-record.service';
-import { CloudAppSettingsService } from '@exlibris/exl-cloudapp-angular-lib';
+import { AlertService, CloudAppSettingsService } from '@exlibris/exl-cloudapp-angular-lib';
 import { Settings } from '../../../models/settings.model';
 import { IconService } from '../../../services/icon.service';
-import { debounceTime, distinctUntilChanged } from 'rxjs';
+import { debounceTime, distinctUntilChanged, catchError, EMPTY } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
 	selector: 'app-idref-record',
@@ -26,6 +27,8 @@ export class IdrefRecordComponent {
 	private settingsService = inject(CloudAppSettingsService);
 	private fb = inject(FormBuilder);
 	private destroyRef = inject(DestroyRef);
+	private alert = inject(AlertService);
+	private translate = inject(TranslateService);
 
 	public idrefResult = this.idrefService.idrefResult;
 	public nzSelectedEntry = this.idrefService.nzSelectedEntry;
@@ -122,7 +125,16 @@ export class IdrefRecordComponent {
 	}
 
 	public showDetails(ppn: string): void {
-		this.idrefService.loadAuthorityDetail$(ppn).subscribe();
+		this.idrefService
+			.loadAuthorityDetail$(ppn)
+			.pipe(
+				catchError(() => {
+					this.alert.error(this.translate.instant('error.eventServiceError'), { autoClose: false });
+
+					return EMPTY;
+				})
+			)
+			.subscribe();
 	}
 
 	@ViewChild(MatPaginator)

@@ -103,7 +103,7 @@ export class MainFacadeService {
 
 	public selectEntity(entity: Entity): void {
 		this.recordService.selectedEntity.set(entity);
-		this.nzQuery.refreshSelectedEntityDetails$().subscribe();
+		this.refreshSelectedEntityDetails();
 	}
 
 	public refresh(): Observable<RefreshPageResponse> {
@@ -117,6 +117,28 @@ export class MainFacadeService {
 	}
 
 	public refreshSelectedEntityDetails(): void {
-		this.nzQuery.refreshSelectedEntityDetails$().subscribe();
+		this.loader.show();
+		this.nzQuery
+			.refreshSelectedEntityDetails$()
+			.pipe(
+				catchError((error) => {
+					this.alert.error(
+						this.translate.instant('error.proxyErrorMmsIdNotFound', [this.extractErrorMessage(error)]),
+						{ autoClose: false }
+					);
+
+					return EMPTY;
+				}),
+				finalize(() => this.loader.hide())
+			)
+			.subscribe();
+	}
+
+	private extractErrorMessage(error: unknown): string {
+		if (error instanceof Error && error.message) {
+			return error.message;
+		}
+
+		return String(error);
 	}
 }

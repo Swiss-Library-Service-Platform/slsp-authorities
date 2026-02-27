@@ -1,11 +1,10 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { catchError, EMPTY, map, Observable, take, tap } from 'rxjs';
+import { map, Observable, take, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { IdrefRecords, MARC_STRUCTURE, MarcStructureValues } from '../models/idref.model';
 import { BibRecordField } from '../models/bib-record.model';
-import { TranslateService } from '@ngx-translate/core';
-import { AlertService, CloudAppSettingsService } from '@exlibris/exl-cloudapp-angular-lib';
+import { CloudAppSettingsService } from '@exlibris/exl-cloudapp-angular-lib';
 import { Settings } from '../models/settings.model';
 
 @Injectable({ providedIn: 'root' })
@@ -22,8 +21,6 @@ export class IdrefService {
 			.join(' ')
 	);
 
-	private translate = inject(TranslateService);
-	private alert = inject(AlertService);
 	private http = inject(HttpClient);
 	private settingsService = inject(CloudAppSettingsService);
 	private solr = '/Sru/Solr';
@@ -67,23 +64,13 @@ export class IdrefService {
 
 	public searchFromQuery$(query: string): Observable<IdrefRecords> {
 		return this.searchAuthorities(query).pipe(
-			tap((r) => this.idrefResult.set(r)),
-			catchError((e) => {
-				this.alert.error(this.translate.instant('error.httpError' + e), { autoClose: true });
-
-				return EMPTY;
-			})
+			tap((r) => this.idrefResult.set(r))
 		);
 	}
 
 	public loadAuthorityDetail$(ppn: string): Observable<Document> {
 		return this.searchWithPPN(ppn).pipe(
-			tap((detail) => this.idrefAuthorityDetail.set(detail)),
-			catchError((e) => {
-				this.alert.error(this.translate.instant('error.httpError' + e), { autoClose: true });
-
-				return EMPTY;
-			})
+			tap((detail) => this.idrefAuthorityDetail.set(detail))
 		);
 	}
 

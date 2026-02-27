@@ -109,7 +109,10 @@ export class SearchService {
           this.highlightedUpdatedField.set(formatedValues);
           this.reset();
           onSuccess?.();
-          this.nzQueryService.refreshSelectedEntityDetails$().subscribe();
+          this.nzQueryService
+            .refreshSelectedEntityDetails$()
+            .pipe(catchError(() => EMPTY))
+            .subscribe();
           this.alert.success(this.translate.instant('search.recordAdded'), { delay: 1000 });
         },
       });
@@ -157,7 +160,10 @@ export class SearchService {
           this.highlightedUpdatedField.set(formatedValues);
           this.reset();
           onSuccess?.();
-          this.nzQueryService.refreshSelectedEntityDetails$().subscribe();
+          this.nzQueryService
+            .refreshSelectedEntityDetails$()
+            .pipe(catchError(() => EMPTY))
+            .subscribe();
           this.alert.success(this.translate.instant('search.recordAdded'), { delay: 1000 });
         },
       });
@@ -211,7 +217,10 @@ export class SearchService {
           this.highlightedUpdatedField.set(formatedValues);
           this.reset();
           onSuccess?.();
-          this.nzQueryService.refreshSelectedEntityDetails$().subscribe();
+          this.nzQueryService
+            .refreshSelectedEntityDetails$()
+            .pipe(catchError(() => EMPTY))
+            .subscribe();
           this.alert.success(this.translate.instant('search.recordAdded'), { delay: 1000 });
         },
       });

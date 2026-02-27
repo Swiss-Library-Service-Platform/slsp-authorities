@@ -3,12 +3,17 @@ import { Injectable, inject, Signal, computed, signal } from '@angular/core';
 import { Doc, IDREF_FILTER_MAP, IDREF_RECORDTYPE_MAP } from '../../../models/idref.model';
 import { IdrefService } from '../../../services/idref.service';
 import { BibRecordField } from '../../../models/bib-record.model';
+import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
+import { TranslateService } from '@ngx-translate/core';
+import { catchError, EMPTY } from 'rxjs';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class IdrefRecordService {
 	private idrefService = inject(IdrefService);
+	private alert = inject(AlertService);
+	private translate = inject(TranslateService);
 
 	// Données du formulaire.
 	public formSearchIndex = signal<string>('all');
@@ -56,7 +61,16 @@ export class IdrefRecordService {
 		// Lance la recherche.
 		const query = this.buildQueryFromFormValues(searchIndex, constructedQueryValue);
 
-		this.idrefService.searchFromQuery$(query).subscribe();
+		this.idrefService
+			.searchFromQuery$(query)
+			.pipe(
+				catchError(() => {
+					this.alert.error(this.translate.instant('error.eventServiceError'), { autoClose: false });
+
+					return EMPTY;
+				})
+			)
+			.subscribe();
 	}
 
 	/**
@@ -70,7 +84,16 @@ export class IdrefRecordService {
 	public searchFromFormValues(searchIndex: string, constructedQuery: string): void {
 		const query = this.buildQueryFromFormValues(searchIndex, constructedQuery);
 
-		this.idrefService.searchFromQuery$(query).subscribe();
+		this.idrefService
+			.searchFromQuery$(query)
+			.pipe(
+				catchError(() => {
+					this.alert.error(this.translate.instant('error.eventServiceError'), { autoClose: false });
+
+					return EMPTY;
+				})
+			)
+			.subscribe();
 	}
 
 	public searchFromCurrentEntryContext(): void {
