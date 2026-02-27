@@ -7,9 +7,9 @@
 	</div>
 	<form [formGroup]="searchForm" class="search-form">
 		<div class="to902-row input-section">
-			<input class="to902-tag tag" [placeholder]="'search.form.tagPlaceholder' | translate" formControlName="tag" />
-			<input class="to902-ind ind" formControlName="ind1" />
-			<input class="to902-ind ind" formControlName="ind2" />
+			<input class="to902-tag" [placeholder]="'search.form.tagPlaceholder' | translate" formControlName="tag" />
+			<input class="to902-ind" formControlName="ind1" />
+			<input class="to902-ind" formControlName="ind2" />
 			<span class="to902-label subfield">$$a:</span>
 			<select class="to902-select" formControlName="purpose">
 				@for (option of to902Purpose; track option) {
