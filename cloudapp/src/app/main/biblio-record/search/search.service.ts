@@ -33,7 +33,6 @@ export class SearchService {
   public formResetNonce = signal(0);
   public highlightedUpdatedField = signal<DataField | null>(null);
 
-
   /**
    * Parse a flattened subfields string into structured code-value pairs
    * e.g. "$$a value $$b other" => [{code: 'a', value: 'value'}, {code: 'b', value: 'other'}]
@@ -92,6 +91,12 @@ export class SearchService {
     
     const formatedValues = this.buildDataField(formValues);
 
+    if(!this.formValuesAreValid(formValues).warningKey) {
+      this.loader.hide();
+
+      return;
+    }
+
     this.nzQueryService
       .createFieldIfNotExists(formatedValues)
       .pipe(
@@ -129,6 +134,12 @@ export class SearchService {
 
     if (!reference) {
       this.alert.error(this.translate.instant('search.noSelectedEntry'), { delay: 1000, autoClose: true });
+      this.loader.hide();
+
+      return;
+    }
+
+    if(!this.formValuesAreValid(formValues).warningKey) {
       this.loader.hide();
 
       return;
@@ -185,6 +196,12 @@ export class SearchService {
       return;
     }
 
+    if(!this.formValuesAreValid(formValues).warningKey) {
+      this.loader.hide();
+
+      return;
+    }
+
     const formatedValues = this.buildDataField(formValues);
 
     // Premièrement, tenter de mettre à jour si le champ existe.
@@ -224,6 +241,67 @@ export class SearchService {
           this.alert.success(this.translate.instant('search.recordAdded'), { delay: 1000 });
         },
       });
+  }
+
+  public formValuesAreValid(formValues: FormValues): { isValid: boolean; warningKey?: string } {
+    const tag = formValues.tag?.trim() ?? '';
+    const normalizedSubfields = formValues.subfields.includes('$$') ? formValues.subfields: `$$a ${formValues.subfields}`;
+
+    // No tag is available
+    if (!this.isTagValide(tag)) {
+      return { isValid: false };
+    }
+
+    const hasIdrefInSubfield2 = this.hasIdrefInSubfield2(normalizedSubfields);
+    const hasAnySubfield0 = this.hasAnySubfield0(normalizedSubfields);
+    const hasIdrefInSubfield0 = this.hasIdrefInSubfield0(normalizedSubfields);
+
+    if(!hasAnySubfield0){
+      return {
+        isValid: true,
+        warningKey: 'search.form.warning.missingIdrefIdentifier',
+      };
+    }
+
+    if(tag.match(/^6/) && !hasIdrefInSubfield2){
+      if (hasIdrefInSubfield0) {
+        this.alert.error(this.translate.instant('search.form.error.no$$2With$$0In6xx'), {
+            delay: 3000,
+          });
+
+        return { isValid: false };
+      }
+
+      return {
+        isValid: true,
+        warningKey: 'search.form.warning.missingIdrefIdentifier',
+      };
+    }
+
+    return { isValid: true };
+  }
+
+  private isTagValide(tag: string): boolean {
+
+    if(tag && tag.trim() !== '') {
+      return true;
+    }else {
+      this.alert.error(this.translate.instant('search.form.error.emptyTag'), {delay: 3000,});
+
+      return false;
+    }
+  }
+
+  private hasAnySubfield0(subfields: string): boolean {
+    return subfields.includes('$$0');
+  }
+
+  private hasIdrefInSubfield2(subfields: string): boolean {
+    return subfields.includes('$$2 idref');
+  }
+
+  private hasIdrefInSubfield0(subfields: string): boolean {
+    return subfields.includes('$$0 (IDREF)');
   }
 
   /**

@@ -9,6 +9,8 @@ import { SearchService } from '../search.service';
 import { IdrefRecordService } from '../../../entity-detail/idref-record/idref-record.service';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
+import { MatDialog } from '@angular/material/dialog';
+import { CreationWarningModalComponent } from '../../creation-warning-modal/creation-warning-modal.component';
 
 @Component({
 	selector: 'app-main-form',
@@ -31,6 +33,7 @@ export class MainFormComponent implements AfterViewInit {
 	private destroyRef = inject(DestroyRef);
 	private alert = inject(AlertService);
 	private translate = inject(TranslateService);
+	private dialog = inject(MatDialog);
 
 	public readonly searchMode = this.searchService.searchMode;
 	public readonly isTo902FormVisible = this.searchService.isTo902FormVisible;
@@ -167,23 +170,23 @@ export class MainFormComponent implements AfterViewInit {
 	}
 
 	public addRecord(): void {
-		this.searchService.addRecord(this.getNormalizedFormValues(), () => this.resetFormFields());
+		this.executeWithValidation(() => {
+			this.searchService.addRecord(this.getNormalizedFormValues(), () => this.resetFormFields());
+		});
 	}
 
 	public updateFieldIfFound(): void {
-		this.searchService.updateFieldIfFound(this.getNormalizedFormValues(), () => this.resetFormFields());
+		this.executeWithValidation(() => {
+			this.searchService.updateFieldIfFound(this.getNormalizedFormValues(), () => this.resetFormFields());
+		});
 	}
 
 	public createFieldIfNotFound(): void {
-		const values = this.getNormalizedFormValues();
+		this.executeWithValidation(() => {
+			const values = this.getNormalizedFormValues();
 
-		if (!values.tag.trim()) {
-			this.alert.error(this.translate.instant('form.error.emptyTag'));
-
-			return;
-		}
-
-		this.searchService.createFieldIfNotFound(values, () => this.resetFormFields());
+			this.searchService.createFieldIfNotFound(values, () => this.resetFormFields());
+		});
 	}
 
 	public showTo902(): void {
@@ -220,5 +223,31 @@ export class MainFormComponent implements AfterViewInit {
 			ind2: values.ind2?.trim() ? values.ind2 : ' ',
 			subfields: values.subfields ?? '',
 		};
+	}
+
+	private executeWithValidation(onValidated: () => void): void {
+		const values = this.getNormalizedFormValues();
+		const validation = this.searchService.formValuesAreValid(values);
+
+		if (!validation.isValid) {
+			return;
+		}
+
+		if (!validation.warningKey) {
+			onValidated();
+
+			return;
+		}
+
+		const dialogRef = this.dialog.open(CreationWarningModalComponent, {
+			width: '420px',
+			data: { warningKey: validation.warningKey },
+		});
+
+		dialogRef.afterClosed().subscribe((confirmed: boolean) => {
+			if (confirmed) {
+				onValidated();
+			}
+		});
 	}
 }

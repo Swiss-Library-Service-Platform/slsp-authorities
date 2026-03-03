@@ -1,0 +1,8 @@
+<h1 mat-dialog-title>{{ 'creationWarningModal.title' | translate }}</h1>
+<div mat-dialog-content>
+	<p>{{ data.warningKey | translate }}</p>
+</div>
+<div mat-dialog-actions>
+	<button mat-button (click)="onCancel()">{{ 'creationWarningModal.cancel' | translate }}</button>
+	<button mat-button cdkFocusInitial (click)="onConfirm()">{{ 'creationWarningModal.confirm' | translate }}</button>
+</div>

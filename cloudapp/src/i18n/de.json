@@ -47,7 +47,12 @@
 			"tagPlaceholder": "Tag",
 			"subfieldsPlaceholder": "Unterfelder",
 			"error": {
-				"emptyTag": "Tag ist erforderlich."
+				"emptyTag": "Tag ist erforderlich.",
+				"no$$0In6xx": "Dieses Feld hat keine IdRef-Kennung. Möchten Sie es wirklich hinzufügen?",
+				"no$$2With$$0In6xx": "Unterfeld $$2 idref fehlt. Bitte korrigieren Sie es, bevor Sie das Feld einfügen."
+			},
+			"warning": {
+				"missingIdrefIdentifier": "Dieses Feld hat keine IdRef-Kennung. Möchten Sie es wirklich hinzufügen?"
 			}
 		},
 		"to902": {
@@ -96,6 +101,11 @@
 		"content": "Möchten Sie diesen Datensatz wirklich löschen?",
 		"no": "Abbrechen",
 		"ok": "Löschen"
+	},
+	"creationWarningModal": {
+		"title": "Hinzufügen bestätigen",
+		"cancel": "Abbrechen",
+		"confirm": "Bestätigen"
 	},
 	"proxyService": {
 		"deleteSuccess": "Erfolgreich gelöscht"

@@ -3,10 +3,10 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
 import { BibRecordField } from '../../../models/bib-record.model';
-import { NZQueryService } from '../../../services/nzquery.service';
 import { LoadingIndicatorService } from '../../../services/loading-indicator.service';
 import { EMPTY, catchError, finalize, switchMap } from 'rxjs';
 import { SearchService } from '../search/search.service';
+import { NZQueryService } from '../../../services/nzquery.service';
 
 
 @Component({

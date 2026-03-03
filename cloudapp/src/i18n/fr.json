@@ -48,7 +48,12 @@
 			"tagPlaceholder": "tag",
 			"subfieldsPlaceholder": "sous-champ",
 			"error": {
-				"emptyTag": "Le tag est requis."
+				"emptyTag": "Impossible d'ajouter un champ sans étiquette, merci de corriger pour l'ajouter.",
+				"no$$0In6xx": "Ce champ n'a pas d'identifiant IdRef, voulez-vous vraiment l'ajouter ?",
+				"no$$2With$$0In6xx": "Le sous-champ $$2 idref est manquant, merci de corriger avant d'insérer le champ"
+			},
+			"warning": {
+				"missingIdrefIdentifier": "Ce champ n'a pas d'identifiant IdRef, voulez-vous vraiment l'ajouter ?"
 			}
 		},
 		"to902": {
@@ -100,6 +105,11 @@
 		"content": "Êtes-vous sûr de vouloir supprimer cette notice ?",
 		"no": "Annuler",
 		"ok": "Supprimer"
+	},
+	"creationWarningModal": {
+		"title": "Confirmer l'ajout",
+		"cancel": "Annuler",
+		"confirm": "Confirmer"
 	},
 	"proxyService": {
 		"deleteSuccess": "Suppression réussie"

@@ -8,7 +8,6 @@
    ],
    "contentSecurity": {
       "connectSrc": [
-         "https://catalog.hathitrust.org/",
          "https://www.idref.fr/",
          "https://proxy02.swisscovery.network/"
       ],

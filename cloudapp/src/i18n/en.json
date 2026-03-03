@@ -50,7 +50,12 @@
 			"tagPlaceholder": "tag",
 			"subfieldsPlaceholder": "subfields",
 			"error": {
-				"emptyTag": "Tag is required."
+				"emptyTag": "Tag is required.",
+				"no$$0In6xx": "This field has no IdRef identifier. Do you really want to add it?",
+				"no$$2With$$0In6xx": "Subfield $$2 idref is missing. Please correct it before inserting the field."
+			},
+			"warning": {
+				"missingIdrefIdentifier": "This field has no IdRef identifier. Do you really want to add it?"
 			}
 
 		},
@@ -104,6 +109,11 @@
 		"content": "Are you sure you want to delete this record?",
 		"no": "Cancel",
 		"ok": "Delete"
+	},
+	"creationWarningModal": {
+		"title": "Confirm add",
+		"cancel": "Cancel",
+		"confirm": "Confirm"
 	},
 	"proxyService": {
 		"deleteSuccess": "Delete with sucess"
