@@ -91,7 +91,7 @@ export class SearchService {
     
     const formatedValues = this.buildDataField(formValues);
 
-    if(!this.formValuesAreValid(formValues).warningKey) {
+    if(!this.formValuesAreValid(formValues).isValid) {
       this.loader.hide();
 
       return;
@@ -139,8 +139,10 @@ export class SearchService {
       return;
     }
 
-    if(!this.formValuesAreValid(formValues).warningKey) {
+    if(!this.formValuesAreValid(formValues).isValid) {
       this.loader.hide();
+
+      console.warn('Form values are not valid, update cancelled.', formValues);
 
       return;
     }
@@ -196,7 +198,7 @@ export class SearchService {
       return;
     }
 
-    if(!this.formValuesAreValid(formValues).warningKey) {
+    if(!this.formValuesAreValid(formValues).isValid) {
       this.loader.hide();
 
       return;
