@@ -89,6 +89,7 @@ export class IdrefRecordComponent {
 		// Synchronise le formulaire vers les signaux du service.
 		this.searchForm.get('searchIndex')?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((value) => {
 			this.idrefRecordService.formSearchIndex.set(value);
+			this.onSearch();
 		});
 
 		this.searchForm.get('constructedQuery')?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((value) => {
@@ -109,6 +110,7 @@ export class IdrefRecordComponent {
 		}
 
 		this.idrefRecordService.formIsStrictSearch.set(input.checked);
+		this.onSearch();
 	}
 
 	public pushTobiblioRecordForm(doc: Doc): void {
