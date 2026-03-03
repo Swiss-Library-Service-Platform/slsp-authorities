@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 import { Injectable, inject, signal } from '@angular/core';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
-import { catchError, EMPTY, finalize } from 'rxjs';
+import { catchError, EMPTY, finalize, Observable } from 'rxjs';
 import { IdrefService } from '../../../services/idref.service';
 import { FormValues, SearchMode, SearchMode902 } from './model';
 import { BibRecordField, DataField } from '../../../models/bib-record.model';
@@ -15,8 +15,6 @@ import { StringUtils } from '../../../utils/stringUtils';
   providedIn: 'root'
 })
 export class SearchService {
-
-
   public searchMode = signal<SearchMode>(SearchMode.AddField);
   public searchMode902 = signal<SearchMode902>(SearchMode902.Add902);
 
@@ -41,8 +39,9 @@ export class SearchService {
     const result: { code: string; value: string }[] = [];
     let currentCode: string | null = null;
     let currentValueParts: string[] = [];
+    const tokens = flattened.trim().split(/\s+/).filter(Boolean);
 
-    for (const item of flattened.split(' ')) {
+    for (const item of tokens) {
       if (item.startsWith('$$')) {
         if (currentCode) {
           result.push({
@@ -87,38 +86,27 @@ export class SearchService {
    * Crée un champ uniquement s'il n'existe pas.
    */
   public createFieldIfNotFound(formValues: FormValues, onSuccess?: () => void): void {
-    this.loader.show();
-    
-    const formatedValues = this.buildDataField(formValues);
+    const validation = this.formValuesAreValid(formValues);
 
-    if(!this.formValuesAreValid(formValues).isValid) {
-      this.loader.hide();
-
+    if (!validation.isValid) {
       return;
     }
 
+    this.showValidationWarning(validation.warningKey);
+
+    const formattedValues = this.buildDataField(formValues);
+
+    this.loader.show();
+
     this.nzQueryService
-      .createFieldIfNotExists(formatedValues)
+      .createFieldIfNotExists(formattedValues)
       .pipe(
         finalize(() => this.loader.hide()),
-        catchError((_err) => {
-          this.alert.warn(this.translate.instant('search.acceptRefreshModal'), {
-            delay: 1000,
-          });
-
-          return EMPTY;
-        })
+        catchError(() => this.handleRefreshWarning())
       )
       .subscribe({
         next: () => {
-          this.highlightedUpdatedField.set(formatedValues);
-          this.reset();
-          onSuccess?.();
-          this.nzQueryService
-            .refreshSelectedEntityDetails$()
-            .pipe(catchError(() => EMPTY))
-            .subscribe();
-          this.alert.success(this.translate.instant('search.recordAdded'), { delay: 1000 });
+          this.handleMutationSuccess(formattedValues, onSuccess);
         },
       });
   }
@@ -127,57 +115,41 @@ export class SearchService {
    * Met à jour un champ uniquement s'il existe.
    */
   public updateFieldIfFound(formValues: FormValues, onSuccess?: () => void): void {
-
-    this.loader.show();
-
     const reference = this.referenceCurrentField.getSavedCurrentEntry();
 
     if (!reference) {
       this.alert.error(this.translate.instant('search.noSelectedEntry'), { delay: 1000, autoClose: true });
-      this.loader.hide();
 
       return;
     }
 
-    if(!this.formValuesAreValid(formValues).isValid) {
-      this.loader.hide();
+    const validation = this.formValuesAreValid(formValues);
 
-      console.warn('Form values are not valid, update cancelled.', formValues);
-
+    if (!validation.isValid) {
       return;
     }
 
-    if (reference && !this.isUpdateAllowed(reference)) {
+    this.showValidationWarning(validation.warningKey);
+
+    if (!this.isUpdateAllowed(reference)) {
       this.alert.warn(this.translate.instant('search.updateNotAllowed'), { delay: 1000, autoClose: true });
-      this.loader.hide();
-      
+
       return;
     }
 
-    const formatedValues = this.buildDataField(formValues);
+    const formattedValues = this.buildDataField(formValues);
+
+    this.loader.show();
 
     this.nzQueryService
-      .updateFieldIfExists(reference, formatedValues)
+      .updateFieldIfExists(reference, formattedValues)
       .pipe(
         finalize(() => this.loader.hide()),
-        catchError((_err) => {
-          this.alert.warn(this.translate.instant('search.acceptRefreshModal'), {
-            delay: 1000,
-          });
-
-          return EMPTY;
-        })
+        catchError(() => this.handleRefreshWarning())
       )
       .subscribe({
         next: () => {
-          this.highlightedUpdatedField.set(formatedValues);
-          this.reset();
-          onSuccess?.();
-          this.nzQueryService
-            .refreshSelectedEntityDetails$()
-            .pipe(catchError(() => EMPTY))
-            .subscribe();
-          this.alert.success(this.translate.instant('search.recordAdded'), { delay: 1000 });
+          this.handleMutationSuccess(formattedValues, onSuccess);
         },
       });
   }
@@ -187,70 +159,52 @@ export class SearchService {
    * Tente d'abord une mise à jour ; si le champ n'existe pas, le crée.
    */
   public addRecord(formValues: FormValues, onSuccess?: () => void): void {
-    this.loader.show();
-
     const reference = this.referenceCurrentField.getSavedCurrentEntry();
 
     if (!reference) {
       this.alert.error(this.translate.instant('search.noSelectedEntry'), { delay: 1000, autoClose: true });
-      this.loader.hide();
 
       return;
     }
 
-    if(!this.formValuesAreValid(formValues).isValid) {
-      this.loader.hide();
+    const validation = this.formValuesAreValid(formValues);
 
+    if (!validation.isValid) {
       return;
     }
 
-    const formatedValues = this.buildDataField(formValues);
+    this.showValidationWarning(validation.warningKey);
 
-    // Premièrement, tenter de mettre à jour si le champ existe.
-    // Si le champ n'est pas trouvé, on tente de le créer.
+    const formattedValues = this.buildDataField(formValues);
+
+    this.loader.show();
+
     this.nzQueryService
-      .updateFieldIfExists(reference, formatedValues)
+      .updateFieldIfExists(reference, formattedValues)
       .pipe(
-        finalize(() => this.loader.hide()),
         catchError((err) => {
           if (err?.message === 'FIELD_NOT_FOUND') {
-            // Champ non trouvé -> créer
-            return this.nzQueryService.createFieldIfNotExists( formatedValues).pipe(
-              catchError((_err2) => {
-                this.alert.warn(this.translate.instant('search.acceptRefreshModal'), { delay: 1000 });
-
-                return EMPTY;
-              }),
+            return this.nzQueryService.createFieldIfNotExists(formattedValues).pipe(
+              catchError(() => this.handleRefreshWarning()),
             );
           }
 
-          this.alert.warn(this.translate.instant('search.acceptRefreshModal'), {
-            delay: 1000,
-          });
-
-          return EMPTY;
-        })
+          return this.handleRefreshWarning();
+        }),
+        finalize(() => this.loader.hide()),
       )
       .subscribe({
         next: () => {
-          this.highlightedUpdatedField.set(formatedValues);
-          this.reset();
-          onSuccess?.();
-          this.nzQueryService
-            .refreshSelectedEntityDetails$()
-            .pipe(catchError(() => EMPTY))
-            .subscribe();
-          this.alert.success(this.translate.instant('search.recordAdded'), { delay: 1000 });
+          this.handleMutationSuccess(formattedValues, onSuccess);
         },
       });
   }
 
   public formValuesAreValid(formValues: FormValues): { isValid: boolean; warningKey?: string } {
     const tag = formValues.tag?.trim() ?? '';
-    const normalizedSubfields = formValues.subfields.includes('$$') ? formValues.subfields: `$$a ${formValues.subfields}`;
+    const normalizedSubfields = formValues.subfields.includes('$$') ? formValues.subfields : `$$a ${formValues.subfields}`;
 
-    // No tag is available
-    if (!this.isTagValide(tag)) {
+    if (!this.isTagValid(tag)) {
       return { isValid: false };
     }
 
@@ -258,18 +212,18 @@ export class SearchService {
     const hasAnySubfield0 = this.hasAnySubfield0(normalizedSubfields);
     const hasIdrefInSubfield0 = this.hasIdrefInSubfield0(normalizedSubfields);
 
-    if(!hasAnySubfield0){
+    if (!hasAnySubfield0) {
       return {
         isValid: true,
         warningKey: 'search.form.warning.missingIdrefIdentifier',
       };
     }
 
-    if(tag.match(/^6/) && !hasIdrefInSubfield2){
+    if (tag.match(/^6/) && !hasIdrefInSubfield2) {
       if (hasIdrefInSubfield0) {
         this.alert.error(this.translate.instant('search.form.error.no$$2With$$0In6xx'), {
-            delay: 3000,
-          });
+          delay: 3000,
+        });
 
         return { isValid: false };
       }
@@ -283,12 +237,11 @@ export class SearchService {
     return { isValid: true };
   }
 
-  private isTagValide(tag: string): boolean {
-
-    if(tag && tag.trim() !== '') {
+  private isTagValid(tag: string): boolean {
+    if (tag && tag.trim() !== '') {
       return true;
-    }else {
-      this.alert.error(this.translate.instant('search.form.error.emptyTag'), {delay: 3000,});
+    } else {
+      this.alert.error(this.translate.instant('search.form.error.emptyTag'), { delay: 3000 });
 
       return false;
     }
@@ -299,11 +252,11 @@ export class SearchService {
   }
 
   private hasIdrefInSubfield2(subfields: string): boolean {
-    return subfields.includes('$$2 idref');
+    return /\$\$2\s+idref\b/i.test(subfields);
   }
 
   private hasIdrefInSubfield0(subfields: string): boolean {
-    return subfields.includes('$$0 (IDREF)');
+    return /\$\$0\s+\(IDREF\)/i.test(subfields);
   }
 
   /**
@@ -338,7 +291,7 @@ export class SearchService {
    */
   public reset(): void {
     this.isTo902FormVisible.set(false);
-    this.searchMode902.set(SearchMode902.Add902); 
+    this.searchMode902.set(SearchMode902.Add902);
     this.searchMode.set(SearchMode.AddField);
     this.idrefService.reset();
   }
@@ -360,8 +313,36 @@ export class SearchService {
     this.formResetNonce.update((value) => value + 1);
   }
 
+  private showValidationWarning(warningKey?: string): void {
+    if (!warningKey) {
+      return;
+    }
+  }
+
+  private handleRefreshWarning(): Observable<never> {
+    this.alert.warn(this.translate.instant('search.acceptRefreshModal'), {
+      delay: 1000,
+    });
+
+    return EMPTY;
+  }
+
+  private handleMutationSuccess(formattedValues: DataField, onSuccess?: () => void): void {
+    this.highlightedUpdatedField.set(formattedValues);
+    this.reset();
+    onSuccess?.();
+    this.refreshSelectedEntityDetails();
+    this.alert.success(this.translate.instant('search.recordAdded'), { delay: 1000 });
+  }
+
+  private refreshSelectedEntityDetails(): void {
+    this.nzQueryService
+      .refreshSelectedEntityDetails$()
+      .pipe(catchError(() => EMPTY))
+      .subscribe();
+  }
+
   private isUpdateAllowed(bibRecordField: BibRecordField): boolean {
-    // Extract subfield code '0' and get values between parentheses
     const subfieldZeroValues = bibRecordField.subfields
       .filter((subfield) => subfield.code === '0')
       .map((subfield) => {
