@@ -24,8 +24,6 @@ export class SearchService {
   private alert = inject(AlertService);
   private referenceCurrentField = inject(BiblioReferencedEntryService);
   private loader = inject(LoadingIndicatorService);
-
-  public nzSelectedEntry = this.idrefService.nzSelectedEntry;
   public flattenedValue = this.idrefService.flattenedValue;
   public isTo902FormVisible = signal(false);
   public formResetNonce = signal(0);
@@ -73,7 +71,7 @@ export class SearchService {
       subfields = '$$a ' + subfields;
     }
 
-    this.nzSelectedEntry.set({
+    this.idrefService.nzSelectedEntry.set({
       change: '',
       tag: values.tag,
       ind1: values.ind1,
@@ -277,7 +275,7 @@ export class SearchService {
   public clear(resetFormCallback?: () => void): void {
     this.isTo902FormVisible.set(false);
     this.searchMode.set(SearchMode.AddField);
-    this.nzSelectedEntry.set(undefined);
+    this.idrefService.nzSelectedEntry.set(undefined);
     this.highlightedUpdatedField.set(null);
 
     if (resetFormCallback) {
