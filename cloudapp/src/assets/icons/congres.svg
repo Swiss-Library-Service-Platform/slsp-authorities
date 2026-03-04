@@ -1,19 +1,44 @@
-<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="100" cy="100" r="90" fill="black" />
-  
-  <g fill="white">
-    
-    <rect x="65" y="77" width="70" height="9" />
-    
-    <path d="M70 89 L130 89 L129 97 L71 97 Z" />
-    
-    <path d="M78 97 L122 97 L120 139 L80 139 Z" />
-    
-    <rect x="67" y="139" width="66" height="7" />
-    
-    <path d="M92 77 v-10 l15.5-9" fill="none" stroke="white" stroke-width="4.5" stroke-linecap="square"/>
-    
-    <circle cx="112" cy="54" r="7" />
-    
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 100 100" role="img" aria-label="Icône congrès : présentation avec public centré et espacé">
+  <!-- Fond rond noir -->
+  <circle cx="50" cy="50" r="48" fill="#000000"/>
+
+  <!-- Écran -->
+  <rect x="38" y="24" width="50" height="32" rx="2.5" fill="#FFFFFF"/>
+
+  <!-- Présentateur (tête + épaules) -->
+  <circle cx="26" cy="43" r="8" fill="#FFFFFF"/>
+  <path d="M15 56
+           C15 52, 19 49, 26 49
+           C33 49, 37 52, 37 56
+           L37 61
+           L15 61
+           Z" fill="#FFFFFF"/>
+
+  <!-- Public : trois silhouettes centrées et davantage espacées (x = 34, 50, 66) -->
+  <!-- Silhouette gauche -->
+  <circle cx="34" cy="74" r="5" fill="#FFFFFF"/>
+  <path d="M28 82
+           C28 79, 30 77, 34 77
+           C38 77, 40 79, 40 82
+           L40 85
+           L28 85
+           Z" fill="#FFFFFF"/>
+
+  <!-- Silhouette centre -->
+  <circle cx="50" cy="74" r="5" fill="#FFFFFF"/>
+  <path d="M44 82
+           C44 79, 46 77, 50 77
+           C54 77, 56 79, 56 82
+           L56 85
+           L44 85
+           Z" fill="#FFFFFF"/>
+
+  <!-- Silhouette droite -->
+  <circle cx="66" cy="74" r="5" fill="#FFFFFF"/>
+  <path d="M60 82
+           C60 79, 62 77, 66 77
+           C70 77, 72 79, 72 82
+           L72 85
+           L60 85
+           Z" fill="#FFFFFF"/>
 </svg>
