@@ -93,6 +93,7 @@
 	"idrefEntryDetails": {
 		"title": "Details des Idref-Eintrags",
 		"NoCurrentDetails": "Suchen Sie, um Details anzuzeigen",
+		"hideDetails": "Details ausblenden",
 		"showRawXml": "Rohes XML anzeigen",
 		"hideRawXml": "Rohes XML ausblenden"
 	},

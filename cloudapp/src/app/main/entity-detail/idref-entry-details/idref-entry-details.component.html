@@ -1,6 +1,9 @@
 <div class="idref-details-header">
   <h2>{{ 'idrefEntryDetails.title' | translate }}</h2>
   @if (rows().length > 0) {
+    <button color="primary" (click)="hideDetails()">
+      {{ 'idrefEntryDetails.hideDetails' | translate }}
+    </button>
     <button color="primary" (click)="toggleRawXml()">
       {{ (showRawXml() ? 'idrefEntryDetails.hideRawXml' : 'idrefEntryDetails.showRawXml') | translate }}
     </button>

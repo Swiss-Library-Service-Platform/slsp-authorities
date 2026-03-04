@@ -5,13 +5,17 @@
       <app-biblio-record></app-biblio-record>
     </div>
 
-    <div class="records-column">
-      <app-idref-record></app-idref-record>
-    </div>
+    @if (showIdrefRecord()) {
+      <div class="records-column">
+        <app-idref-record></app-idref-record>
+      </div>
+    }
 
-	<div class="records-column">
+    @if (showIdrefEntryDetails()) {
+    <div class="records-column">
       <app-idref-entry-details/>
     </div>
+    }
 
 
     <!-- tu peux en ajouter d'autres si besoin -->

@@ -7,6 +7,7 @@ import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
 import { catchError, EMPTY } from 'rxjs';
 import { SearchResultService } from '../../../services/search-result.service';
+import { AuthorityDetailsService } from '../idref-entry-details/authority-details.service';
 
 @Injectable({
 	providedIn: 'root',
@@ -14,6 +15,7 @@ import { SearchResultService } from '../../../services/search-result.service';
 export class IdrefRecordService {
 	private searchResultService = inject(SearchResultService);
 	private idrefService = inject(IdrefService);
+	private authorityDetailsService = inject(AuthorityDetailsService);
 	private alert = inject(AlertService);
 	private translate = inject(TranslateService);
 
@@ -70,6 +72,7 @@ export class IdrefRecordService {
 
 	public searchFromFormValues(searchIndex: string, constructedQuery: string): void {
 		this.setFormValues(searchIndex, constructedQuery);
+		this.authorityDetailsService.reset();
 
 		const query = this.buildQueryFromFormValues(searchIndex, constructedQuery);
 

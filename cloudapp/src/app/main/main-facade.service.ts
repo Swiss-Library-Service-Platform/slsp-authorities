@@ -11,6 +11,7 @@ import { RecordService } from '../services/record.service';
 import { IdrefRecordService } from './entity-detail/idref-record/idref-record.service';
 import { BibRecordFieldModifierService } from './biblio-record/search/bib-record-field-modifier.service';
 
+
 @Injectable({
 	providedIn: 'root',
 })

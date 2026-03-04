@@ -101,6 +101,7 @@
 	"idrefEntryDetails": {
 		"title": "Details of Idref entry",
 		"NoCurrentDetails": "Search to view details",
+		"hideDetails": "Hide details",
 		"showRawXml": "Show raw XML",
 		"hideRawXml": "Hide raw XML"
 	},

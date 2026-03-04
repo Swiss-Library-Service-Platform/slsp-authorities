@@ -97,6 +97,7 @@
 	"idrefEntryDetails": {
 		"title": "Détails de l'entrée IdRef",
 		"NoCurrentDetails": "Effectuez une recherche pour afficher les détails",
+		"hideDetails": "Masquer les détails",
 		"showRawXml": "Afficher le XML brut",
 		"hideRawXml": "Masquer le XML brut"
 	},

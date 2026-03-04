@@ -2,15 +2,12 @@
 import { AfterViewInit, Component, DestroyRef, ElementRef, ViewChild, effect, inject, input } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { distinctUntilChanged, catchError, EMPTY } from 'rxjs';
+import { distinctUntilChanged } from 'rxjs';
 import { NzBibRecord } from '../../../../models/bib-record.model';
 import { IdrefService } from '../../../../services/idref.service';
 import { IdrefRecordService } from '../../../entity-detail/idref-record/idref-record.service';
-import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
-import { TranslateService } from '@ngx-translate/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CreationWarningModalComponent } from '../../creation-warning-modal/creation-warning-modal.component';
-import { AuthorityDetailsService } from '../../../entity-detail/idref-entry-details/authority-details.service';
 import { BibRecordFieldModifierService } from '../bib-record-field-modifier.service';
 
 @Component({
@@ -28,14 +25,11 @@ export class MainFormComponent implements AfterViewInit {
 	@ViewChild('subfieldsTextarea') private subfieldsTextarea?: ElementRef<HTMLTextAreaElement>;
 
 
-	private authorityDetailsService = inject(AuthorityDetailsService);
 	private idrefService = inject(IdrefService);
 	private bibRecordFieldModifierService = inject(BibRecordFieldModifierService);
 	private idrefRecordService = inject(IdrefRecordService);
 	private fb = inject(FormBuilder);
 	private destroyRef = inject(DestroyRef);
-	private alert = inject(AlertService);
-	private translate = inject(TranslateService);
 	private dialog = inject(MatDialog);
 
 	public readonly searchMode = this.bibRecordFieldModifierService.searchMode;
@@ -149,27 +143,7 @@ export class MainFormComponent implements AfterViewInit {
 		};
 
 		this.bibRecordFieldModifierService.setSelectedFieldFromBibRecord(values);
-
-		const subfields = values.subfields;
-		const regex = /\$\$0 \(IDREF\)(\d+)/;
-		const match = subfields.match(regex);
-
-		if (match) {
-			const ppn = match[1];
-
-			this.authorityDetailsService
-				.loadAuthorityDetail$(ppn)
-				.pipe(
-					catchError(() => {
-						this.alert.error(this.translate.instant('error.eventServiceError'), { autoClose: false });
-
-						return EMPTY;
-					})
-				)
-				.subscribe();
-		} else {
-			this.idrefRecordService.searchFromCurrentEntryContext();
-		}
+		this.idrefRecordService.searchFromCurrentEntryContext();
 	}
 
 	public addRecord(): void {

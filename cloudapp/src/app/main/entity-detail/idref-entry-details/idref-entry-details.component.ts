@@ -92,6 +92,10 @@ export class IdrefEntryDetailsComponent {
     this.showRawXml.update((value) => !value);
   }
 
+  public hideDetails(): void {
+    this.authorityDetailsService.reset();
+  }
+
   private getFirstNodeTextByLocalName(doc: Document, localName: string): string {
     const node = Array.from(doc.getElementsByTagName('*')).find(
       (element) => element.localName === localName
