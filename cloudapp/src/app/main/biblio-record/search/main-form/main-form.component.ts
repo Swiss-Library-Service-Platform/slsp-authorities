@@ -148,7 +148,7 @@ export class MainFormComponent implements AfterViewInit {
 			subfields: string;
 		};
 
-		this.searchService.setNzSelectedEntry(values);
+		this.searchService.setSelectedFieldFromBibRecord(values);
 
 		const subfields = values.subfields;
 		const regex = /\$\$0 \(IDREF\)(\d+)/;

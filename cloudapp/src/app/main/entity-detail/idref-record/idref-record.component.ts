@@ -1,11 +1,9 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 import { Component, computed, DestroyRef, inject, Signal, ViewChild, signal, effect } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-
 import { MatPaginator } from '@angular/material/paginator';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Doc, IDREF_FILTER_MAP, IDREF_RECORDTYPE_TO_ICON_MAP } from '../../../models/idref.model';
-import { IdrefService } from '../../../services/idref.service';
 import { IdrefRecordService } from './idref-record.service';
 import { AlertService, CloudAppSettingsService } from '@exlibris/exl-cloudapp-angular-lib';
 import { Settings } from '../../../models/settings.model';
@@ -13,6 +11,7 @@ import { IconService } from '../../../services/icon.service';
 import { debounceTime, distinctUntilChanged, catchError, EMPTY } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthorityDetailsService } from '../idref-entry-details/authority-details.service';
+import { SearchResultService } from '../../../services/search-result.service';
 
 @Component({
 	selector: 'app-idref-record',
@@ -24,7 +23,7 @@ export class IdrefRecordComponent {
 	public searchIndexes = IDREF_FILTER_MAP;
 
 	private authorityDetailsService = inject(AuthorityDetailsService);
-	private idrefService = inject(IdrefService);
+	private searchResultService = inject(SearchResultService);
 	private idrefRecordService = inject(IdrefRecordService);
 	private settingsService = inject(CloudAppSettingsService);
 	private fb = inject(FormBuilder);
@@ -32,7 +31,7 @@ export class IdrefRecordComponent {
 	private alert = inject(AlertService);
 	private translate = inject(TranslateService);
 
-	public idrefResult = this.idrefService.idrefResult;
+	public idrefResult = this.searchResultService.idrefResult;
 	public iconMap = IDREF_RECORDTYPE_TO_ICON_MAP;
 
 	// Pagination.

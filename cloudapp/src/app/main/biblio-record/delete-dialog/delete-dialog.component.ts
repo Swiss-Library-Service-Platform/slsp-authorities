@@ -26,7 +26,7 @@ export class DeleteDialogComponent {
   private loader = inject(LoadingIndicatorService);
   
   // eslint-disable-next-line @angular-eslint/prefer-inject
-  public constructor(@Inject(MAT_DIALOG_DATA) public data: {entry: BibRecordField}) {}
+  public constructor(@Inject(MAT_DIALOG_DATA) public data: {bibRecordField: BibRecordField}) {}
 
   public onNoClick(): void {
     if (this.isDeleting) {
@@ -46,7 +46,7 @@ export class DeleteDialogComponent {
     this.dialogRef.close();
     this.loader.show();
     this.nzQueryService
-      .deleteBibRecord(this.data.entry)
+      .deleteBibRecord(this.data.bibRecordField)
       .pipe(
         switchMap(() => this.nzQueryService.refreshSelectedEntityDetails$()),
         catchError(() => {

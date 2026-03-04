@@ -11,6 +11,7 @@ import { LoadingIndicatorService } from '../../../services/loading-indicator.ser
 import { TranslateService } from '@ngx-translate/core';
 import { StringUtils } from '../../../utils/stringUtils';
 import { AuthorityDetailsService } from '../../entity-detail/idref-entry-details/authority-details.service';
+import { SearchResultService } from '../../../services/search-result.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +20,7 @@ export class SearchService {
   public searchMode = signal<SearchMode>(SearchMode.AddField);
   public searchMode902 = signal<SearchMode902>(SearchMode902.Add902);
 
-
+  private searchResultService = inject(SearchResultService);
   private authorityDetailsService = inject(AuthorityDetailsService);
   private idrefService = inject(IdrefService);
   private nzQueryService = inject(NZQueryService);
@@ -67,7 +68,7 @@ export class SearchService {
   /**
   * Set the selected NZ entry in the idref service
    */
-  public setNzSelectedEntry(values: FormValues): void {
+  public setSelectedFieldFromBibRecord(values: FormValues): void {
     let subfields = values.subfields;
 
     if (!subfields.includes('$$')) {
@@ -295,6 +296,7 @@ export class SearchService {
     this.searchMode902.set(SearchMode902.Add902);
     this.searchMode.set(SearchMode.AddField);
     this.idrefService.reset();
+    this.searchResultService.reset();
     this.authorityDetailsService.reset();
   }
 

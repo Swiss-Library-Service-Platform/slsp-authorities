@@ -1,16 +1,8 @@
-import { computed, inject, Injectable, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import {  Observable, take, tap } from 'rxjs';
-import { environment } from '../../environments/environment';
-import { IdrefRecords, MARC_STRUCTURE, MarcStructureValues } from '../models/idref.model';
+import { computed, Injectable, signal } from '@angular/core';
+import { MARC_STRUCTURE, MarcStructureValues } from '../models/idref.model';
 import { BibRecordField } from '../models/bib-record.model';
-import { CloudAppSettingsService } from '@exlibris/exl-cloudapp-angular-lib';
-import { Settings } from '../models/settings.model';
-
 @Injectable({ providedIn: 'root' })
 export class IdrefService {
-	// Résultat de la recherche IdRef.
-	public idrefResult = signal<IdrefRecords | undefined>(undefined);
 	public selectedFieldFromBibRecord = signal<BibRecordField | undefined>(undefined);
 
 	// Concaténation des sous-champs en une chaîne unique.
@@ -19,41 +11,6 @@ export class IdrefService {
 			?.subfields.map((v) => `$$${v.code} ${v.value}`)
 			.join(' ')
 	);
-
-	private http = inject(HttpClient);
-	private settingsService = inject(CloudAppSettingsService);
-	private solr = '/Sru/Solr';
-	private searchRowNumber = 10;
-
-	public constructor() {
-		this.settingsService.get().pipe(take(1)).subscribe((settings) => {
-			this.searchRowNumber = (settings as Settings).searchRowNumber;
-		});
-	}
-
-	// Lance une recherche générique dans IdRef.
-	public searchAuthorities(query: string): Observable<IdrefRecords> {
-		const params = {
-			q: query,
-			wt: 'json',
-			sort: 'score desc',
-			version: '2.2',
-			start: '0',
-			rows: `${this.searchRowNumber}`,
-			indent: 'on',
-			fl: 'ppn_z,recordtype_z,affcourt_z',
-		};
-
-		return this.http.get<IdrefRecords>(environment.idrefUrl + this.solr, {
-			params,
-		});
-	}
-
-	public searchFromQuery$(query: string): Observable<IdrefRecords> {
-		return this.searchAuthorities(query).pipe(
-			tap((r) => this.idrefResult.set(r))
-		);
-	}
 
 	// Retourne la structure MARC liée à l'entrée sélectionnée.
 	public getMarcStructure(): MarcStructureValues | undefined {
@@ -82,7 +39,6 @@ export class IdrefService {
 	}
 
 	public reset(): void {
-		this.idrefResult.set(undefined);
 		this.selectedFieldFromBibRecord.set(undefined);
 	}
 }

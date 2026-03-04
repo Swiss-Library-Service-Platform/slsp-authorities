@@ -6,11 +6,13 @@ import { BibRecordField } from '../../../models/bib-record.model';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
 import { catchError, EMPTY } from 'rxjs';
+import { SearchResultService } from '../../../services/search-result.service';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class IdrefRecordService {
+	private searchResultService = inject(SearchResultService);
 	private idrefService = inject(IdrefService);
 	private alert = inject(AlertService);
 	private translate = inject(TranslateService);
@@ -71,7 +73,7 @@ export class IdrefRecordService {
 
 		const query = this.buildQueryFromFormValues(searchIndex, constructedQuery);
 
-		this.idrefService
+		this.searchResultService
 			.searchFromQuery$(query)
 			.pipe(
 				catchError(() => {

@@ -4,16 +4,16 @@
   <div class="marc">
   <div class="marc-row">
 		<div class="marc-column">
-			<span class="tag">{{ data.entry.tag }}</span>
+			<span class="tag">{{ data.bibRecordField.tag }}</span>
 		</div>
 		<div class="marc-column">
-			<span class="ind">{{ data.entry.ind1 }}</span>
+			<span class="ind">{{ data.bibRecordField.ind1 }}</span>
 		</div>
 		<div class="marc-column">
-			<span class="ind">{{ data.entry.ind2 }}</span>
+			<span class="ind">{{ data.bibRecordField.ind2 }}</span>
 		</div>
 		<div class="marc-column">
-			@for (valueEntry of data.entry.subfields; track $index) {
+			@for (valueEntry of data.bibRecordField.subfields; track $index) {
 			<div class="marc-column-value">
 				@if (valueEntry.code && valueEntry.code !== '') {
 				<span class="subfield">$${{ valueEntry.code }}</span>
