@@ -31,7 +31,6 @@ export class IdrefRecordComponent {
 	private translate = inject(TranslateService);
 
 	public idrefResult = this.idrefService.idrefResult;
-	public nzSelectedEntry = this.idrefService.nzSelectedEntry;
 	public iconMap = IDREF_RECORDTYPE_TO_ICON_MAP;
 
 	// Pagination.

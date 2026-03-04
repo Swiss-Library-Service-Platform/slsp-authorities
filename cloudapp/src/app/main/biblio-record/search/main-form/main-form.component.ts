@@ -37,7 +37,7 @@ export class MainFormComponent implements AfterViewInit {
 
 	public readonly searchMode = this.searchService.searchMode;
 	public readonly isTo902FormVisible = this.searchService.isTo902FormVisible;
-	public readonly nzSelectedEntry = this.searchService.nzSelectedEntry;
+	public readonly nzSelectedEntry = this.idrefService.nzSelectedEntry;
 	public readonly flattenedValue = this.searchService.flattenedValue;
 	public readonly formResetNonce = this.searchService.formResetNonce;
 

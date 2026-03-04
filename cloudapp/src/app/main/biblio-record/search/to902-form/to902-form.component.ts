@@ -8,6 +8,7 @@ import { FormValues } from '../model';
 import { AlertService, CloudAppEventsService, CloudAppSettingsService } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
 import { Settings } from '../../../../models/settings.model';
+import { IdrefService } from '../../../../services/idref.service';
 
 export enum to902$$aFields {
 	nouveau = 'IDREF-NOUV',
@@ -28,6 +29,7 @@ export class To902FormComponent {
 	public to902Purpose = Object.values(to902$$aFields);
 
 	private searchService = inject(SearchService);
+	private idrefService = inject(IdrefService);
 	private settingsService = inject(CloudAppSettingsService);
 	private eventService = inject(CloudAppEventsService);
 	private translate = inject(TranslateService);
@@ -37,7 +39,7 @@ export class To902FormComponent {
 
 	public readonly searchMode902 = this.searchService.searchMode902;
 	public readonly searchMode = this.searchService.searchMode;
-	public readonly nzSelectedEntry = this.searchService.nzSelectedEntry;
+	public readonly nzSelectedEntry = this.idrefService.nzSelectedEntry;
 	public userSignature = signal('');
 	public IZCode = signal('');
 

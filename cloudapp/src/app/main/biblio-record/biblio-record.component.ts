@@ -21,7 +21,7 @@ import { RecordService } from '../../services/record.service';
 	styleUrl: './biblio-record.component.scss',
 })
 export class BiblioRecordComponent {
-	public selectedBibRecordField: BibRecordField | null = null;
+	public lastSavedSelectedBibRecordField: BibRecordField | null = null;
 	public selectedEntityDetails = computed(() => this.recordService.selectedEntityDetails());
 	public dialog = inject(MatDialog);
 	private readonly idrefAllowedTags = new Set(MARC_STRUCTURE_KEY);
@@ -39,7 +39,7 @@ export class BiblioRecordComponent {
 	private allowedTags = signal(MARC_STRUCTURE_KEY);
 
 	// eslint-disable-next-line @typescript-eslint/member-ordering
-	public  BibRecordFields = computed(() => {
+	public  bibRecordFields = computed(() => {
 			const anie = this.selectedEntityDetails()?.anies[0];
 
 			if(typeof anie === 'string'){
@@ -69,7 +69,7 @@ export class BiblioRecordComponent {
 	}
 
 	public pushToInput(bibRecordField: BibRecordField): void {
-		this.selectedBibRecordField = bibRecordField;
+		this.lastSavedSelectedBibRecordField = bibRecordField; //sauvegarde pour l'affichage
 		this.idrefService.nzSelectedEntry.set({ ...bibRecordField });
 		this.searchService.closeTo902();
 		this.searchService.searchMode902.set(SearchMode902.Add902);
