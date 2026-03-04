@@ -12,6 +12,7 @@ import { Settings } from '../../../models/settings.model';
 import { IconService } from '../../../services/icon.service';
 import { debounceTime, distinctUntilChanged, catchError, EMPTY } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
+import { AuthorityDetailsService } from '../idref-entry-details/authority-details.service';
 
 @Component({
 	selector: 'app-idref-record',
@@ -22,6 +23,7 @@ export class IdrefRecordComponent {
 	public selectedDoc: Doc | null = null;
 	public searchIndexes = IDREF_FILTER_MAP;
 
+	private authorityDetailsService = inject(AuthorityDetailsService);
 	private idrefService = inject(IdrefService);
 	private idrefRecordService = inject(IdrefRecordService);
 	private settingsService = inject(CloudAppSettingsService);
@@ -124,7 +126,7 @@ export class IdrefRecordComponent {
 	}
 
 	public showDetails(ppn: string): void {
-		this.idrefService
+		this.authorityDetailsService
 			.loadAuthorityDetail$(ppn)
 			.pipe(
 				catchError(() => {

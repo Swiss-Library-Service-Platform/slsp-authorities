@@ -10,6 +10,7 @@ import { BiblioReferencedEntryService } from '../../../services/biblio-reference
 import { LoadingIndicatorService } from '../../../services/loading-indicator.service';
 import { TranslateService } from '@ngx-translate/core';
 import { StringUtils } from '../../../utils/stringUtils';
+import { AuthorityDetailsService } from '../../entity-detail/idref-entry-details/authority-details.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +19,8 @@ export class SearchService {
   public searchMode = signal<SearchMode>(SearchMode.AddField);
   public searchMode902 = signal<SearchMode902>(SearchMode902.Add902);
 
+
+  private authorityDetailsService = inject(AuthorityDetailsService);
   private idrefService = inject(IdrefService);
   private nzQueryService = inject(NZQueryService);
   private translate = inject(TranslateService);
@@ -292,6 +295,7 @@ export class SearchService {
     this.searchMode902.set(SearchMode902.Add902);
     this.searchMode.set(SearchMode.AddField);
     this.idrefService.reset();
+    this.authorityDetailsService.reset();
   }
 
   private buildDataField(formValues: FormValues): DataField {

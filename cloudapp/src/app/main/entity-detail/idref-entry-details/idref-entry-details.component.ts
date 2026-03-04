@@ -1,5 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { IdrefService } from '../../../services/idref.service';
+import { AuthorityDetailsService } from './authority-details.service';
 
 interface IdrefDetailSubfield {
 	code: string;
@@ -19,9 +19,9 @@ interface IdrefDetailRow {
   styleUrl: './idref-entry-details.component.scss'
 })
 export class IdrefEntryDetailsComponent {
-  private idrefService = inject(IdrefService);
+  private authorityDetailsService = inject(AuthorityDetailsService);
   // eslint-disable-next-line @typescript-eslint/member-ordering
-  public idrefAuthorityDetail = this.idrefService.idrefAuthorityDetail;
+  public idrefAuthorityDetail = this.authorityDetailsService.idrefAuthorityDetail;
   // eslint-disable-next-line @typescript-eslint/member-ordering
   public showRawXml = signal(false);
   // eslint-disable-next-line @typescript-eslint/member-ordering

@@ -11,6 +11,7 @@ import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CreationWarningModalComponent } from '../../creation-warning-modal/creation-warning-modal.component';
+import { AuthorityDetailsService } from '../../../entity-detail/idref-entry-details/authority-details.service';
 
 @Component({
 	selector: 'app-main-form',
@@ -26,6 +27,8 @@ export class MainFormComponent implements AfterViewInit {
 	private highlightFramePending = false;
 	@ViewChild('subfieldsTextarea') private subfieldsTextarea?: ElementRef<HTMLTextAreaElement>;
 
+
+	private authorityDetailsService = inject(AuthorityDetailsService);
 	private idrefService = inject(IdrefService);
 	private searchService = inject(SearchService);
 	private idrefRecordService = inject(IdrefRecordService);
@@ -154,7 +157,7 @@ export class MainFormComponent implements AfterViewInit {
 		if (match) {
 			const ppn = match[1];
 
-			this.idrefService
+			this.authorityDetailsService
 				.loadAuthorityDetail$(ppn)
 				.pipe(
 					catchError(() => {

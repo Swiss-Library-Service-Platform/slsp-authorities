@@ -1,6 +1,6 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map, Observable, take, tap } from 'rxjs';
+import {  Observable, take, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { IdrefRecords, MARC_STRUCTURE, MarcStructureValues } from '../models/idref.model';
 import { BibRecordField } from '../models/bib-record.model';
@@ -12,7 +12,6 @@ export class IdrefService {
 	// Résultat de la recherche IdRef.
 	public idrefResult = signal<IdrefRecords | undefined>(undefined);
 	public selectedFieldFromBibRecord = signal<BibRecordField | undefined>(undefined);
-	public idrefAuthorityDetail = signal<Document | undefined>(undefined);
 
 	// Concaténation des sous-champs en une chaîne unique.
 	public flattenedValue = computed(() =>
@@ -49,28 +48,10 @@ export class IdrefService {
 			params,
 		});
 	}
-	public searchWithPPN(ppn: string): Observable<Document> {
-		// this.searchAuthorities(`ppn_z:${ppn}`).subscribe({ next: r => this.idrefResult.set(r) });
-
-		return this.http.get(`${environment.idrefUrl}/${ppn}.xml`, { responseType: 'text' }).pipe(
-			map((xmlString) => {
-				const parser = new DOMParser();
-				const xmlDoc = parser.parseFromString(xmlString, 'application/xml');
-
-				return xmlDoc;
-			})
-		);
-	}
 
 	public searchFromQuery$(query: string): Observable<IdrefRecords> {
 		return this.searchAuthorities(query).pipe(
 			tap((r) => this.idrefResult.set(r))
-		);
-	}
-
-	public loadAuthorityDetail$(ppn: string): Observable<Document> {
-		return this.searchWithPPN(ppn).pipe(
-			tap((detail) => this.idrefAuthorityDetail.set(detail))
 		);
 	}
 
@@ -103,6 +84,5 @@ export class IdrefService {
 	public reset(): void {
 		this.idrefResult.set(undefined);
 		this.selectedFieldFromBibRecord.set(undefined);
-		this.idrefAuthorityDetail.set(undefined);
 	}
 }
