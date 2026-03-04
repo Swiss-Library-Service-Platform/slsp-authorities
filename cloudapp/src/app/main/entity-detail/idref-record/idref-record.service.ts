@@ -55,22 +55,7 @@ export class IdrefRecordService {
 		const searchIndex = this.idrefService.getMarcStructure()?.label ?? '';
 		const constructedQueryValue = this.buildQueryInputValue()();
 
-		// Met à jour les signaux du formulaire.
-		this.setFormValues(searchIndex, constructedQueryValue);
-
-		// Lance la recherche.
-		const query = this.buildQueryFromFormValues(searchIndex, constructedQueryValue);
-
-		this.idrefService
-			.searchFromQuery$(query)
-			.pipe(
-				catchError(() => {
-					this.alert.error(this.translate.instant('error.eventServiceError'), { autoClose: false });
-
-					return EMPTY;
-				})
-			)
-			.subscribe();
+		this.searchFromFormValues(searchIndex, constructedQueryValue);
 	}
 
 	/**
@@ -82,6 +67,8 @@ export class IdrefRecordService {
 	}
 
 	public searchFromFormValues(searchIndex: string, constructedQuery: string): void {
+		this.setFormValues(searchIndex, constructedQuery);
+
 		const query = this.buildQueryFromFormValues(searchIndex, constructedQuery);
 
 		this.idrefService
@@ -100,7 +87,6 @@ export class IdrefRecordService {
 		const searchIndex = this.idrefService.getMarcStructure()?.label ?? '';
 		const constructedQueryValue = this.buildQueryInputValue()();
 
-		this.setFormValues(searchIndex, constructedQueryValue);
 		this.searchFromFormValues(searchIndex, constructedQueryValue);
 	}
 

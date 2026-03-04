@@ -89,7 +89,7 @@ export class IdrefRecordComponent {
 		// Synchronise le formulaire vers les signaux du service.
 		this.searchForm.get('searchIndex')?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((value) => {
 			this.idrefRecordService.formSearchIndex.set(value);
-			this.onSearch();
+			this.onSearch({ searchIndex: value });
 		});
 
 		this.searchForm.get('constructedQuery')?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((value) => {
@@ -99,7 +99,7 @@ export class IdrefRecordComponent {
 		this.searchForm
 			.get('constructedQuery')
 			?.valueChanges.pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
-			.subscribe(() => this.onSearch());
+			.subscribe((value) => this.onSearch({ constructedQuery: value }));
 	}
 
 	public onStrictSearchChange(event: Event): void {
@@ -117,13 +117,11 @@ export class IdrefRecordComponent {
 		this.idrefRecordService.updateSelectedEntryWithPPN(doc);
 	}
 
-	public onSearch(): void {
-		const values = this.searchForm.value as {
-			searchIndex: string;
-			constructedQuery: string;
-		};
+	public onSearch(overrides?: Partial<{ searchIndex: string; constructedQuery: string }>): void {
+		const searchIndex = overrides?.searchIndex ?? (this.searchForm.get('searchIndex')?.value as string) ?? 'all';
+		const constructedQuery = overrides?.constructedQuery ?? (this.searchForm.get('constructedQuery')?.value as string) ?? '';
 
-		this.idrefRecordService.searchFromFormValues(values.searchIndex, values.constructedQuery);
+		this.idrefRecordService.searchFromFormValues(searchIndex, constructedQuery);
 	}
 
 	public showDetails(ppn: string): void {
