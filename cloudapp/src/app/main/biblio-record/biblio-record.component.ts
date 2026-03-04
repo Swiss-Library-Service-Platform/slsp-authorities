@@ -68,30 +68,30 @@ export class BiblioRecordComponent {
 		return StringUtils.areDataFieldsEqual(updatedField, entry);
 	}
 
-	public pushToInput(entry: BibRecordField): void {
-		this.selectedBibRecordField = entry;
-		this.idrefService.nzSelectedEntry.set({ ...entry });
+	public pushToInput(bibRecordField: BibRecordField): void {
+		this.selectedBibRecordField = bibRecordField;
+		this.idrefService.nzSelectedEntry.set({ ...bibRecordField });
 		this.searchService.closeTo902();
 		this.searchService.searchMode902.set(SearchMode902.Add902);
 
 		// Gère le cas particulier du champ 902.
-		if (entry.tag === '902') {
+		if (bibRecordField.tag === '902') {
 			this.searchService.searchMode902.set(SearchMode902.Modify902);
 			this.searchService.showTo902();
 		}
 		this.searchService.searchMode.set(SearchMode.Update);
 	}
 
-	public saveCurrentEntry(entry: BibRecordField): void {
-		this.referenceCurrentField.setSavedCurrentEntry(entry);
+	public saveCurrentEntry(bibRecordField: BibRecordField): void {
+		this.referenceCurrentField.setSavedCurrentEntry(bibRecordField);
 	}
 
 	public searchIdref(): void {
 		this.idrefRecordService.setFormValuesFromEntry();
 	}
 
-	public deleteField(entry: BibRecordField): void {
-		if (!this.marcService.isDeleteAllowed(entry)) {
+	public deleteField(bibRecordField: BibRecordField): void {
+		if (!this.marcService.isDeleteAllowed(bibRecordField)) {
 			this.alertService.warn(this.translate.instant('search.deleteNotAllowed'), { delay: 3000, autoClose: true });
 
 			return;
@@ -99,7 +99,7 @@ export class BiblioRecordComponent {
 
 		const dialogRef = this.dialog.open(DeleteDialogComponent, {
 			width: '50px',
-			data: { entry },
+			data: { bibRecordField },
 		});
 
 		// Aucune action supplémentaire après la fermeture du dialogue.
