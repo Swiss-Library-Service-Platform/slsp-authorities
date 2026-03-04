@@ -2,6 +2,7 @@ import { Component, computed, inject, ViewChild} from '@angular/core';
 import { BiblioRecordComponent } from '../biblio-record/biblio-record.component';
 import { tagGroups } from '../../models/idref.model';
 import { MainFacadeService } from '../main-facade.service';
+import { RecordService } from '../../services/record.service';
 
 // Composant central de la Cloud App : recherche IdRef, notice bibliographique NZ et notice d'autorité IdRef.
 @Component({
@@ -14,8 +15,9 @@ export class EntityDetailComponent {
 	@ViewChild(BiblioRecordComponent) public bibRecord!: BiblioRecordComponent
 
 	private facade = inject(MainFacadeService);
+	private recordService = inject(RecordService);
   	// eslint-disable-next-line @typescript-eslint/member-ordering
-  	public selectedEntity = computed(() => this.facade.selectedEntityDetails());
+  	public selectedEntityDetails = computed(() => this.recordService.selectedEntityDetails());
 
 	public updateAllowedTags(): void {
 		this.bibRecord.showDetails();

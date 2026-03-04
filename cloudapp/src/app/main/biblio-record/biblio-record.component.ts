@@ -1,7 +1,7 @@
-import { Component, computed, inject, input, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteDialogComponent } from './delete-dialog/delete-dialog.component';
-import { BibRecordField, NzBibRecord } from '../../models/bib-record.model';
+import { BibRecordField } from '../../models/bib-record.model';
 import { MARC_STRUCTURE_KEY } from '../../models/idref.model';
 import { BiblioReferencedEntryService } from '../../services/biblio-referenced-entry.service';
 import { IdrefService } from '../../services/idref.service';
@@ -12,6 +12,7 @@ import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
 import { BiblioRecordMarcService } from './domain/biblio-record-marc.service';
 import { StringUtils } from '../../utils/stringUtils';
+import { RecordService } from '../../services/record.service';
 
 // Composant d'affichage des notices bibliographiques provenant de la NZ.
 @Component({
@@ -21,23 +22,25 @@ import { StringUtils } from '../../utils/stringUtils';
 })
 export class BiblioRecordComponent {
 	public selectedBibRecordField: BibRecordField | null = null;
-	public selectedEntity = input.required<NzBibRecord | undefined>();
+	public selectedEntityDetails = computed(() => this.recordService.selectedEntityDetails());
 	public dialog = inject(MatDialog);
 	private readonly idrefAllowedTags = new Set(MARC_STRUCTURE_KEY);
 	private searchService = inject(SearchService);
 	private idrefService = inject(IdrefService);
 	private referenceCurrentField = inject(BiblioReferencedEntryService);
 	private idrefRecordService = inject(IdrefRecordService);
+	private recordService = inject(RecordService);
 	private alertService = inject(AlertService);
 	private translate = inject(TranslateService);
 	private marcService = inject(BiblioRecordMarcService);
+	// eslint-disable-next-line @typescript-eslint/member-ordering
 	public readonly highlightedUpdatedField = this.searchService.highlightedUpdatedField;
 	// Signaux des tags MARC autorisés.
 	private allowedTags = signal(MARC_STRUCTURE_KEY);
 
 	// eslint-disable-next-line @typescript-eslint/member-ordering
 	public  BibRecordFields = computed(() => {
-			const anie = this.selectedEntity()?.anies[0];
+			const anie = this.selectedEntityDetails()?.anies[0];
 
 			if(typeof anie === 'string'){
 				return this.marcService.updateMarcFields(anie, this.allowedTags());
