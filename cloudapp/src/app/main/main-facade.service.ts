@@ -86,11 +86,7 @@ export class MainFacadeService {
 
 				switchMap(() => this.refresh()),
 
-				catchError(() => {
-					this.alert.warn(this.translate.instant('main.acceptRefreshModal'));
-
-					return of({} as RefreshPageResponse);
-				}),
+				catchError(() => of({} as RefreshPageResponse)),
 
 				finalize(() => this.loader.hide())
 			)

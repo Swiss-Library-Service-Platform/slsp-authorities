@@ -320,9 +320,9 @@ export class SearchService {
   }
 
   private handleRefreshWarning(): Observable<never> {
-    this.alert.warn(this.translate.instant('search.acceptRefreshModal'), {
+    /*this.alert.warn(this.translate.instant('search.acceptRefreshModal'), {
       delay: 1000,
-    });
+    });*/
 
     return EMPTY;
   }
