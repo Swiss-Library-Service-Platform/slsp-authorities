@@ -37,7 +37,7 @@ export class MainFormComponent implements AfterViewInit {
 
 	public readonly searchMode = this.searchService.searchMode;
 	public readonly isTo902FormVisible = this.searchService.isTo902FormVisible;
-	public readonly nzSelectedEntry = this.idrefService.nzSelectedEntry;
+	public readonly selectedFieldFromBibRecord = this.idrefService.selectedFieldFromBibRecord;
 	public readonly flattenedValue = this.searchService.flattenedValue;
 	public readonly formResetNonce = this.searchService.formResetNonce;
 
@@ -55,7 +55,7 @@ export class MainFormComponent implements AfterViewInit {
 			.subscribe(() => this.scheduleSubfieldsRender());
 
 		effect(() => {
-			const entry = this.nzSelectedEntry();
+			const entry = this.selectedFieldFromBibRecord();
 
 			if (entry) {
 				this.searchForm.patchValue(

@@ -71,7 +71,7 @@ export class SearchService {
       subfields = '$$a ' + subfields;
     }
 
-    this.idrefService.nzSelectedEntry.set({
+    this.idrefService.selectedFieldFromBibRecord.set({
       change: '',
       tag: values.tag,
       ind1: values.ind1,
@@ -275,7 +275,7 @@ export class SearchService {
   public clear(resetFormCallback?: () => void): void {
     this.isTo902FormVisible.set(false);
     this.searchMode.set(SearchMode.AddField);
-    this.idrefService.nzSelectedEntry.set(undefined);
+    this.idrefService.selectedFieldFromBibRecord.set(undefined);
     this.highlightedUpdatedField.set(null);
 
     if (resetFormCallback) {

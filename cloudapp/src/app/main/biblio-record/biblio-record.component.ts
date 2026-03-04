@@ -39,8 +39,8 @@ export class BiblioRecordComponent {
 	private allowedTags = signal(MARC_STRUCTURE_KEY);
 
 	// eslint-disable-next-line @typescript-eslint/member-ordering
-	public  bibRecordFields = computed(() => {
-			const anie = this.selectedEntityDetails()?.anies[0];
+	public  bibRecordFieldsFromSelectedEntityDetails = computed(() => {
+			const anie = this.recordService.selectedEntityDetails()?.anies[0];
 
 			if(typeof anie === 'string'){
 				return this.marcService.updateMarcFields(anie, this.allowedTags());
@@ -70,7 +70,7 @@ export class BiblioRecordComponent {
 
 	public pushToInput(bibRecordField: BibRecordField): void {
 		this.lastSavedSelectedBibRecordField = bibRecordField; //sauvegarde pour l'affichage
-		this.idrefService.nzSelectedEntry.set({ ...bibRecordField });
+		this.idrefService.selectedFieldFromBibRecord.set({ ...bibRecordField });
 		this.searchService.closeTo902();
 		this.searchService.searchMode902.set(SearchMode902.Add902);
 

@@ -36,7 +36,7 @@ export class IdrefRecordService {
 	 */
 	public buildQueryInputValue(): Signal<string> {
 		return computed(() => {
-			const filterValues = this.idrefService.nzSelectedEntry()?.subfields;
+			const filterValues = this.idrefService.selectedFieldFromBibRecord()?.subfields;
 			const $$aValue = filterValues?.find((value) => value.code === 'a')?.value ?? '';
 			const $$dValue = filterValues?.find((value) => value.code === 'd')?.value ?? '';
 			const $$bValue = filterValues?.find((value) => value.code === 'b')?.value ?? '';
@@ -122,7 +122,7 @@ export class IdrefRecordService {
 	 * Met à jour l'entry sélectionnée avec le PPN fourni
 	 */
 	public updateSelectedEntryWithPPN(doc: Doc): void {
-		const selectedEntry = this.idrefService.nzSelectedEntry();
+		const selectedEntry = this.idrefService.selectedFieldFromBibRecord();
 		const ppn_z = doc.ppn_z;
 		const affcourt_z = doc.affcourt_z;
 
@@ -182,7 +182,7 @@ export class IdrefRecordService {
 		};
 
 		// Met à jour le signal.
-		this.idrefService.nzSelectedEntry.set(newEntry);
+		this.idrefService.selectedFieldFromBibRecord.set(newEntry);
 	}
 
 	public reset(): void {

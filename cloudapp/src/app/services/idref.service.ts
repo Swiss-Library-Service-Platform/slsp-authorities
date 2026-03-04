@@ -11,12 +11,12 @@ import { Settings } from '../models/settings.model';
 export class IdrefService {
 	// Résultat de la recherche IdRef.
 	public idrefResult = signal<IdrefRecords | undefined>(undefined);
-	public nzSelectedEntry = signal<BibRecordField | undefined>(undefined);
+	public selectedFieldFromBibRecord = signal<BibRecordField | undefined>(undefined);
 	public idrefAuthorityDetail = signal<Document | undefined>(undefined);
 
 	// Concaténation des sous-champs en une chaîne unique.
 	public flattenedValue = computed(() =>
-		this.nzSelectedEntry()
+		this.selectedFieldFromBibRecord()
 			?.subfields.map((v) => `$$${v.code} ${v.value}`)
 			.join(' ')
 	);
@@ -77,10 +77,10 @@ export class IdrefService {
 	// Retourne la structure MARC liée à l'entrée sélectionnée.
 	public getMarcStructure(): MarcStructureValues | undefined {
 		const codes: string[] = [];
-		const tag = this.nzSelectedEntry()?.tag;
-		const ind1 = this.nzSelectedEntry()?.ind1;
-		const ind2 = this.nzSelectedEntry()?.ind2;
-		const value = this.nzSelectedEntry()?.subfields;
+		const tag = this.selectedFieldFromBibRecord()?.tag;
+		const ind1 = this.selectedFieldFromBibRecord()?.ind1;
+		const ind2 = this.selectedFieldFromBibRecord()?.ind2;
+		const value = this.selectedFieldFromBibRecord()?.subfields;
 
 		value?.forEach((subfield) => codes.push(subfield.code.replace('$$', '')));
 
@@ -102,7 +102,7 @@ export class IdrefService {
 
 	public reset(): void {
 		this.idrefResult.set(undefined);
-		this.nzSelectedEntry.set(undefined);
+		this.selectedFieldFromBibRecord.set(undefined);
 		this.idrefAuthorityDetail.set(undefined);
 	}
 }
