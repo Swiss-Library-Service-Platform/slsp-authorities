@@ -1,6 +1,6 @@
 import { Component, inject, input } from '@angular/core';
 import { NzBibRecord } from '../../../models/bib-record.model';
-import { SearchService } from './search.service';
+import { BibRecordFieldModifierService } from './bib-record-field-modifier.service';
 
 
 @Component({
@@ -11,6 +11,6 @@ import { SearchService } from './search.service';
 export class SearchComponent {
 
 	public entity = input.required<NzBibRecord | undefined>();
-	public isTo902FormVisible = inject(SearchService).isTo902FormVisible;
-	public searchMode902 = inject(SearchService).searchMode902;
+	public isTo902FormVisible = inject(BibRecordFieldModifierService).isTo902FormVisible;
+	public searchMode902 = inject(BibRecordFieldModifierService).searchMode902;
 }

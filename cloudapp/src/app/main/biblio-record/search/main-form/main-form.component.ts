@@ -5,13 +5,13 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { distinctUntilChanged, catchError, EMPTY } from 'rxjs';
 import { NzBibRecord } from '../../../../models/bib-record.model';
 import { IdrefService } from '../../../../services/idref.service';
-import { SearchService } from '../search.service';
 import { IdrefRecordService } from '../../../entity-detail/idref-record/idref-record.service';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CreationWarningModalComponent } from '../../creation-warning-modal/creation-warning-modal.component';
 import { AuthorityDetailsService } from '../../../entity-detail/idref-entry-details/authority-details.service';
+import { BibRecordFieldModifierService } from '../bib-record-field-modifier.service';
 
 @Component({
 	selector: 'app-main-form',
@@ -30,7 +30,7 @@ export class MainFormComponent implements AfterViewInit {
 
 	private authorityDetailsService = inject(AuthorityDetailsService);
 	private idrefService = inject(IdrefService);
-	private searchService = inject(SearchService);
+	private bibRecordFieldModifierService = inject(BibRecordFieldModifierService);
 	private idrefRecordService = inject(IdrefRecordService);
 	private fb = inject(FormBuilder);
 	private destroyRef = inject(DestroyRef);
@@ -38,11 +38,11 @@ export class MainFormComponent implements AfterViewInit {
 	private translate = inject(TranslateService);
 	private dialog = inject(MatDialog);
 
-	public readonly searchMode = this.searchService.searchMode;
-	public readonly isTo902FormVisible = this.searchService.isTo902FormVisible;
+	public readonly searchMode = this.bibRecordFieldModifierService.searchMode;
+	public readonly isTo902FormVisible = this.bibRecordFieldModifierService.isTo902FormVisible;
 	public readonly selectedFieldFromBibRecord = this.idrefService.selectedFieldFromBibRecord;
-	public readonly flattenedValue = this.searchService.flattenedValue;
-	public readonly formResetNonce = this.searchService.formResetNonce;
+	public readonly flattenedValue = this.idrefService.flattenedValue;
+	public readonly formResetNonce = this.bibRecordFieldModifierService.formResetNonce;
 
 	public constructor() {
 		this.searchForm = this.fb.group({
@@ -148,7 +148,7 @@ export class MainFormComponent implements AfterViewInit {
 			subfields: string;
 		};
 
-		this.searchService.setSelectedFieldFromBibRecord(values);
+		this.bibRecordFieldModifierService.setSelectedFieldFromBibRecord(values);
 
 		const subfields = values.subfields;
 		const regex = /\$\$0 \(IDREF\)(\d+)/;
@@ -174,13 +174,13 @@ export class MainFormComponent implements AfterViewInit {
 
 	public addRecord(): void {
 		this.executeWithValidation(() => {
-			this.searchService.addRecord(this.getNormalizedFormValues(), () => this.resetFormFields());
+			this.bibRecordFieldModifierService.addRecord(this.getNormalizedFormValues(), () => this.resetFormFields());
 		});
 	}
 
 	public updateFieldIfFound(): void {
 		this.executeWithValidation(() => {
-			this.searchService.updateFieldIfFound(this.getNormalizedFormValues(), () => this.resetFormFields());
+			this.bibRecordFieldModifierService.updateFieldIfFound(this.getNormalizedFormValues(), () => this.resetFormFields());
 		});
 	}
 
@@ -188,16 +188,16 @@ export class MainFormComponent implements AfterViewInit {
 		this.executeWithValidation(() => {
 			const values = this.getNormalizedFormValues();
 
-			this.searchService.createFieldIfNotFound(values, () => this.resetFormFields());
+			this.bibRecordFieldModifierService.createFieldIfNotFound(values, () => this.resetFormFields());
 		});
 	}
 
 	public showTo902(): void {
-		this.searchService.showTo902();
+		this.bibRecordFieldModifierService.showTo902();
 	}
 
 	public clear(): void {
-		this.searchService.clear(() => {
+		this.bibRecordFieldModifierService.clear(() => {
 			this.resetFormFields();
 		});
 	}
@@ -230,7 +230,7 @@ export class MainFormComponent implements AfterViewInit {
 
 	private executeWithValidation(onValidated: () => void): void {
 		const values = this.getNormalizedFormValues();
-		const validation = this.searchService.formValuesAreValid(values);
+		const validation = this.bibRecordFieldModifierService.formValuesAreValid(values);
 
 		if (!validation.isValid) {
 			return;

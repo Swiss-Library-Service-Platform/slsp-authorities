@@ -16,7 +16,7 @@ import { SearchResultService } from '../../../services/search-result.service';
 @Injectable({
   providedIn: 'root'
 })
-export class SearchService {
+export class BibRecordFieldModifierService {
   public searchMode = signal<SearchMode>(SearchMode.AddField);
   public searchMode902 = signal<SearchMode902>(SearchMode902.Add902);
 
@@ -28,7 +28,6 @@ export class SearchService {
   private alert = inject(AlertService);
   private referenceCurrentField = inject(BiblioReferencedEntryService);
   private loader = inject(LoadingIndicatorService);
-  public flattenedValue = this.idrefService.flattenedValue;
   public isTo902FormVisible = signal(false);
   public formResetNonce = signal(0);
   public highlightedUpdatedField = signal<DataField | null>(null);

@@ -2,7 +2,7 @@
 import { Component, computed, DestroyRef, effect, inject, input, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NzBibRecord } from '../../../../models/bib-record.model';
-import { SearchService } from '../search.service';
+import { BibRecordFieldModifierService } from '../bib-record-field-modifier.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { FormValues } from '../model';
 import { AlertService, CloudAppEventsService, CloudAppSettingsService } from '@exlibris/exl-cloudapp-angular-lib';
@@ -28,7 +28,7 @@ export class To902FormComponent {
 
 	public to902Purpose = Object.values(to902$$aFields);
 
-	private searchService = inject(SearchService);
+	private bibRecordFieldModifierService = inject(BibRecordFieldModifierService);
 	private idrefService = inject(IdrefService);
 	private settingsService = inject(CloudAppSettingsService);
 	private eventService = inject(CloudAppEventsService);
@@ -37,8 +37,8 @@ export class To902FormComponent {
 	private destroyRef = inject(DestroyRef);
 	private alert = inject(AlertService);
 
-	public readonly searchMode902 = this.searchService.searchMode902;
-	public readonly searchMode = this.searchService.searchMode;
+	public readonly searchMode902 = this.bibRecordFieldModifierService.searchMode902;
+	public readonly searchMode = this.bibRecordFieldModifierService.searchMode;
 	public readonly selectedFieldFromBibRecord = this.idrefService.selectedFieldFromBibRecord;
 	public userSignature = signal('');
 	public IZCode = signal('');
@@ -136,7 +136,7 @@ export class To902FormComponent {
 			subfields: `$$a ${purpose} $$b ${rawValue.subfields} $$5 ${this.IZCode()}/${date}/${this.userSignature()}`,
 		};
 
-		this.searchService.updateFieldIfFound(finalValues);
+		this.bibRecordFieldModifierService.updateFieldIfFound(finalValues);
 	}
 
 	public createFieldIfNotFound(): void {
@@ -157,14 +157,14 @@ export class To902FormComponent {
 			subfields: `$$a ${purpose} $$b ${rawValue.subfields} $$5 ${this.IZCode()}/${date}/${this.userSignature()}`,
 		};
 
-		this.searchService.createFieldIfNotFound(finalValues);
+		this.bibRecordFieldModifierService.createFieldIfNotFound(finalValues);
 	}
 
 	public clear(): void {
-		this.searchService.clear(() => this.searchForm.reset());
+		this.bibRecordFieldModifierService.clear(() => this.searchForm.reset());
 	}
 
 	public closeTo902(): void {
-		this.searchService.closeTo902();
+		this.bibRecordFieldModifierService.closeTo902();
 	}
 }

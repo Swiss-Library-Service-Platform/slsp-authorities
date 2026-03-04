@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { BibRecordField } from '../../../models/bib-record.model';
 import { LoadingIndicatorService } from '../../../services/loading-indicator.service';
 import { EMPTY, catchError, finalize, switchMap } from 'rxjs';
-import { SearchService } from '../search/search.service';
+import { BibRecordFieldModifierService } from '../search/bib-record-field-modifier.service';
 import { NZQueryService } from '../../../services/nzquery.service';
 
 
@@ -20,7 +20,7 @@ export class DeleteDialogComponent {
   
   public dialogRef= inject(MatDialogRef<DeleteDialogComponent>);
   private nzQueryService = inject(NZQueryService);
-  private searchService = inject(SearchService);
+  private bibRecordFieldModifierService = inject(BibRecordFieldModifierService);
   private alert = inject(AlertService);
   private translate = inject(TranslateService);
   private loader = inject(LoadingIndicatorService);
@@ -60,8 +60,8 @@ export class DeleteDialogComponent {
         })
       )
       .subscribe(() => {
-        this.searchService.reset();
-        this.searchService.requestFormsReset();
+        this.bibRecordFieldModifierService.reset();
+        this.bibRecordFieldModifierService.requestFormsReset();
         this.alert.info(this.translate.instant('proxyService.deleteSuccess'));
       });
   }

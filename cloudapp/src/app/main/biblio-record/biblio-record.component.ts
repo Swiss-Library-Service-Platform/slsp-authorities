@@ -5,7 +5,7 @@ import { BibRecordField } from '../../models/bib-record.model';
 import { MARC_STRUCTURE_KEY } from '../../models/idref.model';
 import { BiblioReferencedEntryService } from '../../services/biblio-referenced-entry.service';
 import { IdrefService } from '../../services/idref.service';
-import { SearchService } from './search/search.service';
+import { BibRecordFieldModifierService } from './search/bib-record-field-modifier.service';
 import { SearchMode, SearchMode902 } from './search/model';
 import { IdrefRecordService } from '../entity-detail/idref-record/idref-record.service';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
@@ -25,7 +25,7 @@ export class BiblioRecordComponent {
 	public selectedEntityDetails = computed(() => this.recordService.selectedEntityDetails());
 	public dialog = inject(MatDialog);
 	private readonly idrefAllowedTags = new Set(MARC_STRUCTURE_KEY);
-	private searchService = inject(SearchService);
+	private bibRecordFieldModifierService = inject(BibRecordFieldModifierService);
 	private idrefService = inject(IdrefService);
 	private referenceCurrentField = inject(BiblioReferencedEntryService);
 	private idrefRecordService = inject(IdrefRecordService);
@@ -34,7 +34,7 @@ export class BiblioRecordComponent {
 	private translate = inject(TranslateService);
 	private marcService = inject(BiblioRecordMarcService);
 	// eslint-disable-next-line @typescript-eslint/member-ordering
-	public readonly highlightedUpdatedField = this.searchService.highlightedUpdatedField;
+	public readonly highlightedUpdatedField = this.bibRecordFieldModifierService.highlightedUpdatedField;
 	// Signaux des tags MARC autorisés.
 	private allowedTags = signal(MARC_STRUCTURE_KEY);
 
@@ -71,15 +71,15 @@ export class BiblioRecordComponent {
 	public pushToInput(bibRecordField: BibRecordField): void {
 		this.lastSavedSelectedBibRecordField = bibRecordField; //sauvegarde pour l'affichage
 		this.idrefService.selectedFieldFromBibRecord.set({ ...bibRecordField });
-		this.searchService.closeTo902();
-		this.searchService.searchMode902.set(SearchMode902.Add902);
+		this.bibRecordFieldModifierService.closeTo902();
+		this.bibRecordFieldModifierService.searchMode902.set(SearchMode902.Add902);
 
 		// Gère le cas particulier du champ 902.
 		if (bibRecordField.tag === '902') {
-			this.searchService.searchMode902.set(SearchMode902.Modify902);
-			this.searchService.showTo902();
+			this.bibRecordFieldModifierService.searchMode902.set(SearchMode902.Modify902);
+			this.bibRecordFieldModifierService.showTo902();
 		}
-		this.searchService.searchMode.set(SearchMode.Update);
+		this.bibRecordFieldModifierService.searchMode.set(SearchMode.Update);
 	}
 
 	public saveCurrentEntry(bibRecordField: BibRecordField): void {

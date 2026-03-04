@@ -61,19 +61,23 @@ Fichiers pivots:
 
 ## Flux de données (référence)
 
-Flux cible actuellement en place:
+1 main.ts
+-Soit on affiche la liste des notices bibliographiques que alma met à disposition via entities$
+-Soit une notice est séléctionné et on affiche le detail de cette notice via entity-details
 
-1. Composant UI émet une intention utilisateur (`search`, `select`, `delete`, `update`)
-2. Service de feature/facade orchestre la logique
-3. Service de données effectue l'appel HTTP
-4. Les signaux d'état (`signal`, `computed`) sont mis à jour
-5. Le composant lit uniquement le state et réagit
+Lorsque l'on selectionne une notice bibliographique dans le main.ts, on apelle recordService.selectedEntity.set() 
+c'est recordService qui sert de référence à la notice bibliographique que l'on manipule
 
-Convention importante:
+2 recordService.ts
+    c'est le service qui sert de référence à la notice bibliographique que l'on manipule.
+    -il contient selectedEntity qui est l'entité séléctionné depuis les notices dans entites$ de main.ts
+    -selectedEntityDetails est également un signal qui correspond à la notice bibliographique de la NZ. Elle est mise à jour par nzquery.service.ts  dans la méthode getBibRecord() elle même appelé par refreshSelectedEntityDetails$
 
-- Les composants doivent rester orientés UI (pas de logique métier lourde).
-- La construction des requêtes et règles MARC doit rester dans les services métier.
-- Les abonnements RxJS dans les composants doivent utiliser `takeUntilDestroyed()`.
+    cette partie là des données correspond grossièrement aux composants à gauche de l'interface
+
+3 idrefService.ts
+
+4 bibRecordFieldModifierService.ts
 
 ## Routes
 
@@ -102,6 +106,3 @@ Convention importante:
 - https://developers.exlibrisgroup.com/cloudapps/
 - https://angular.dev/
 
-## Contribution
-
-- Voir `CONTRIBUTING.md` pour les conventions de structure, de flux de données et de PR.
