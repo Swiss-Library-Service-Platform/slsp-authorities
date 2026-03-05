@@ -2,13 +2,13 @@
 import { Component, computed, DestroyRef, effect, inject, input, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NzBibRecord } from '../../../../models/bib-record.model';
-import { BibRecordFieldModifierService } from '../bib-record-field-modifier.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { FormValues } from '../model';
 import { AlertService, CloudAppEventsService, CloudAppSettingsService } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
 import { Settings } from '../../../../models/settings.model';
 import { IdrefService } from '../../../../services/idref.service';
+import { BibRecordFieldModifierService } from '../bib-record-field-modifier.service';
 
 export enum to902$$aFields {
 	nouveau = 'IDREF-NOUV',

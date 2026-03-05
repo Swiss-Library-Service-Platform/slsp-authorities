@@ -13,7 +13,6 @@ private http = inject(HttpClient);
 
 
   public searchWithPPN(ppn: string): Observable<Document> {
-      // this.searchAuthorities(`ppn_z:${ppn}`).subscribe({ next: r => this.idrefResult.set(r) });
   
       return this.http.get(`${environment.idrefUrl}/${ppn}.xml`, { responseType: 'text' }).pipe(
         map((xmlString) => {
