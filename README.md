@@ -62,11 +62,10 @@ Fichiers pivots:
 ## Flux de données (référence)
 
 ## 1 main.ts ##
--Soit on affiche la liste des notices bibliographiques que alma met à disposition via entities$
--Soit une notice est séléctionné et on affiche le detail de cette notice via entity-details
-
-Lorsque l'on selectionne une notice bibliographique dans le main.ts, on apelle recordService.selectedEntity.set() 
-c'est recordService qui sert de référence à la notice bibliographique que l'on manipule
+    -Soit on affiche la liste des notices bibliographiques que alma met à disposition via entities$
+    -Soit une notice est séléctionné et on affiche le detail de cette notice via entity-details
+    Lorsque l'on selectionne une notice bibliographique dans le main.ts, on apelle recordService.selectedEntity.set() 
+    c'est recordService qui sert de référence à la notice bibliographique que l'on manipule
 
 ## 2 recordService.ts ## 
     c'est le service qui sert de référence à la notice bibliographique que l'on manipule.
@@ -107,7 +106,7 @@ c'est recordService qui sert de référence à la notice bibliographique que l'o
 ## 9 nzquery.service ## 
     c'est ce service qui est responsable de faire les apelles à la NZ en passant par le proxy.
 
-amélioration à faire:
+## Améliorations à faire ##
     -Dans tous ces services, le ronomage de certaines fonctions, attributs, variables, etc. permettrait de comprendre bien plus facilement le comportement et la logique de la cloudapp.
     -Il y a deux méthodes onSearch dans le projet, une dans main-form.component et une dans idref-record.components il faudrait la factoriser en normant les processus de parsing plus généralement dans la cloudapp.
 
