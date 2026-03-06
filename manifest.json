@@ -6,6 +6,10 @@
    "relevantForInst": [
       "41SLSP_HPH"
    ],
+   "icon": {
+      "type": "url",
+      "value": "/assets/logo_SLSPauthorities.png"
+   },
    "contentSecurity": {
       "connectSrc": [
          "https://www.idref.fr/",
