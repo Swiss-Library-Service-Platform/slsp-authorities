@@ -111,7 +111,7 @@ Fichiers pivots:
 
 ### Améliorations à faire ###
     -Dans tous ces services, le ronomage de certaines fonctions, attributs, variables, etc. permettrait de comprendre bien plus facilement le comportement et la logique de la cloudapp.
-    -Il y a deux méthodes onSearch dans le projet, une dans main-form.component et une dans idref-record.components il faudrait la factoriser en normant les processus de parsing plus généralement dans la cloudapp.
+    -Il y a deux méthodes onSearch dans le projet, une dans marc-field-form.component et une dans idref-search-results.component il faudrait la factoriser en normant les processus de parsing plus généralement dans la cloudapp.
 
 ### Erreurs et warnings de l'application
 
@@ -123,8 +123,8 @@ Le tableau ci-dessous répertorie les messages de type **error** et **warn** aff
 | Error | `error.catalogerRoleError` | Initialisation (`MainFacadeService.init`) si l'utilisateur n'a pas le rôle catalogueur | Bloquer/alerter un profil insuffisant pour les opérations métier. | Vous avez besoin du rôle de catalogueur pour utiliser cette Cloud App |
 | Error | `error.institutionAllowedError` | Initialisation (`MainFacadeService.init`) si l'institution n'est pas autorisée | Signaler un contexte institutionnel non supporté. | Votre institution n'est pas autorisée à utiliser cette Cloud App |
 | Error | `error.proxyErrorMmsIdNotFound` | Échec du rafraîchissement des détails NZ (`refreshSelectedEntityDetails`) | Impossible de charger la notice NZ depuis le proxy (MMS ID introuvable ou erreur proxy). | Cette notice ne peut pas être modifiée. |
-| Error | `error.eventServiceError` | Échec de recherche IdRef (`IdrefRecordService.searchFromFormValues`) | La recherche IdRef n'a pas abouti. | Une erreur s'est produite avec le service d'événements d'Alma, il n'y a aucune entité ou détail à afficher |
-| Error | `error.eventServiceError` | Échec du chargement des détails d'autorité (`IdrefRecordComponent.showDetails`) | Le détail de l'autorité IdRef n'a pas pu être récupéré. | Une erreur s'est produite avec le service d'événements d'Alma, il n'y a aucune entité ou détail à afficher |
+| Error | `error.eventServiceError` | Échec de recherche IdRef (`IdrefQueryBuilderService.searchFromFormValues`) | La recherche IdRef n'a pas abouti. | Une erreur s'est produite avec le service d'événements d'Alma, il n'y a aucune entité ou détail à afficher |
+| Error | `error.eventServiceError` | Échec du chargement des détails d'autorité (`IdrefSearchResultsComponent.showDetails`) | Le détail de l'autorité IdRef n'a pas pu être récupéré. | Une erreur s'est produite avec le service d'événements d'Alma, il n'y a aucune entité ou détail à afficher |
 | Error | `error.eventServiceError` | Échec de suppression ou de rafraîchissement après suppression (`DeleteDialogComponent.onDelete`) | La suppression du champ MARC ou la resynchronisation NZ a échoué. | Une erreur s'est produite avec le service d'événements d'Alma, il n'y a aucune entité ou détail à afficher |
 | Error | `search.noSelectedEntry` | Action update/add sans entrée de référence (`BibRecordFieldModifierService`) | Aucune ligne MARC n'est sélectionnée comme cible de mutation. | Aucune entrée sélectionnée |
 | Warn | `search.updateNotAllowed` | Tentative de mise à jour d'un champ avec `$$0` hors `IDREF`/`RERO` | Empêcher la modification de champs avec des identifiants externes non autorisés. | Clé non trouvée dans `fr.json` (traduction manquante) |
@@ -272,7 +272,7 @@ Key files:
 
 ### Improvements to be made ###
     - In all these services, renaming certain functions, attributes, variables, etc. would make the behavior and logic of the Cloud App much easier to understand.
-    - There are two onSearch methods in the project, one in main-form.component and one in idref-record.component. They should be factored out by standardizing the parsing processes more broadly in the Cloud App.
+    - There are two onSearch methods in the project, one in marc-field-form.component and one in idref-search-results.component. They should be factored out by standardizing the parsing processes more broadly in the Cloud App.
 
 ### Application Errors and Warnings
 
@@ -284,8 +284,8 @@ The table below lists **error** and **warn** messages displayed via `AlertServic
 | Error | `error.catalogerRoleError` | Initialization (`MainFacadeService.init`) if the user lacks the cataloguer role | Block/alert an insufficient profile for business operations. | Vous avez besoin du rôle de catalogueur pour utiliser cette Cloud App |
 | Error | `error.institutionAllowedError` | Initialization (`MainFacadeService.init`) if the institution is not authorized | Report an unsupported institutional context. | Votre institution n'est pas autorisée à utiliser cette Cloud App |
 | Error | `error.proxyErrorMmsIdNotFound` | Failed NZ detail refresh (`refreshSelectedEntityDetails`) | Unable to load the NZ record from the proxy (MMS ID not found or proxy error). | Cette notice ne peut pas être modifiée. |
-| Error | `error.eventServiceError` | Failed IdRef search (`IdrefRecordService.searchFromFormValues`) | The IdRef search did not complete successfully. | Une erreur s'est produite avec le service d'événements d'Alma, il n'y a aucune entité ou détail à afficher |
-| Error | `error.eventServiceError` | Failed to load authority details (`IdrefRecordComponent.showDetails`) | The IdRef authority details could not be retrieved. | Une erreur s'est produite avec le service d'événements d'Alma, il n'y a aucune entité ou détail à afficher |
+| Error | `error.eventServiceError` | Failed IdRef search (`IdrefQueryBuilderService.searchFromFormValues`) | The IdRef search did not complete successfully. | Une erreur s'est produite avec le service d'événements d'Alma, il n'y a aucune entité ou détail à afficher |
+| Error | `error.eventServiceError` | Failed to load authority details (`IdrefSearchResultsComponent.showDetails`) | The IdRef authority details could not be retrieved. | Une erreur s'est produite avec le service d'événements d'Alma, il n'y a aucune entité ou détail à afficher |
 | Error | `error.eventServiceError` | Failed deletion or post-deletion refresh (`DeleteDialogComponent.onDelete`) | The MARC field deletion or NZ resynchronization failed. | Une erreur s'est produite avec le service d'événements d'Alma, il n'y a aucune entité ou détail à afficher |
 | Error | `search.noSelectedEntry` | Update/add action without a reference entry (`BibRecordFieldModifierService`) | No MARC row is selected as the mutation target. | Aucune entrée sélectionnée |
 | Warn | `search.updateNotAllowed` | Attempt to update a field with `$$0` outside `IDREF`/`RERO` | Prevent modification of fields with unauthorized external identifiers. | Key not found in `fr.json` (missing translation) |
