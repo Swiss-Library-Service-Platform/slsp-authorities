@@ -24,6 +24,62 @@
 		</div>
 	</div>
     </div>
+
+	@if (data.linkedOriginalField) {
+	<p class="cascade-warning">{{"deleteDialog.cascade880" | translate}}</p>
+	<div class="marc">
+		<div class="marc-row">
+			<div class="marc-column">
+				<span class="tag">{{ data.linkedOriginalField.tag }}</span>
+			</div>
+			<div class="marc-column">
+				<span class="ind">{{ data.linkedOriginalField.ind1 }}</span>
+			</div>
+			<div class="marc-column">
+				<span class="ind">{{ data.linkedOriginalField.ind2 }}</span>
+			</div>
+			<div class="marc-column">
+				@for (valueEntry of data.linkedOriginalField.subfields; track $index) {
+				<div class="marc-column-value">
+					@if (valueEntry.code && valueEntry.code !== '') {
+					<span class="subfield">$${{ valueEntry.code }}</span>
+					}
+					<span class="value">{{ valueEntry.value }} </span>
+				</div>
+				}
+			</div>
+		</div>
+	</div>
+	}
+
+	@if (data.linked880Fields && data.linked880Fields.length > 0) {
+	<p class="cascade-warning">{{"deleteDialog.cascadeOriginal" | translate}}</p>
+	<div class="marc">
+		@for (linked of data.linked880Fields; track $index) {
+		<div class="marc-row">
+			<div class="marc-column">
+				<span class="tag">{{ linked.tag }}</span>
+			</div>
+			<div class="marc-column">
+				<span class="ind">{{ linked.ind1 }}</span>
+			</div>
+			<div class="marc-column">
+				<span class="ind">{{ linked.ind2 }}</span>
+			</div>
+			<div class="marc-column">
+				@for (valueEntry of linked.subfields; track $index) {
+				<div class="marc-column-value">
+					@if (valueEntry.code && valueEntry.code !== '') {
+					<span class="subfield">$${{ valueEntry.code }}</span>
+					}
+					<span class="value">{{ valueEntry.value }} </span>
+				</div>
+				}
+			</div>
+		</div>
+		}
+	</div>
+	}
 </div>
 <div mat-dialog-actions>
 	<button mat-button (click)="onNoClick()" [disabled]="isDeleting">{{"deleteDialog.no" | translate}}</button>

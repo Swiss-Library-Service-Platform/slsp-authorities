@@ -11,6 +11,7 @@ import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
 import { BiblioRecordMarcService } from './domain/biblio-record-marc.service';
 import { StringUtils } from '../../utils/string-utils';
+import { SubfieldSixLinkUtils } from '../../utils/subfield-six-link-utils';
 import { SelectedEntityStateService } from '../../services/selected-entity-state.service';
 import { BibRecordFieldModifierService } from './marc-field-editor/bib-record-field-modifier.service';
 
@@ -58,14 +59,24 @@ export class BiblioRecordComponent {
 		return this.marcService.getMarcRowStatusClass(entry, this.idrefAllowedTags);
 	}
 
-	public isUpdatedField(entry: BibRecordField): boolean {
-		const updatedField = this.highlightedUpdatedField();
+	public getEditIcon(bibRecordField: BibRecordField): string {
+		const statusClass = this.getMarcRowStatusClass(bibRecordField);
 
-		if (!updatedField) {
-			return false;
-		}
+		return statusClass === 'marc-row--status-other' ? 'search' : 'edit';
+	}
 
-		return StringUtils.areDataFieldsEqual(updatedField, entry);
+	public isFullRowHighlight(entry: BibRecordField): boolean {
+		return this.highlightedUpdatedField().some(
+			(h) => h.mode === 'full' && StringUtils.areDataFieldsEqual(h.field, entry)
+		);
+	}
+
+	public isSubfieldHighlight(entry: BibRecordField, subfieldCode: string): boolean {
+		return this.highlightedUpdatedField().some(
+			(h) => h.mode === 'subfield-only'
+				&& h.subfieldCodes?.includes(subfieldCode)
+				&& StringUtils.areDataFieldsEqual(h.field, entry)
+		);
 	}
 
 	public pushToInput(bibRecordField: BibRecordField): void {
@@ -97,13 +108,43 @@ export class BiblioRecordComponent {
 			return;
 		}
 
+		const allDataFields = this.getCurrentDataFields();
+		let linked880Fields: BibRecordField[] = [];
+		let linkedOriginalField: BibRecordField | null = null;
+
+		if (bibRecordField.tag === '880') {
+			const original = SubfieldSixLinkUtils.findLinkedOriginalField(bibRecordField, allDataFields);
+
+			if (original) {
+				const sibling880s = SubfieldSixLinkUtils.findLinked880Fields(original, allDataFields);
+
+				if (sibling880s.length <= 1) {
+					linkedOriginalField = { ...original, change: '' } as BibRecordField;
+				}
+			}
+		} else if (SubfieldSixLinkUtils.hasSubfield6(bibRecordField)) {
+			linked880Fields = SubfieldSixLinkUtils.findLinked880Fields(bibRecordField, allDataFields)
+				.map((f) => ({ ...f, change: '' }) as BibRecordField);
+		}
+
 		const dialogRef = this.dialog.open(DeleteDialogComponent, {
-			width: '50px',
-			data: { bibRecordField },
+			width: '500px',
+			data: { bibRecordField, linked880Fields, linkedOriginalField },
 		});
 
-		// Aucune action supplémentaire après la fermeture du dialogue.
 		dialogRef.afterClosed().subscribe();
+	}
+
+	private getCurrentDataFields(): BibRecordField[] {
+		const anie = this.selectedEntityState.selectedEntityDetails()?.anies[0];
+
+		if (typeof anie !== 'string') {
+			return [];
+		}
+
+		return StringUtils.xmlToMarcRecord(anie).dataFields.map(
+			(f) => ({ ...f, change: '' }) as BibRecordField
+		);
 	}
 
 	// Met à jour la liste des tags affichés.

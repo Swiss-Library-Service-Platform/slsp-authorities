@@ -31,6 +31,7 @@ import { IdrefEntryDetailsComponent } from './main/entity-detail/idref-entry-det
 import { IdrefSearchResultsComponent } from './main/entity-detail/idref-search-results/idref-search-results.component';
 import { MarcFieldEditorContainerComponent } from './main/biblio-record/marc-field-editor/marc-field-editor-container.component';
 import { To902FormComponent } from './main/biblio-record/marc-field-editor/to902-form/to902-form.component';
+import { To880FormComponent } from './main/biblio-record/marc-field-editor/to880-form/to880-form.component';
 import { MarcFieldFormComponent } from './main/biblio-record/marc-field-editor/marc-field-form/marc-field-form.component';
 import { JsonPipe } from '@angular/common';
 import { SettingsComponent } from './settings/settings.component';
@@ -50,6 +51,7 @@ import { InitService } from './services/init.service';
 		IdrefEntryDetailsComponent,
 		DeleteDialogComponent,
 		To902FormComponent,
+		To880FormComponent,
 		MarcFieldFormComponent,
 		SettingsComponent,
 		ConfigurationComponent,

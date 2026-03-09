@@ -35,6 +35,7 @@
 		"updateRecord": "Mettre à jour",
 		"hideTo902": "Masquer",
 		"showTo902": "Créer 902",
+		"showTo880": "Créer 880",
 		"mode": {
 			"addField": "Ajout",
 			"update": "Mise à jour"
@@ -42,6 +43,9 @@
 		"mode902": {
 			"add902": "Créer 902",
 			"update902": "Mettre à jour 902"
+		},
+		"mode880": {
+			"create880": "Créer 880"
 		},
 		"form": {
 			"tagPlaceholder": "tag",
@@ -54,6 +58,10 @@
 			"warning": {
 				"missingIdrefIdentifier": "Ce champ n'a pas d'identifiant IdRef, voulez-vous vraiment l'ajouter ?"
 			}
+		},
+		"to880": {
+			"subfieldsLabel": "Sous-champs",
+			"subfield6Hint": "$$6 {{value}} sera ajouté au champ original."
 		},
 		"to902": {
 			"predefined": {
@@ -103,6 +111,8 @@
 	"deleteDialog": {
 		"title": "Confirmer la suppression",
 		"content": "Êtes-vous sûr de vouloir supprimer cette notice ?",
+		"cascade880": "Le lien $$6 sera supprimé du champ suivant :",
+		"cascadeOriginal": "Les champs 880 liés suivants seront également supprimés :",
 		"no": "Annuler",
 		"ok": "Supprimer"
 	},

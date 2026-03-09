@@ -1,0 +1,34 @@
+<div class="to880-box">
+	<div class="to880-header">
+		<h3 class="title">{{ 'search.mode880.create880' | translate }}</h3>
+		<button class="to880-close-button" type="button" mat-icon-button color="primary" (click)="$event.stopPropagation(); closeTo880()">
+			<mat-icon>close</mat-icon>
+		</button>
+	</div>
+	<form [formGroup]="searchForm" class="search-form">
+		<div class="to880-row input-section">
+			<input class="to880-tag" [placeholder]="'search.form.tagPlaceholder' | translate" formControlName="tag" />
+			<input class="to880-ind" formControlName="ind1" />
+			<input class="to880-ind" formControlName="ind2" />
+			<span class="to880-label subfield">$$6:</span>
+			<input class="to880-subfield6" formControlName="subfield6" />
+		</div>
+		<div class="to880-row to880-subfield-row input-section">
+			<span class="to880-label subfield">{{ 'search.to880.subfieldsLabel' | translate }}:</span>
+			<textarea
+				class="to880-textarea"
+				[placeholder]="'search.form.subfieldsPlaceholder' | translate"
+				formControlName="subfields"
+				rows="3"
+			></textarea>
+		</div>
+		@if (!isReusedLink()) {
+		<p class="to880-hint">{{ 'search.to880.subfield6Hint' | translate:{ value: originalSubfield6Value() } }}</p>
+		}
+		<div class="button-section">
+			<button type="button" color="primary" (click)="createField880()">
+				{{ 'search.addToRecord' | translate }}
+			</button>
+		</div>
+	</form>
+</div>

@@ -1,0 +1,190 @@
+@use "../marc-field-editor.shared";
+
+.to880-box {
+    position: relative;
+    padding: 10px;
+    background-color: #e0f2f1;
+    border-radius: 4px;
+    border-left: 4px solid #00897b;
+}
+
+.to880-box h3 {
+    margin: 0 0 8px 0;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.to880-box p {
+    color: #666;
+    font-size: 14px;
+}
+
+.to880-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+
+    .title {
+        margin: 0;
+    }
+}
+
+.search-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+    width: 100% !important;
+    margin: 0 !important;
+    text-align: left;
+}
+
+.to880-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 3px;
+    width: 100%;
+}
+
+.to880-tag {
+    margin-right: 5px;
+    flex: 0 0 auto;
+    width: calc(3ch + 10px);
+    min-width: calc(3ch + 10px);
+    text-align: center;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.to880-subfield6 {
+    margin-right: 5px;
+    flex: 0 0 auto;
+    width: calc(10ch + 10px);
+    min-width: calc(10ch + 10px);
+}
+
+.to880-ind {
+    flex: 0 0 auto;
+    width: calc(1ch + 10px);
+    min-width: calc(1ch + 10px);
+    text-align: center;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.to880-label {
+    color: black;
+    margin-left: 2px;
+    margin-right: 2px;
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    height: 28px;
+    line-height: 1;
+}
+
+.to880-textarea {
+    flex: 1 1 auto;
+    min-width: 0;
+    width: 100%;
+    min-height: 28px;
+    height: auto;
+    padding: 4px 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.2;
+    box-sizing: border-box;
+    resize: vertical;
+}
+
+.to880-subfield-row {
+    width: 100%;
+    flex-wrap: nowrap;
+    align-items: center;
+}
+
+.to880-subfield-row .to880-textarea {
+    width: auto;
+}
+
+.to880-close-button {
+    margin-left: auto;
+    flex: 0 0 auto;
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    padding: 0;
+    line-height: 32px;
+}
+
+.to880-hint {
+    font-size: 0.85em;
+    color: #00695c;
+    margin-top: 4px;
+    font-style: italic;
+}
+
+.button-section {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    margin: 0 !important;
+    text-align: left;
+}
+
+.button-section button {
+    flex: 0 0 auto;
+}
+
+.to880-row input,
+.to880-row .to880-tag,
+.to880-row .to880-ind,
+.to880-row .to880-subfield6 {
+    height: 28px;
+    padding: 4px 0;
+    box-sizing: border-box;
+    display: inline-block;
+    line-height: 1;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+.to880-row > * {
+    margin: 0;
+    vertical-align: middle;
+}
+
+input:disabled {
+    background-color: #f0f0f0;
+    color: #808080;
+    border: 1px solid #ccc;
+}
+
+.tag {
+    color: rgb(128, 0, 128);
+    width: 30px;
+    padding-left: 3px;
+  }
+
+  .ind {
+    color: rgb(0, 128, 0);
+    width: 1em;
+  }
+
+  .subfield {
+    color: rgb(0, 0, 255);
+  }
+
+@media (max-width: 900px) {
+        .to880-subfield6 {
+                flex: 1 1 100%;
+                width: 100%;
+        }
+}

@@ -17,12 +17,12 @@
 <h2>{{"biblioRecord.title" | translate}}</h2>
 <div class="marc">
 	@for (bibRecordField of bibRecordFieldsFromSelectedEntityDetails(); track $index) {
-	<div class="marc-row" [class.marc-row--active]="bibRecordField === lastSavedSelectedBibRecordField" [class.marc-row--updated]="isUpdatedField(bibRecordField)" [ngClass]="getMarcRowStatusClass(bibRecordField)">
+	<div class="marc-row" [class.marc-row--active]="bibRecordField === lastSavedSelectedBibRecordField" [class.marc-row--updated]="isFullRowHighlight(bibRecordField)" [ngClass]="getMarcRowStatusClass(bibRecordField)">
 		<div class="marc-column marc-column-actions">
 			@if(getIdrefAllowedTags().includes(bibRecordField.tag)){
 
 			<button mat-icon-button color="primary" (click)="saveCurrentEntry(bibRecordField);pushToInput(bibRecordField); searchIdref()" >
-				<mat-icon>edit</mat-icon>
+				<mat-icon>{{ getEditIcon(bibRecordField) }}</mat-icon>
 			</button>
 			<button mat-icon-button color="primary" (click)="deleteField(bibRecordField)">
 				<mat-icon>delete</mat-icon>
@@ -40,7 +40,7 @@
 		</div>
 		<div class="marc-column">
 			@for (valueEntry of bibRecordField.subfields; track $index) {
-			<div class="marc-column-value">
+			<div class="marc-column-value" [class.marc-subfield--updated]="isSubfieldHighlight(bibRecordField, valueEntry.code)">
 				@if (valueEntry.code && valueEntry.code !== '') {
 				<span class="subfield">$${{ valueEntry.code }}</span>
 				}

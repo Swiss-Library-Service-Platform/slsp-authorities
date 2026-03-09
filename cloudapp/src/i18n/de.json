@@ -19,6 +19,7 @@
 	},
 	"error": {
 		"httpError": "Bei der HTTP-Anfrage ist ein Fehler aufgetreten",
+		"eventServiceError": "Beim Event-Service von Alma ist ein Fehler aufgetreten, es sind keine Entitäten oder Details vorhanden",
 		"proxyErrorMmsIdNotFound": "REST-API-Fehler: {{0}}",
 		"catalogerRoleError": "Sie benötigen die Katalogisiererrolle, um diese Cloud App zu verwenden",
 		"institutionAllowedError": "Ihre Institution ist nicht berechtigt, diese Cloud App zu verwenden",
@@ -34,6 +35,7 @@
 		"updateRecord": "Aktualisieren",
 		"hideTo902": "Ausblenden",
 		"showTo902": "902 erstellen",
+		"showTo880": "880 erstellen",
 		"mode": {
 			"addField": "Feld hinzufügen",
 			"update": "Feld aktualisieren"
@@ -41,6 +43,9 @@
 		"mode902": {
 			"add902": "902 erstellen",
 			"update902": "902 aktualisieren"
+		},
+		"mode880": {
+			"create880": "880 erstellen"
 		},
 		"form": {
 			"tagPlaceholder": "Tag",
@@ -53,6 +58,10 @@
 			"warning": {
 				"missingIdrefIdentifier": "Dieses Feld hat keine IdRef-Kennung. Möchten Sie es wirklich hinzufügen?"
 			}
+		},
+		"to880": {
+			"subfieldsLabel": "Unterfelder",
+			"subfield6Hint": "$$6 {{value}} wird dem Originalfeld hinzugefügt."
 		},
 		"to902": {
 			"predefined": {
@@ -99,6 +108,8 @@
 	"deleteDialog": {
 		"title": "Löschen bestätigen",
 		"content": "Möchten Sie diesen Datensatz wirklich löschen?",
+		"cascade880": "Die $$6-Verknüpfung wird aus dem folgenden Feld entfernt:",
+		"cascadeOriginal": "Die folgenden verknüpften 880-Felder werden ebenfalls gelöscht:",
 		"no": "Abbrechen",
 		"ok": "Löschen"
 	},

@@ -5,6 +5,12 @@ import { catchError, EMPTY, finalize, Observable } from 'rxjs';
 import { SelectedBibFieldService } from '../../../services/selected-bib-field.service';
 import { FormValues, SearchMode, SearchMode902 } from '../../../models/search-form.model';
 import { BibRecordField, DataField } from '../../../models/bib-record.model';
+
+export interface HighlightEntry {
+  field: DataField;
+  mode: 'full' | 'subfield-only';
+  subfieldCodes?: string[];
+}
 import { NzBibRecordService } from '../../../services/nz-bib-record.service';
 import { EditingFieldBackupService } from '../../../services/editing-field-backup.service';
 import { LoadingIndicatorService } from '../../../services/loading-indicator.service';
@@ -29,8 +35,9 @@ export class BibRecordFieldModifierService {
   private editingFieldBackup = inject(EditingFieldBackupService);
   private loader = inject(LoadingIndicatorService);
   public isTo902FormVisible = signal(false);
+  public isTo880FormVisible = signal(false);
   public formResetNonce = signal(0);
-  public highlightedUpdatedField = signal<DataField | null>(null);
+  public highlightedUpdatedField = signal<HighlightEntry[]>([]);
 
   /**
    * Parse a flattened subfields string into structured code-value pairs
@@ -272,14 +279,23 @@ export class BibRecordFieldModifierService {
     this.isTo902FormVisible.set(false);
   }
 
+  public showTo880(): void {
+    this.isTo880FormVisible.set(true);
+  }
+
+  public closeTo880(): void {
+    this.isTo880FormVisible.set(false);
+  }
+
   /**
    * Réinitialise la recherche et le formulaire.
    */
   public clear(resetFormCallback?: () => void): void {
     this.isTo902FormVisible.set(false);
+    this.isTo880FormVisible.set(false);
     this.searchMode.set(SearchMode.AddField);
     this.selectedBibFieldService.selectedFieldFromBibRecord.set(undefined);
-    this.highlightedUpdatedField.set(null);
+    this.highlightedUpdatedField.set([]);
 
     if (resetFormCallback) {
       resetFormCallback();
@@ -292,6 +308,7 @@ export class BibRecordFieldModifierService {
    */
   public reset(): void {
     this.isTo902FormVisible.set(false);
+    this.isTo880FormVisible.set(false);
     this.searchMode902.set(SearchMode902.Add902);
     this.searchMode.set(SearchMode.AddField);
     this.selectedBibFieldService.reset();
@@ -331,7 +348,7 @@ export class BibRecordFieldModifierService {
   }
 
   private handleMutationSuccess(formattedValues: DataField, onSuccess?: () => void): void {
-    this.highlightedUpdatedField.set(formattedValues);
+    this.highlightedUpdatedField.set([{ field: formattedValues, mode: 'full' }]);
     this.reset();
     onSuccess?.();
     this.refreshSelectedEntityDetails();

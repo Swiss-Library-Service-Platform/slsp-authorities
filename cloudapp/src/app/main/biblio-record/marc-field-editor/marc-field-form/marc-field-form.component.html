@@ -40,6 +40,11 @@
 				{{ 'search.showTo902' | translate }}
 			</button>
 			}
+			@if (!this.isTo880FormVisible()) {
+				<button color="primary" (click)="showTo880()">
+				{{ 'search.showTo880' | translate }}
+			</button>
+			}
 			<button color="primary" (click)="clear()">
 				{{ 'search.clear' | translate }}
 			</button>

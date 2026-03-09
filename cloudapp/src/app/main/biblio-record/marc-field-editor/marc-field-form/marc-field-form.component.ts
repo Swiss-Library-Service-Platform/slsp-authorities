@@ -34,6 +34,7 @@ export class MarcFieldFormComponent implements AfterViewInit {
 
 	public readonly searchMode = this.bibRecordFieldModifierService.searchMode;
 	public readonly isTo902FormVisible = this.bibRecordFieldModifierService.isTo902FormVisible;
+	public readonly isTo880FormVisible = this.bibRecordFieldModifierService.isTo880FormVisible;
 	public readonly selectedFieldFromBibRecord = this.selectedBibFieldService.selectedFieldFromBibRecord;
 	public readonly flattenedValue = this.selectedBibFieldService.flattenedValue;
 	public readonly formResetNonce = this.bibRecordFieldModifierService.formResetNonce;
@@ -168,6 +169,10 @@ export class MarcFieldFormComponent implements AfterViewInit {
 
 	public showTo902(): void {
 		this.bibRecordFieldModifierService.showTo902();
+	}
+
+	public showTo880(): void {
+		this.bibRecordFieldModifierService.showTo880();
 	}
 
 	public clear(): void {

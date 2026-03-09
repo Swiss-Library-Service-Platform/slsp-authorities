@@ -12,5 +12,6 @@ export class MarcFieldEditorContainerComponent {
 
 	public entity = input.required<NzBibRecord | undefined>();
 	public isTo902FormVisible = inject(BibRecordFieldModifierService).isTo902FormVisible;
+	public isTo880FormVisible = inject(BibRecordFieldModifierService).isTo880FormVisible;
 	public searchMode902 = inject(BibRecordFieldModifierService).searchMode902;
 }
