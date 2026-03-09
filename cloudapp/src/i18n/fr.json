@@ -1,39 +1,23 @@
 {
 	"main": {
 		"rightIssue": "Vous n'avez pas les droits nécessaires pour utiliser cette Cloud App",
-		"actionMessage": "Démo",
-		"actionButtonLabel": "Action principale",
 		"detailsButtonLabel": "Détails",
 		"resetButtonLabel": "Réinitialiser",
-		"noEntities": "Aucune entité",
-		"searchButtonLabel": "Recherche IdRef",
-		"idrefLogoAlt": "Logo IdRef",
-		"noActiveRecordInMetadataEditor": "Aucun enregistrement actif, veuillez ouvrir une notice bibliographique dans l'éditeur de métadonnées",
-		"entity": {
-			"description": "Description",
-			"id": "Id",
-			"type": "Type",
-			"link": "Lien"
-		},
-		"acceptRefreshModal": "Attention ! N'oubliez pas de cliquer sur accepter l'actualisation."
+		"noActiveRecordInMetadataEditor": "Aucun enregistrement actif, veuillez ouvrir une notice bibliographique dans l'éditeur de métadonnées"
 	},
 	"error": {
-		"httpError": "Une erreur s'est produite avec la requête HTTP",
 		"proxyErrorMmsIdNotFound": "Cette notice ne peut pas être modifiée.",
 		"eventServiceError": "Une erreur s'est produite avec le service d'événements d'Alma, il n'y a aucune entité ou détail à afficher",
 		"catalogerRoleError": "Vous avez besoin du rôle de catalogueur pour utiliser cette Cloud App",
-		"institutionAllowedError": "Votre institution n'est pas autorisée à utiliser cette Cloud App",
-		"noSelectedEntry": "Aucune entrée sélectionnée"
+		"institutionAllowedError": "Votre institution n'est pas autorisée à utiliser cette Cloud App"
 	},
 	"search": {
 		"addToRecord": "Ajouter",
 		"clear": "Annuler",
-		"notImplemented": "Pas encore implémenté",
 		"noSelectedEntry": "Aucune entrée sélectionnée",
 		"recordAdded": "La notice a été mise à jour.",
 		"acceptRefreshModal": "Attention ! N'oubliez pas de cliquer sur accepter l'actualisation.",
 		"updateRecord": "Mettre à jour",
-		"hideTo902": "Masquer",
 		"showTo902": "Créer 902",
 		"showTo880": "Créer 880",
 		"mode": {
@@ -52,7 +36,6 @@
 			"subfieldsPlaceholder": "sous-champ",
 			"error": {
 				"emptyTag": "Impossible d'ajouter un champ sans étiquette, merci de corriger pour l'ajouter.",
-				"no$$0In6xx": "Ce champ n'a pas d'identifiant IdRef, voulez-vous vraiment l'ajouter ?",
 				"no$$2With$$0In6xx": "Le sous-champ $$2 idref est manquant, merci de corriger avant d'insérer le champ"
 			},
 			"warning": {
@@ -75,31 +58,16 @@
 		}
 	},
 	"biblioRecord": {
-		"title": "Champs liés aux autorités",
-		"notImplemented": "Pas encore implémenté"
+		"title": "Champs liés aux autorités"
 	},
 	"idrefRecord": {
 		"title": "Recherche IdRef",
 		"select": "Sélectionner",
 		"noIdrefAuthority": "Aucune notice d'autorité n'est liée à ce PPN.",
-		"paginatorNext": "page suivante",
 		"NoCurrentSearch": "Il n'y a pas encore de résultats de recherche.",
 		"view": "Voir",
 		"isStrictSearch": "Stricte",
-		"queryPlaceholder": "requête",
-		"selectPageAria": "Sélectionner la page",
-		"searchIndex": {
-			"all": "Tous",
-			"person": "Personne",
-			"collectivity": "Collectivité",
-			"congress": "Congrès",
-			"family": "Famille",
-			"uniformTitle": "Titre uniforme",
-			"authorTitle": "Auteur / titre",
-			"subject": "Sujet",
-			"geographicName": "Nom géographique",
-			"formGenre": "Forme / genre"
-		}
+		"queryPlaceholder": "requête"
 	},
 	"idrefEntryDetails": {
 		"title": "Détails de l'entrée IdRef",
@@ -129,7 +97,6 @@
 		"generalTitle": "Paramètres généraux",
 		"pageSize": "Taille de page",
 		"searchRowNumber": "Taille de la requête IdRef",
-		"proxyUrl": "URL du proxy",
 		"userSignature": "Signature utilisateur",
 		"save": "Enregistrer",
 		"remove": "Supprimer",
