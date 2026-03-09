@@ -1,5 +1,5 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { IdrefRecords } from '../models/idref-model';
+import { IdrefRecords } from '../models/idref.model';
 import { Observable, take, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';

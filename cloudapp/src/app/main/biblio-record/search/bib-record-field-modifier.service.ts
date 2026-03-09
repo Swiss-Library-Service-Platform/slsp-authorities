@@ -3,13 +3,13 @@ import { Injectable, inject, signal } from '@angular/core';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 import { catchError, EMPTY, finalize, Observable } from 'rxjs';
 import { IdrefService } from '../../../services/idref.service';
-import { FormValues, SearchMode, SearchMode902 } from './model';
+import { FormValues, SearchMode, SearchMode902 } from '../../../models/search-form.model';
 import { BibRecordField, DataField } from '../../../models/bib-record.model';
 import { NZQueryService } from '../../../services/nzquery.service';
 import { BiblioReferencedEntryService } from '../../../services/biblio-referenced-entry.service';
 import { LoadingIndicatorService } from '../../../services/loading-indicator.service';
 import { TranslateService } from '@ngx-translate/core';
-import { StringUtils } from '../../../utils/stringUtils';
+import { StringUtils } from '../../../utils/string-utils';
 import { AuthorityDetailsService } from '../../entity-detail/idref-entry-details/authority-details.service';
 import { SearchResultService } from '../../../services/search-result.service';
 

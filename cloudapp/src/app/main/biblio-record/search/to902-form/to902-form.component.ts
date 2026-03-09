@@ -3,7 +3,7 @@ import { Component, computed, DestroyRef, effect, inject, input, signal } from '
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NzBibRecord } from '../../../../models/bib-record.model';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { FormValues } from '../model';
+import { FormValues } from '../../../../models/search-form.model';
 import { AlertService, CloudAppEventsService, CloudAppSettingsService } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
 import { Settings } from '../../../../models/settings.model';

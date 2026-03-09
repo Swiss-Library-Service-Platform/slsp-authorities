@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { MainComponent } from './main/main.component';
 import { SettingsComponent } from './settings/settings.component';
-import { ConfigurationGuard } from './services/configuration-guard';
+import { ConfigurationGuard } from './services/configuration.guard';
 import { ConfigurationComponent } from './configuration/configuration.component';
 
 const routes: Routes = [

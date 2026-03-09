@@ -9,7 +9,7 @@ import { NzBibRecord, DataField, BibRecordField } from '../models/bib-record.mod
 import { AuthenticationService } from './authentication.service';
 import { HttpClient } from '@angular/common/http';
 import { RecordService } from './record.service';
-import { StringUtils } from '../utils/stringUtils';
+import { StringUtils } from '../utils/string-utils';
 import { InitService } from './init.service';
 
 @Injectable({

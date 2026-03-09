@@ -5,12 +5,12 @@ import { BibRecordField } from '../../models/bib-record.model';
 import { MARC_STRUCTURE_KEY } from '../../models/idref.model';
 import { BiblioReferencedEntryService } from '../../services/biblio-referenced-entry.service';
 import { IdrefService } from '../../services/idref.service';
-import { SearchMode, SearchMode902 } from './search/model';
+import { SearchMode, SearchMode902 } from '../../models/search-form.model';
 import { IdrefRecordService } from '../entity-detail/idref-record/idref-record.service';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
 import { BiblioRecordMarcService } from './domain/biblio-record-marc.service';
-import { StringUtils } from '../../utils/stringUtils';
+import { StringUtils } from '../../utils/string-utils';
 import { RecordService } from '../../services/record.service';
 import { BibRecordFieldModifierService } from './search/bib-record-field-modifier.service';
 
