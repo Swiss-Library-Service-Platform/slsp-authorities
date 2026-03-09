@@ -4,18 +4,18 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { distinctUntilChanged } from 'rxjs';
 import { NzBibRecord } from '../../../../models/bib-record.model';
-import { IdrefService } from '../../../../services/idref.service';
-import { IdrefRecordService } from '../../../entity-detail/idref-record/idref-record.service';
+import { SelectedBibFieldService } from '../../../../services/selected-bib-field.service';
+import { IdrefQueryBuilderService } from '../../../entity-detail/idref-search-results/idref-query-builder.service';
 import { MatDialog } from '@angular/material/dialog';
 import { CreationWarningModalComponent } from '../../creation-warning-modal/creation-warning-modal.component';
 import { BibRecordFieldModifierService } from '../bib-record-field-modifier.service';
 
 @Component({
-	selector: 'app-main-form',
-	templateUrl: './main-form.component.html',
-	styleUrl: './main-form.component.scss',
+	selector: 'app-marc-field-form',
+	templateUrl: './marc-field-form.component.html',
+	styleUrl: './marc-field-form.component.scss',
 })
-export class MainFormComponent implements AfterViewInit {
+export class MarcFieldFormComponent implements AfterViewInit {
 	public entity = input.required<NzBibRecord | undefined>();
 
 	public searchForm: FormGroup;
@@ -25,17 +25,17 @@ export class MainFormComponent implements AfterViewInit {
 	@ViewChild('subfieldsTextarea') private subfieldsTextarea?: ElementRef<HTMLTextAreaElement>;
 
 
-	private idrefService = inject(IdrefService);
+	private selectedBibFieldService = inject(SelectedBibFieldService);
 	private bibRecordFieldModifierService = inject(BibRecordFieldModifierService);
-	private idrefRecordService = inject(IdrefRecordService);
+	private idrefQueryBuilder = inject(IdrefQueryBuilderService);
 	private fb = inject(FormBuilder);
 	private destroyRef = inject(DestroyRef);
 	private dialog = inject(MatDialog);
 
 	public readonly searchMode = this.bibRecordFieldModifierService.searchMode;
 	public readonly isTo902FormVisible = this.bibRecordFieldModifierService.isTo902FormVisible;
-	public readonly selectedFieldFromBibRecord = this.idrefService.selectedFieldFromBibRecord;
-	public readonly flattenedValue = this.idrefService.flattenedValue;
+	public readonly selectedFieldFromBibRecord = this.selectedBibFieldService.selectedFieldFromBibRecord;
+	public readonly flattenedValue = this.selectedBibFieldService.flattenedValue;
 	public readonly formResetNonce = this.bibRecordFieldModifierService.formResetNonce;
 
 	public constructor() {
@@ -143,7 +143,7 @@ export class MainFormComponent implements AfterViewInit {
 		};
 
 		this.bibRecordFieldModifierService.setSelectedFieldFromBibRecord(values);
-		this.idrefRecordService.searchFromCurrentEntryContext();
+		this.idrefQueryBuilder.searchFromCurrentEntryContext();
 	}
 
 	public addRecord(): void {

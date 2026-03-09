@@ -2,9 +2,9 @@ import { Component, computed, inject, ViewChild} from '@angular/core';
 import { BiblioRecordComponent } from '../biblio-record/biblio-record.component';
 import { tagGroups } from '../../models/idref.model';
 import { MainFacadeService } from '../main-facade.service';
-import { RecordService } from '../../services/record.service';
+import { SelectedEntityStateService } from '../../services/selected-entity-state.service';
 import { AuthorityDetailsService } from './idref-entry-details/authority-details.service';
-import { IdrefService } from '../../services/idref.service';
+import { SelectedBibFieldService } from '../../services/selected-bib-field.service';
 
 // Composant central de la Cloud App : recherche IdRef, notice bibliographique NZ et notice d'autorité IdRef.
 @Component({
@@ -17,13 +17,13 @@ export class EntityDetailComponent {
 	@ViewChild(BiblioRecordComponent) public bibRecord!: BiblioRecordComponent
 
 	private facade = inject(MainFacadeService);
-	private recordService = inject(RecordService);
+	private selectedEntityState = inject(SelectedEntityStateService);
 	private authorityDetailsService = inject(AuthorityDetailsService);
-	private idrefService = inject(IdrefService);
+	private selectedBibFieldService = inject(SelectedBibFieldService);
   	// eslint-disable-next-line @typescript-eslint/member-ordering
-  	public selectedEntityDetails = computed(() => this.recordService.selectedEntityDetails());
+  	public selectedEntityDetails = computed(() => this.selectedEntityState.selectedEntityDetails());
 	// eslint-disable-next-line @typescript-eslint/member-ordering
-	public showIdrefRecord = computed(() => !!this.idrefService.selectedFieldFromBibRecord());
+	public showIdrefRecord = computed(() => !!this.selectedBibFieldService.selectedFieldFromBibRecord());
 	// eslint-disable-next-line @typescript-eslint/member-ordering
 	public showIdrefEntryDetails = computed(() => !!this.authorityDetailsService.idrefAuthorityDetail());
 

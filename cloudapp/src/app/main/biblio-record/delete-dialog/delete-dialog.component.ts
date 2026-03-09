@@ -5,8 +5,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { BibRecordField } from '../../../models/bib-record.model';
 import { LoadingIndicatorService } from '../../../services/loading-indicator.service';
 import { EMPTY, catchError, finalize, switchMap } from 'rxjs';
-import { BibRecordFieldModifierService } from '../search/bib-record-field-modifier.service';
-import { NZQueryService } from '../../../services/nzquery.service';
+import { BibRecordFieldModifierService } from '../marc-field-editor/bib-record-field-modifier.service';
+import { NzBibRecordService } from '../../../services/nz-bib-record.service';
 
 
 @Component({
@@ -19,7 +19,7 @@ export class DeleteDialogComponent {
   
   
   public dialogRef= inject(MatDialogRef<DeleteDialogComponent>);
-  private nzQueryService = inject(NZQueryService);
+  private nzBibRecordService = inject(NzBibRecordService);
   private bibRecordFieldModifierService = inject(BibRecordFieldModifierService);
   private alert = inject(AlertService);
   private translate = inject(TranslateService);
@@ -45,10 +45,10 @@ export class DeleteDialogComponent {
     this.dialogRef.disableClose = true;
     this.dialogRef.close();
     this.loader.show();
-    this.nzQueryService
+    this.nzBibRecordService
       .deleteBibRecord(this.data.bibRecordField)
       .pipe(
-        switchMap(() => this.nzQueryService.refreshSelectedEntityDetails$()),
+        switchMap(() => this.nzBibRecordService.refreshSelectedEntityDetails$()),
         catchError(() => {
           this.alert.error(this.translate.instant('error.eventServiceError'), { autoClose: false });
 

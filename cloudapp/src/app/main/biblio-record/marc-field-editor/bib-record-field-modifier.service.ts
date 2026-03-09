@@ -2,16 +2,16 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 import { catchError, EMPTY, finalize, Observable } from 'rxjs';
-import { IdrefService } from '../../../services/idref.service';
+import { SelectedBibFieldService } from '../../../services/selected-bib-field.service';
 import { FormValues, SearchMode, SearchMode902 } from '../../../models/search-form.model';
 import { BibRecordField, DataField } from '../../../models/bib-record.model';
-import { NZQueryService } from '../../../services/nzquery.service';
-import { BiblioReferencedEntryService } from '../../../services/biblio-referenced-entry.service';
+import { NzBibRecordService } from '../../../services/nz-bib-record.service';
+import { EditingFieldBackupService } from '../../../services/editing-field-backup.service';
 import { LoadingIndicatorService } from '../../../services/loading-indicator.service';
 import { TranslateService } from '@ngx-translate/core';
 import { StringUtils } from '../../../utils/string-utils';
 import { AuthorityDetailsService } from '../../entity-detail/idref-entry-details/authority-details.service';
-import { SearchResultService } from '../../../services/search-result.service';
+import { IdrefSearchService } from '../../../services/idref-search.service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,13 +20,13 @@ export class BibRecordFieldModifierService {
   public searchMode = signal<SearchMode>(SearchMode.AddField);
   public searchMode902 = signal<SearchMode902>(SearchMode902.Add902);
 
-  private searchResultService = inject(SearchResultService);
+  private idrefSearchService = inject(IdrefSearchService);
   private authorityDetailsService = inject(AuthorityDetailsService);
-  private idrefService = inject(IdrefService);
-  private nzQueryService = inject(NZQueryService);
+  private selectedBibFieldService = inject(SelectedBibFieldService);
+  private nzBibRecordService = inject(NzBibRecordService);
   private translate = inject(TranslateService);
   private alert = inject(AlertService);
-  private referenceCurrentField = inject(BiblioReferencedEntryService);
+  private editingFieldBackup = inject(EditingFieldBackupService);
   private loader = inject(LoadingIndicatorService);
   public isTo902FormVisible = signal(false);
   public formResetNonce = signal(0);
@@ -74,7 +74,7 @@ export class BibRecordFieldModifierService {
       subfields = '$$a ' + subfields;
     }
 
-    this.idrefService.selectedFieldFromBibRecord.set({
+    this.selectedBibFieldService.selectedFieldFromBibRecord.set({
       change: '',
       tag: values.tag,
       ind1: values.ind1,
@@ -99,7 +99,7 @@ export class BibRecordFieldModifierService {
 
     this.loader.show();
 
-    this.nzQueryService
+    this.nzBibRecordService
       .createFieldIfNotExists(formattedValues)
       .pipe(
         finalize(() => this.loader.hide()),
@@ -116,7 +116,7 @@ export class BibRecordFieldModifierService {
    * Met à jour un champ uniquement s'il existe.
    */
   public updateFieldIfFound(formValues: FormValues, onSuccess?: () => void): void {
-    const reference = this.referenceCurrentField.getSavedCurrentEntry();
+    const reference = this.editingFieldBackup.getSavedCurrentEntry();
 
     if (!reference) {
       this.alert.error(this.translate.instant('search.noSelectedEntry'), { delay: 1000, autoClose: true });
@@ -142,7 +142,7 @@ export class BibRecordFieldModifierService {
 
     this.loader.show();
 
-    this.nzQueryService
+    this.nzBibRecordService
       .updateFieldIfExists(reference, formattedValues)
       .pipe(
         finalize(() => this.loader.hide()),
@@ -160,7 +160,7 @@ export class BibRecordFieldModifierService {
    * Tente d'abord une mise à jour ; si le champ n'existe pas, le crée.
    */
   public addRecord(formValues: FormValues, onSuccess?: () => void): void {
-    const reference = this.referenceCurrentField.getSavedCurrentEntry();
+    const reference = this.editingFieldBackup.getSavedCurrentEntry();
 
     if (!reference) {
       this.alert.error(this.translate.instant('search.noSelectedEntry'), { delay: 1000, autoClose: true });
@@ -180,12 +180,12 @@ export class BibRecordFieldModifierService {
 
     this.loader.show();
 
-    this.nzQueryService
+    this.nzBibRecordService
       .updateFieldIfExists(reference, formattedValues)
       .pipe(
         catchError((err) => {
           if (err?.message === 'FIELD_NOT_FOUND') {
-            return this.nzQueryService.createFieldIfNotExists(formattedValues).pipe(
+            return this.nzBibRecordService.createFieldIfNotExists(formattedValues).pipe(
               catchError(() => this.handleRefreshWarning()),
             );
           }
@@ -278,7 +278,7 @@ export class BibRecordFieldModifierService {
   public clear(resetFormCallback?: () => void): void {
     this.isTo902FormVisible.set(false);
     this.searchMode.set(SearchMode.AddField);
-    this.idrefService.selectedFieldFromBibRecord.set(undefined);
+    this.selectedBibFieldService.selectedFieldFromBibRecord.set(undefined);
     this.highlightedUpdatedField.set(null);
 
     if (resetFormCallback) {
@@ -294,8 +294,8 @@ export class BibRecordFieldModifierService {
     this.isTo902FormVisible.set(false);
     this.searchMode902.set(SearchMode902.Add902);
     this.searchMode.set(SearchMode.AddField);
-    this.idrefService.reset();
-    this.searchResultService.reset();
+    this.selectedBibFieldService.reset();
+    this.idrefSearchService.reset();
     this.authorityDetailsService.reset();
   }
 
@@ -339,7 +339,7 @@ export class BibRecordFieldModifierService {
   }
 
   private refreshSelectedEntityDetails(): void {
-    this.nzQueryService
+    this.nzBibRecordService
       .refreshSelectedEntityDetails$()
       .pipe(catchError(() => EMPTY))
       .subscribe();

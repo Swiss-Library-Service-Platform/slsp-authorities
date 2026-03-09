@@ -8,18 +8,18 @@ import { Observable, switchMap, catchError, of, throwError, take, tap, EMPTY } f
 import { NzBibRecord, DataField, BibRecordField } from '../models/bib-record.model';
 import { AuthenticationService } from './authentication.service';
 import { HttpClient } from '@angular/common/http';
-import { RecordService } from './record.service';
+import { SelectedEntityStateService } from './selected-entity-state.service';
 import { StringUtils } from '../utils/string-utils';
 import { InitService } from './init.service';
 
 @Injectable({
 	providedIn: 'root',
 })
-export class NZQueryService {
+export class NzBibRecordService {
 	private authenticationService = inject(AuthenticationService);
 	private restService = inject(CloudAppRestService);
 	private http = inject(HttpClient);
-	private recordService = inject(RecordService);
+	private selectedEntityState = inject(SelectedEntityStateService);
 	private initService = inject(InitService);
 	private proxyUrl: string | undefined;
 
@@ -47,7 +47,7 @@ export class NZQueryService {
 	): Observable<NzBibRecord> {
 		return this.authenticationService.ensureAccess$().pipe(
 			switchMap(() => {
-				const entity = this.recordService.selectedEntity();
+				const entity = this.selectedEntityState.selectedEntity();
 
 				if (!entity) {
 					return throwError(() => new Error('Aucune entité sélectionnée.'));
@@ -87,7 +87,7 @@ export class NZQueryService {
 	public createFieldIfNotExists(updatedDataField: DataField): Observable<NzBibRecord> {
 		return this.authenticationService.ensureAccess$().pipe(
 			switchMap(() => {
-				const entity = this.recordService.selectedEntity();
+				const entity = this.selectedEntityState.selectedEntity();
 
 				if (!entity) {
 					return throwError(() => new Error('Aucune entité sélectionnée.'));
@@ -120,7 +120,7 @@ export class NZQueryService {
 	public deleteBibRecord(selectedEntry: BibRecordField): Observable<NzBibRecord> {
 		return this.authenticationService.ensureAccess$().pipe(
 			switchMap(() => {
-				const entity = this.recordService.selectedEntity();
+				const entity = this.selectedEntityState.selectedEntity();
 
 				if (!entity) {
 					return throwError(() => new Error('Aucune entité sélectionnée.'));
@@ -147,14 +147,14 @@ export class NZQueryService {
 	}
 
 	public refreshSelectedEntityDetails$(): Observable<NzBibRecord> {
-		const entity = this.recordService.selectedEntity();
+		const entity = this.selectedEntityState.selectedEntity();
 
 		if (!entity) {
 			return EMPTY;
 		}
 
 		return this.getBibRecord(entity).pipe(
-			tap((bib) => this.recordService.selectedEntityDetails.set(bib))
+			tap((bib) => this.selectedEntityState.selectedEntityDetails.set(bib))
 		);
 	}
 

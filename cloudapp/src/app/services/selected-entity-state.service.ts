@@ -6,7 +6,7 @@ import { NzBibRecord } from '../models/bib-record.model';
 @Injectable({
 	providedIn: 'root',
 })
-export class RecordService {
+export class SelectedEntityStateService {
 	public selectedEntity = signal<Entity | null>(null);
 	public selectedEntityDetails = signal<NzBibRecord | undefined>(undefined);
 

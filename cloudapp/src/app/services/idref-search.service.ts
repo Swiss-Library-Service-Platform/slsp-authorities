@@ -9,7 +9,7 @@ import { Settings } from '../models/settings.model';
 @Injectable({
 	providedIn: 'root',
 })
-export class SearchResultService {
+export class IdrefSearchService {
 	public idrefResult = signal<IdrefRecords | undefined>(undefined);
 	private searchRowNumber = 10;
 	private http = inject(HttpClient);

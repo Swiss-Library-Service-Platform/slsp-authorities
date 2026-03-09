@@ -4,34 +4,34 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatPaginator } from '@angular/material/paginator';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Doc, IDREF_FILTER_MAP, IDREF_RECORDTYPE_TO_ICON_MAP } from '../../../models/idref.model';
-import { IdrefRecordService } from './idref-record.service';
+import { IdrefQueryBuilderService } from './idref-query-builder.service';
 import { AlertService, CloudAppSettingsService } from '@exlibris/exl-cloudapp-angular-lib';
 import { Settings } from '../../../models/settings.model';
 import { IconService } from '../../../services/icon.service';
 import { debounceTime, distinctUntilChanged, catchError, EMPTY } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthorityDetailsService } from '../idref-entry-details/authority-details.service';
-import { SearchResultService } from '../../../services/search-result.service';
+import { IdrefSearchService } from '../../../services/idref-search.service';
 
 @Component({
-	selector: 'app-idref-record',
-	templateUrl: './idref-record.component.html',
-	styleUrl: './idref-record.component.scss',
+	selector: 'app-idref-search-results',
+	templateUrl: './idref-search-results.component.html',
+	styleUrl: './idref-search-results.component.scss',
 })
-export class IdrefRecordComponent {
+export class IdrefSearchResultsComponent {
 	public selectedDoc: Doc | null = null;
 	public searchIndexes = IDREF_FILTER_MAP;
 
 	private authorityDetailsService = inject(AuthorityDetailsService);
-	private searchResultService = inject(SearchResultService);
-	private idrefRecordService = inject(IdrefRecordService);
+	private idrefSearchService = inject(IdrefSearchService);
+	private idrefQueryBuilder = inject(IdrefQueryBuilderService);
 	private settingsService = inject(CloudAppSettingsService);
 	private fb = inject(FormBuilder);
 	private destroyRef = inject(DestroyRef);
 	private alert = inject(AlertService);
 	private translate = inject(TranslateService);
 
-	public idrefResult = this.searchResultService.idrefResult;
+	public idrefResult = this.idrefSearchService.idrefResult;
 	public iconMap = IDREF_RECORDTYPE_TO_ICON_MAP;
 
 	// Pagination.
@@ -72,9 +72,9 @@ export class IdrefRecordComponent {
 
 		// Synchronise les signaux du service vers le formulaire.
 		effect(() => {
-			const searchIndex = this.idrefRecordService.formSearchIndex();
-			const constructedQuery = this.idrefRecordService.formConstructedQuery();
-			const isStrictSearch = this.idrefRecordService.formIsStrictSearch();
+			const searchIndex = this.idrefQueryBuilder.formSearchIndex();
+			const constructedQuery = this.idrefQueryBuilder.formConstructedQuery();
+			const isStrictSearch = this.idrefQueryBuilder.formIsStrictSearch();
 
 			this.searchForm.patchValue(
 				{
@@ -88,12 +88,12 @@ export class IdrefRecordComponent {
 
 		// Synchronise le formulaire vers les signaux du service.
 		this.searchForm.get('searchIndex')?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((value) => {
-			this.idrefRecordService.formSearchIndex.set(value);
+			this.idrefQueryBuilder.formSearchIndex.set(value);
 			this.onSearch({ searchIndex: value });
 		});
 
 		this.searchForm.get('constructedQuery')?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((value) => {
-			this.idrefRecordService.formConstructedQuery.set(value);
+			this.idrefQueryBuilder.formConstructedQuery.set(value);
 		});
 
 		this.searchForm
@@ -109,19 +109,19 @@ export class IdrefRecordComponent {
 			return;
 		}
 
-		this.idrefRecordService.formIsStrictSearch.set(input.checked);
+		this.idrefQueryBuilder.formIsStrictSearch.set(input.checked);
 		this.onSearch();
 	}
 
 	public pushTobiblioRecordForm(doc: Doc): void {
-		this.idrefRecordService.updateSelectedEntryWithPPN(doc);
+		this.idrefQueryBuilder.updateSelectedEntryWithPPN(doc);
 	}
 
 	public onSearch(overrides?: Partial<{ searchIndex: string; constructedQuery: string }>): void {
 		const searchIndex = overrides?.searchIndex ?? (this.searchForm.get('searchIndex')?.value as string) ?? 'all';
 		const constructedQuery = overrides?.constructedQuery ?? (this.searchForm.get('constructedQuery')?.value as string) ?? '';
 
-		this.idrefRecordService.searchFromFormValues(searchIndex, constructedQuery);
+		this.idrefQueryBuilder.searchFromFormValues(searchIndex, constructedQuery);
 	}
 
 	public showDetails(ppn: string): void {

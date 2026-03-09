@@ -61,53 +61,52 @@ Code principal dans `cloudapp/src/app`:
 Fichiers pivots:
 
 - `main/main-facade.service.ts`: orchestration haut niveau de la vue principale
-- `services/nzquery.service.ts`: appels Alma/NZ et mutation des notices
-- `services/idref.service.ts`: appels IdRef + état résultat/détail
-- `main/entity-detail/idref-record/idref-record.service.ts`: construction de requêtes IdRef depuis le contexte MARC
+- `services/nz-bib-record.service.ts`: appels Alma/NZ et mutation des notices
+- `services/selected-bib-field.service.ts`: état du champ MARC sélectionné + résolution de structure
+- `main/entity-detail/idref-search-results/idref-query-builder.service.ts`: construction de requêtes IdRef depuis le contexte MARC
 
 ### Flux de données (référence)
 
 ### 1 main.ts ###
     -Soit on affiche la liste des notices bibliographiques que alma met à disposition via entities$
     -Soit une notice est séléctionné et on affiche le detail de cette notice via entity-details
-    Lorsque l'on selectionne une notice bibliographique dans le main.ts, on apelle recordService.selectedEntity.set()
-    c'est recordService qui sert de référence à la notice bibliographique que l'on manipule
+    Lorsque l'on selectionne une notice bibliographique dans le main.ts, on apelle selectedEntityState.selectedEntity.set()
+    c'est selectedEntityState qui sert de référence à la notice bibliographique que l'on manipule
 
-### 2 recordService.ts ###
+### 2 selectedEntityStateService.ts ###
     c'est le service qui sert de référence à la notice bibliographique que l'on manipule.
     -il contient selectedEntity qui est l'entité séléctionné depuis les notices dans entites$ de main.ts
-    -selectedEntityDetails est également un signal qui correspond à la notice bibliographique de la NZ. Elle est mise à jour par nzquery.service.ts  dans la méthode getBibRecord() elle même appelé par refreshSelectedEntityDetails$
+    -selectedEntityDetails est également un signal qui correspond à la notice bibliographique de la NZ. Elle est mise à jour par nz-bib-record.service.ts dans la méthode getBibRecord() elle même appelé par refreshSelectedEntityDetails$
 
-### 3 idrefService.ts ###
-    c'est le service qui contient les valeurs qui vont être écrites dans le main-form.component.ts et le to902.component.ts.
+### 3 selectedBibFieldService.ts ###
+    c'est le service qui contient les valeurs qui vont être écrites dans le marc-field-form.component.ts et le to902.component.ts.
     La valeur du signal de selectedFieldFromBibRecord peut être modifier depuis:
     -biblio-record.component via le pushToInput utiliser dans le template.
-    -main-form.component qui appelle sa méthode onSearch qui elle même appelle bib-record-field-modifier.service via setSelectedFieldFromBibRecord qui va modifier selectedFieldFromBibRecord.
-    -idref-record.component qui va appelé la méthode updateSelectedEntryWithPPN du service idrefRecordService qui va mettre à jour selectedFieldFromBibRecord.
+    -marc-field-form.component qui appelle sa méthode onSearch qui elle même appelle bib-record-field-modifier.service via setSelectedFieldFromBibRecord qui va modifier selectedFieldFromBibRecord.
+    -idref-search-results.component qui va appelé la méthode updateSelectedEntryWithPPN du service idrefQueryBuilder qui va mettre à jour selectedFieldFromBibRecord.
 
 ### 4 bibRecordFieldModifierService.ts ###
-    Ce service contient les méthodes qui sont utilisé dans le main-form.component et le to902.component pour mettre à jour les valeurs des champs de l'entité. derrière pour faire les requettes, c'est le NzQuery.service qui est appelé.
+    Ce service contient les méthodes qui sont utilisé dans le marc-field-form.component et le to902.component pour mettre à jour les valeurs des champs de l'entité. derrière pour faire les requettes, c'est le NzBibRecordService qui est appelé.
 
-    Ce service est aussi utilisé pour gérer l'affichage des composants to902 et mainForm, alors que cette logique devrait être géré par un autre service.
+    Ce service est aussi utilisé pour gérer l'affichage des composants to902 et marcFieldForm, alors que cette logique devrait être géré par un autre service.
 
-### 5 idrefRecordService.ts ###
-    Ce service contient la source de donnée pour le formulaire de recherche idref du composant idref-record.component.ts
+### 5 idrefQueryBuilderService.ts ###
+    Ce service contient la source de donnée pour le formulaire de recherche idref du composant idref-search-results.component.ts
     Il est remplis depuis les sources suivantes:
     - bibliorecord.component via le bouton edit
-    - mainform.component via searchFromCurrentEntryContext qui apelle searchFromFormValues
-    - idref-record.component via le formulaire
+    - marc-field-form.component via searchFromCurrentEntryContext qui apelle searchFromFormValues
+    - idref-search-results.component via le formulaire
 
-### 6 biblio-referenced-entry.service ###
+### 6 editing-field-backup.service ###
     ce service garde une reference à la notice bibliographique que l'on modifie, elle sert dans le cas où il faut retrouver la notice que l'on modifie depuis l'api de alma (apreès une modification d'un champs par exemple)
 
-### 7 search-result.service ###
-    Ce service sert à gérer la recherche dans idref et stock également le résultat de la recherche. Dans le futur il faudrait diviser ce service car il gére aussi l'affichage
-    Ce service est appelé par idref-record.service via searchFromFormValues
+### 7 idref-search.service ###
+    Ce service gère la recherche dans IdRef et stocke le résultat via le signal `idrefResult`. Il est appelé par `idrefQueryBuilder` via `searchFromQuery$()`.
 
 ### 8 authority-details.service ###
-    ce service stocke le detail du résultat d'une rechercher idref pour un ppn donnée. Il sert à l'affichage de la vue complète de la ntoce d'authorité. Cependant ce service s'occupe également de l'affichage alors que ce devrait être dans un service séparé
+    Ce service stocke le détail d'une autorité IdRef pour un PPN donné via le signal `idrefAuthorityDetail`. Il récupère le XML depuis l'API IdRef et le parse en document DOM.
 
-### 9 nzquery.service ###
+### 9 nz-bib-record.service ###
     c'est ce service qui est responsable de faire les apelles à la NZ en passant par le proxy.
 
 ### Améliorations à faire ###
@@ -223,53 +222,52 @@ Main code in `cloudapp/src/app`:
 Key files:
 
 - `main/main-facade.service.ts`: high-level orchestration of the main view
-- `services/nzquery.service.ts`: Alma/NZ calls and record mutations
-- `services/idref.service.ts`: IdRef calls + result/detail state
-- `main/entity-detail/idref-record/idref-record.service.ts`: IdRef query building from MARC context
+- `services/nz-bib-record.service.ts`: Alma/NZ calls and record mutations
+- `services/selected-bib-field.service.ts`: selected MARC field state + structure resolution
+- `main/entity-detail/idref-search-results/idref-query-builder.service.ts`: IdRef query building from MARC context
 
 ### Data Flow (Reference)
 
 ### 1 main.ts ###
     - Either we display the list of bibliographic records that Alma provides via entities$
     - Or a record is selected and we display its detail via entity-details
-    When a bibliographic record is selected in main.ts, recordService.selectedEntity.set() is called.
-    recordService serves as the reference for the bibliographic record being manipulated.
+    When a bibliographic record is selected in main.ts, selectedEntityState.selectedEntity.set() is called.
+    selectedEntityState serves as the reference for the bibliographic record being manipulated.
 
-### 2 recordService.ts ###
+### 2 selectedEntityStateService.ts ###
     This is the service that serves as the reference for the bibliographic record being manipulated.
     - It contains selectedEntity, which is the entity selected from the records in entities$ of main.ts
-    - selectedEntityDetails is also a signal corresponding to the NZ bibliographic record. It is updated by nzquery.service.ts in the getBibRecord() method, itself called by refreshSelectedEntityDetails$
+    - selectedEntityDetails is also a signal corresponding to the NZ bibliographic record. It is updated by nz-bib-record.service.ts in the getBibRecord() method, itself called by refreshSelectedEntityDetails$
 
-### 3 idrefService.ts ###
-    This is the service that holds the values to be written in main-form.component.ts and to902.component.ts.
+### 3 selectedBibFieldService.ts ###
+    This is the service that holds the values to be written in marc-field-form.component.ts and to902.component.ts.
     The value of the selectedFieldFromBibRecord signal can be modified from:
     - biblio-record.component via pushToInput used in the template.
-    - main-form.component which calls its onSearch method, which in turn calls bib-record-field-modifier.service via setSelectedFieldFromBibRecord to modify selectedFieldFromBibRecord.
-    - idref-record.component which calls the updateSelectedEntryWithPPN method of idrefRecordService, which updates selectedFieldFromBibRecord.
+    - marc-field-form.component which calls its onSearch method, which in turn calls bib-record-field-modifier.service via setSelectedFieldFromBibRecord to modify selectedFieldFromBibRecord.
+    - idref-search-results.component which calls the updateSelectedEntryWithPPN method of idrefQueryBuilder, which updates selectedFieldFromBibRecord.
 
 ### 4 bibRecordFieldModifierService.ts ###
-    This service contains the methods used in main-form.component and to902.component to update entity field values. Behind the scenes, NzQuery.service is called to perform the requests.
+    This service contains the methods used in marc-field-form.component and to902.component to update entity field values. Behind the scenes, NzBibRecordService is called to perform the requests.
 
-    This service is also used to manage the display of the to902 and mainForm components, although this display logic should be handled by a separate service.
+    This service is also used to manage the display of the to902 and marcFieldForm components, although this display logic should be handled by a separate service.
 
-### 5 idrefRecordService.ts ###
-    This service contains the data source for the IdRef search form in the idref-record.component.ts component.
+### 5 idrefQueryBuilderService.ts ###
+    This service contains the data source for the IdRef search form in the idref-search-results.component.ts component.
     It is populated from the following sources:
     - bibliorecord.component via the edit button
-    - mainform.component via searchFromCurrentEntryContext which calls searchFromFormValues
-    - idref-record.component via the form
+    - marc-field-form.component via searchFromCurrentEntryContext which calls searchFromFormValues
+    - idref-search-results.component via the form
 
-### 6 biblio-referenced-entry.service ###
+### 6 editing-field-backup.service ###
     This service keeps a reference to the bibliographic record being modified. It is used when the record needs to be retrieved from the Alma API (e.g., after a field modification).
 
-### 7 search-result.service ###
-    This service manages IdRef searches and also stores the search results. In the future, this service should be split as it also handles display logic.
-    This service is called by idref-record.service via searchFromFormValues.
+### 7 idref-search.service ###
+    This service manages IdRef searches and stores results via the `idrefResult` signal. It is called by `IdrefQueryBuilderService` via `searchFromQuery$()`.
 
 ### 8 authority-details.service ###
-    This service stores the details of an IdRef search result for a given PPN. It is used to display the full view of the authority record. However, this service also handles display logic, which should be in a separate service.
+    This service stores the details of an IdRef authority for a given PPN via the `idrefAuthorityDetail` signal. It fetches XML from the IdRef API and parses it into a DOM document.
 
-### 9 nzquery.service ###
+### 9 nz-bib-record.service ###
     This is the service responsible for making calls to the NZ through the proxy.
 
 ### Improvements to be made ###

@@ -6,10 +6,10 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, tap, catchError, EMPTY, forkJoin, switchMap, of, finalize, Observable } from 'rxjs';
 import { AuthenticationService } from '../services/authentication.service';
 import { LoadingIndicatorService } from '../services/loading-indicator.service';
-import { NZQueryService } from '../services/nzquery.service';
-import { RecordService } from '../services/record.service';
-import { IdrefRecordService } from './entity-detail/idref-record/idref-record.service';
-import { BibRecordFieldModifierService } from './biblio-record/search/bib-record-field-modifier.service';
+import { NzBibRecordService } from '../services/nz-bib-record.service';
+import { SelectedEntityStateService } from '../services/selected-entity-state.service';
+import { IdrefQueryBuilderService } from './entity-detail/idref-search-results/idref-query-builder.service';
+import { BibRecordFieldModifierService } from './biblio-record/marc-field-editor/bib-record-field-modifier.service';
 
 
 @Injectable({
@@ -25,16 +25,16 @@ export class MainFacadeService {
 	private translate = inject(TranslateService);
 	private auth = inject(AuthenticationService);
 	private loader = inject(LoadingIndicatorService);
-	private recordService = inject(RecordService);
-	private nzQuery = inject(NZQueryService);
-	private idrefRecordService = inject(IdrefRecordService);
+	private selectedEntityState = inject(SelectedEntityStateService);
+	private nzBibRecordService = inject(NzBibRecordService);
+	private idrefQueryBuilder = inject(IdrefQueryBuilderService);
 	private bibRecordFieldModifierService = inject(BibRecordFieldModifierService);
 
 	public entities = toSignal<Entity[]>(
 		this.eventsService.entities$.pipe(
 			filter((entities) => entities.every((e) => e.type === EntityType.BIB_MMS)),
 
-			tap(() => this.recordService.resetSelectedEntity()),
+			tap(() => this.selectedEntityState.resetSelectedEntity()),
 
 			tap((entities) => {
 				if (entities.length === 1) {
@@ -53,10 +53,10 @@ export class MainFacadeService {
 	);
 
 	/** Expose l'entité sélectionnée. */
-	public selectedEntity = computed(() => this.recordService.selectedEntity());
+	public selectedEntity = computed(() => this.selectedEntityState.selectedEntity());
 
 	/** Expose les détails de l'entité sélectionnée. */
-	public selectedEntityDetails = computed(() => this.recordService.selectedEntityDetails());
+	public selectedEntityDetails = computed(() => this.selectedEntityState.selectedEntityDetails());
 
 	// ------------------
 	// LOGIQUE D'INITIALISATION
@@ -99,7 +99,7 @@ export class MainFacadeService {
 	// ------------------
 
 	public selectEntity(entity: Entity): void {
-		this.recordService.selectedEntity.set(entity);
+		this.selectedEntityState.selectedEntity.set(entity);
 		this.refreshSelectedEntityDetails();
 	}
 
@@ -109,13 +109,13 @@ export class MainFacadeService {
 
 	public reset(): void {
 		this.bibRecordFieldModifierService.reset();
-		this.recordService.resetSelectedEntity();
-		this.idrefRecordService.reset();
+		this.selectedEntityState.resetSelectedEntity();
+		this.idrefQueryBuilder.reset();
 	}
 
 	public refreshSelectedEntityDetails(): void {
 		this.loader.show();
-		this.nzQuery
+		this.nzBibRecordService
 			.refreshSelectedEntityDetails$()
 			.pipe(
 				catchError((error) => {

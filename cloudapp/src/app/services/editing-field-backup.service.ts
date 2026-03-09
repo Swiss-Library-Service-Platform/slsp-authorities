@@ -4,7 +4,7 @@ import { BibRecordField } from '../models/bib-record.model';
 @Injectable({
   providedIn: 'root'
 })
-export class BiblioReferencedEntryService {
+export class EditingFieldBackupService {
 
 	// Sauvegarde la notice en cours de modification, car les champs n'ont pas d'identifiant propre.
 
