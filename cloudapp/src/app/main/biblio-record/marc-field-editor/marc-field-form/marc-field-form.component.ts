@@ -1,5 +1,15 @@
 /* eslint-disable @typescript-eslint/member-ordering */
-import { AfterViewInit, Component, DestroyRef, ElementRef, ViewChild, effect, inject, input } from '@angular/core';
+import {
+	AfterViewInit,
+	Component,
+	DestroyRef,
+	ElementRef,
+	OnDestroy,
+	ViewChild,
+	effect,
+	inject,
+	input,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { distinctUntilChanged } from 'rxjs';
@@ -15,7 +25,7 @@ import { BibRecordFieldModifierService } from '../bib-record-field-modifier.serv
 	templateUrl: './marc-field-form.component.html',
 	styleUrl: './marc-field-form.component.scss',
 })
-export class MarcFieldFormComponent implements AfterViewInit {
+export class MarcFieldFormComponent implements AfterViewInit, OnDestroy {
 	public entity = input.required<NzBibRecord | undefined>();
 
 	public searchForm: FormGroup;
@@ -23,6 +33,8 @@ export class MarcFieldFormComponent implements AfterViewInit {
 	private lastHighlightedValue: string | null = null;
 	private highlightFramePending = false;
 	@ViewChild('subfieldsTextarea') private subfieldsTextarea?: ElementRef<HTMLTextAreaElement>;
+	@ViewChild('subfieldsWrapper') private subfieldsWrapper?: ElementRef<HTMLElement>;
+	private subfieldsResizeObserver?: ResizeObserver;
 
 
 	private selectedBibFieldService = inject(SelectedBibFieldService);
@@ -76,7 +88,12 @@ export class MarcFieldFormComponent implements AfterViewInit {
 	}
 
 	public ngAfterViewInit(): void {
+		this.initSubfieldsResizeObserver();
 		this.scheduleSubfieldsRender();
+	}
+
+	public ngOnDestroy(): void {
+		this.subfieldsResizeObserver?.disconnect();
 	}
 
 	public onSubfieldsInput(event: Event): void {
@@ -84,8 +101,6 @@ export class MarcFieldFormComponent implements AfterViewInit {
 	}
 
 	private scheduleSubfieldsRender(event?: Event): void {
-		this.autoResizeSubfields(event);
-
 		if (this.highlightFramePending) {
 			return;
 		}
@@ -93,8 +108,23 @@ export class MarcFieldFormComponent implements AfterViewInit {
 		this.highlightFramePending = true;
 		requestAnimationFrame(() => {
 			this.highlightFramePending = false;
+			this.autoResizeSubfields(event);
 			this.updateSubfieldsHighlight();
 		});
+	}
+
+	private initSubfieldsResizeObserver(): void {
+		const wrapper = this.subfieldsWrapper?.nativeElement;
+
+		if (!wrapper) {
+			return;
+		}
+
+		this.subfieldsResizeObserver = new ResizeObserver(() => {
+			this.scheduleSubfieldsRender();
+		});
+
+		this.subfieldsResizeObserver.observe(wrapper);
 	}
 
 	public autoResizeSubfields(event?: Event): void {

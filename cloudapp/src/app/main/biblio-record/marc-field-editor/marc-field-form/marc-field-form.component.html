@@ -8,7 +8,7 @@
 
 			<input class="indInput" formControlName="ind2" (keydown.enter)="$event.preventDefault()" />
 
-			<div class="subfields-wrapper">
+			<div #subfieldsWrapper class="subfields-wrapper">
 				<div class="subfields-highlight" [innerHTML]="highlightedSubfields"></div>
 				<textarea
 					#subfieldsTextarea
