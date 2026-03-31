@@ -9,7 +9,7 @@
    ],
    "icon": {
       "type": "url",
-      "value": "/assets/logo_SLSPauthorities.png"
+      "value": "/assets/logo_text_left.png"
    },
    "contentSecurity": {
       "connectSrc": [
