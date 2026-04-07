@@ -107,7 +107,7 @@
 	},
 	"deleteDialog": {
 		"title": "Validate delete",
-		"content": "Are you sure you want to delete this record?",
+		"content": "Are you sure you want to delete this field?",
 		"no": "Cancel",
 		"ok": "Delete"
 	},
