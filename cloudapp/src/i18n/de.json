@@ -99,7 +99,7 @@
 	},
 	"deleteDialog": {
 		"title": "Löschen bestätigen",
-		"content": "Möchten Sie diesen Datensatz wirklich löschen?",
+		"content": "Möchten Sie dieses Feld wirklich löschen?",
 		"no": "Abbrechen",
 		"ok": "Löschen"
 	},
@@ -114,7 +114,7 @@
 	"settings": {
 		"return": "Zurück",
 		"generalTitle": "Allgemeine Einstellungen",
-		"pageSize": "Seitengröße",
+		"pageSize": "Anzahl der Ergebnisse pro Seite",
 		"searchRowNumber": "IdRef-Abfragegröße",
 		"proxyUrl": "Proxy-URL",
 		"userSignature": "Benutzersignatur",
