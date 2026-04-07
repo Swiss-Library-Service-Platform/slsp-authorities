@@ -82,7 +82,7 @@
 		"queryPlaceholder": "requête",
 		"selectPageAria": "Sélectionner la page",
 		"searchIndex": {
-			"all": "Tous",
+			"all": "Tous les index",
 			"person": "Personne",
 			"collectivity": "Collectivité",
 			"congress": "Congrès",
@@ -103,7 +103,7 @@
 	},
 	"deleteDialog": {
 		"title": "Confirmer la suppression",
-		"content": "Êtes-vous sûr de vouloir supprimer cette notice ?",
+		"content": "Êtes-vous sûr de vouloir supprimer ce champ ?",
 		"no": "Annuler",
 		"ok": "Supprimer"
 	},
@@ -118,7 +118,7 @@
 	"settings": {
 		"return": "Retour",
 		"generalTitle": "Paramètres généraux",
-		"pageSize": "Taille de page",
+		"pageSize": "Nombre de résultats par page",
 		"searchRowNumber": "Taille de la requête IdRef",
 		"proxyUrl": "URL du proxy",
 		"userSignature": "Signature utilisateur",
