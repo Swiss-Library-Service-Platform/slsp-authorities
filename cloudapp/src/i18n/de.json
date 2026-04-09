@@ -1,7 +1,8 @@
 {
 	"main": {
 		"rightIssue": "Sie haben keine Berechtigung, diese Cloud App zu verwenden",
-		"detailsButtonLabel": "Details",
+		"showCompleteRecord": "Vollansicht",
+		"showBriefRecord": "Kurzansicht",
 		"resetButtonLabel": "Zurücksetzen",
 		"noActiveRecordInMetadataEditor": "Kein aktiver Datensatz, bitte öffnen Sie einen bibliografischen Datensatz im Metadaten-Editor."
 	},

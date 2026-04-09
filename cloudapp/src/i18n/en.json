@@ -1,7 +1,8 @@
 {
 	"main": {
 		"rightIssue": "You didn't have rights in order to use this cloud app",
-		"detailsButtonLabel": "Details",
+		"showCompleteRecord": "Show complete record",
+		"showBriefRecord": "Show brief record",
 		"resetButtonLabel": "Reset",
 		"noActiveRecordInMetadataEditor": "No active record, please open a bibliographical record in the Metadata editor"
 	},

@@ -5,7 +5,7 @@
       <h1 class="entity-title">{{ selectedEntityDetails()?.title }}</h1>
       <span class="entity-subtitle">{{ selectedEntityDetails()?.mms_id }} </span>
 	  <button color="primary" (click)="showDetails()">
-        {{ 'main.detailsButtonLabel' | translate }}
+        {{ (isCompleteView() ? 'main.showCompleteRecord' : 'main.showBriefRecord') | translate }}
       </button>
     </div>
 

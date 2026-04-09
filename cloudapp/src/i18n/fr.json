@@ -1,7 +1,8 @@
 {
 	"main": {
 		"rightIssue": "Vous n'avez pas les droits nécessaires pour utiliser cette Cloud App",
-		"detailsButtonLabel": "Détails",
+		"showCompleteRecord": "Voir notice complète",
+		"showBriefRecord": "Voir notice abrégée",
 		"resetButtonLabel": "Réinitialiser",
 		"noActiveRecordInMetadataEditor": "Aucun enregistrement actif, veuillez ouvrir une notice bibliographique dans l'éditeur de métadonnées"
 	},

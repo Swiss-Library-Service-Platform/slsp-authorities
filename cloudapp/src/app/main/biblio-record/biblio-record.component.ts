@@ -38,6 +38,7 @@ export class BiblioRecordComponent {
 	public readonly highlightedUpdatedField = this.bibRecordFieldModifierService.highlightedUpdatedField;
 	// Signaux des tags MARC autorisés.
 	private allowedTags = signal(MARC_STRUCTURE_KEY);
+	public isCompleteView = computed(() => this.allowedTags().length > 0);
 
 	// eslint-disable-next-line @typescript-eslint/member-ordering
 	public  bibRecordFieldsFromSelectedEntityDetails = computed(() => {
