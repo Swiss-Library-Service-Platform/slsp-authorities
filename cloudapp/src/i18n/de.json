@@ -65,7 +65,8 @@
 		"NoCurrentSearch": "Es liegen noch keine Suchergebnisse vor.",
 		"view": "Anzeigen",
 		"isStrictSearch": "Strikt",
-		"queryPlaceholder": "Suchanfrage"
+		"queryPlaceholder": "Suchanfrage",
+		"allIndexes": "Alle Indexe"
 	},
 	"idrefEntryDetails": {
 		"title": "Details des Idref-Eintrags",

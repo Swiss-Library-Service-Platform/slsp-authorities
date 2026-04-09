@@ -66,6 +66,7 @@ export interface MarcStructureValues {
 
 // Réexporte les constantes/utilitaires partagés pour conserver les chemins d'import existants.
 export {
+	ALL_INDEXES_KEY,
 	tagGroups,
 	MARC_STRUCTURE,
 	MARC_STRUCTURE_KEY,

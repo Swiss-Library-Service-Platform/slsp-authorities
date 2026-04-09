@@ -1,6 +1,8 @@
 import { BibRecordField } from '../models/bib-record.model';
 import { MarcStructureValues } from '../models/idref.model';
 
+export const ALL_INDEXES_KEY = 'all';
+
 export const IDREF_RECORDTYPE_TO_ICON_MAP = new Map<string, string>([
 	['a', 'personne'],
 	['b', 'collectivite'],
@@ -105,6 +107,8 @@ export function getIdrefRecordsFromBibRecordField(entry: BibRecordField): { labe
 
 function buildIdrefFilterMap(): Map<string, string> {
     const map = new Map<string, string>();
+
+    map.set(ALL_INDEXES_KEY, 'all');
 
     for (const { label, filters } of MARC_STRUCTURE.values()) {
         if (!label || !filters?.length) continue;

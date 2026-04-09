@@ -72,7 +72,8 @@
 		"NoCurrentSearch": "There are no search results yet.",
 		"view": "View",
 		"isStrictSearch": "Strict",
-		"queryPlaceholder": "query"
+		"queryPlaceholder": "query",
+		"allIndexes": "All indexes"
 	},
 	"idrefEntryDetails": {
 		"title": "Details of Idref entry",

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 import { Injectable, inject, Signal, computed, signal } from '@angular/core';
-import { Doc, IDREF_FILTER_MAP, IDREF_RECORDTYPE_MAP } from '../../../models/idref.model';
+import { ALL_INDEXES_KEY, Doc, IDREF_FILTER_MAP, IDREF_RECORDTYPE_MAP } from '../../../models/idref.model';
 import { SelectedBibFieldService } from '../../../services/selected-bib-field.service';
 import { BibRecordField } from '../../../models/bib-record.model';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
@@ -20,7 +20,7 @@ export class IdrefQueryBuilderService {
 	private translate = inject(TranslateService);
 
 	// Données du formulaire.
-	public formSearchIndex = signal<string>('all');
+	public formSearchIndex = signal<string>(ALL_INDEXES_KEY);
 	public formConstructedQuery = signal<string>('');
 	public formIsStrictSearch = signal<boolean>(false);
 
@@ -28,7 +28,7 @@ export class IdrefQueryBuilderService {
 		const suffixe = this.formIsStrictSearch() ? '_s' : '_t';
 		const searchIndex = IDREF_FILTER_MAP.get(this.formSearchIndex());
 
-		if (searchIndex !== 'all') {
+		if (searchIndex !== ALL_INDEXES_KEY) {
 			return `${searchIndex}${suffixe}`;
 		} else {
 			return searchIndex;
@@ -191,7 +191,7 @@ export class IdrefQueryBuilderService {
 	}
 
 	public reset(): void {
-		this.formSearchIndex.set('all');
+		this.formSearchIndex.set(ALL_INDEXES_KEY);
 		this.formConstructedQuery.set('');
 	}
 }

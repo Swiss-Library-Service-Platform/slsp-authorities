@@ -68,7 +68,8 @@
 		"NoCurrentSearch": "Il n'y a pas encore de résultats de recherche.",
 		"view": "Voir",
 		"isStrictSearch": "Stricte",
-		"queryPlaceholder": "requête"
+		"queryPlaceholder": "requête",
+		"allIndexes": "Tous les index"
 	},
 	"idrefEntryDetails": {
 		"title": "Détails de l'entrée IdRef",

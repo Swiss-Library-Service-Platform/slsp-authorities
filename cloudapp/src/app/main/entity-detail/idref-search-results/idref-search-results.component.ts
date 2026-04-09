@@ -3,7 +3,7 @@ import { Component, computed, DestroyRef, inject, Signal, ViewChild, signal, eff
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatPaginator } from '@angular/material/paginator';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { Doc, IDREF_FILTER_MAP, IDREF_RECORDTYPE_TO_ICON_MAP } from '../../../models/idref.model';
+import { ALL_INDEXES_KEY, Doc, IDREF_FILTER_MAP, IDREF_RECORDTYPE_TO_ICON_MAP } from '../../../models/idref.model';
 import { IdrefQueryBuilderService } from './idref-query-builder.service';
 import { AlertService, CloudAppSettingsService } from '@exlibris/exl-cloudapp-angular-lib';
 import { Settings } from '../../../models/settings.model';
@@ -56,16 +56,12 @@ export class IdrefSearchResultsComponent {
 	public constructor() {
 		inject(IconService);
 
-		// S'assure que la clé 'all' existe.
-		this.searchIndexes.set('all', 'all'); // Ou '' si un "sans index" réel est requis.
-
 		this.settingsService.get().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((settings) => {
 			this.pageSize.set((settings as Settings).pageSize);
 		});
 
-		// Initialise le formulaire avec `searchIndex = 'all'`.
 		this.searchForm = this.fb.group({
-			searchIndex: ['all'],
+			searchIndex: [ALL_INDEXES_KEY],
 			constructedQuery: [''],
 			isStrictSearch: false,
 		});
@@ -118,7 +114,7 @@ export class IdrefSearchResultsComponent {
 	}
 
 	public onSearch(overrides?: Partial<{ searchIndex: string; constructedQuery: string }>): void {
-		const searchIndex = overrides?.searchIndex ?? (this.searchForm.get('searchIndex')?.value as string) ?? 'all';
+		const searchIndex = overrides?.searchIndex ?? (this.searchForm.get('searchIndex')?.value as string) ?? ALL_INDEXES_KEY;
 		const constructedQuery = overrides?.constructedQuery ?? (this.searchForm.get('constructedQuery')?.value as string) ?? '';
 
 		this.idrefQueryBuilder.searchFromFormValues(searchIndex, constructedQuery);
