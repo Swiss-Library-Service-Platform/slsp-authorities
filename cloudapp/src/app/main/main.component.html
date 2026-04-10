@@ -27,6 +27,6 @@
 			></mat-spinner>
 		</div>
 	}
-} @else {
+} @else if (facade.authChecked()) {
 	<p>{{ 'main.rightIssue' | translate }}</p>
 }

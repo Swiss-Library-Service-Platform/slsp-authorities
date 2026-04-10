@@ -17,6 +17,7 @@ import { BibRecordFieldModifierService } from './biblio-record/marc-field-editor
 })
 export class MainFacadeService {
 	/** Rôles et autorisations institutionnelles. */
+	public authChecked = signal(false);
 	public hasCatalogerRole = signal(false);
 	public isInstitutionAllowed = signal(false);
 
@@ -73,6 +74,7 @@ export class MainFacadeService {
 				tap(({ hasRole, allowed }) => {
 					this.hasCatalogerRole.set(hasRole);
 					this.isInstitutionAllowed.set(allowed);
+					this.authChecked.set(true);
 
 					if (!hasRole)
 						this.alert.error(this.translate.instant('error.catalogerRoleError'), {
