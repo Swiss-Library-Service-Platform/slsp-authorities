@@ -66,7 +66,18 @@
 		"view": "Anzeigen",
 		"isStrictSearch": "Strikt",
 		"queryPlaceholder": "Suchanfrage",
-		"allIndexes": "Alle Indexe"
+		"searchIndex": {
+			"all": "Alle Indexe",
+			"person": "Person",
+			"collectivity": "Körperschaft",
+			"congress": "Kongress",
+			"family": "Familie",
+			"uniformTitle": "Einheitstitel",
+			"authorTitle": "Autor / Titel",
+			"subject": "Thema",
+			"geographicName": "Geografischer Name",
+			"formGenre": "Form / Genre"
+		}
 	},
 	"idrefEntryDetails": {
 		"title": "Details des Idref-Eintrags",

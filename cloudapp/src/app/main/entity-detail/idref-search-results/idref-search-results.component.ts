@@ -3,7 +3,7 @@ import { Component, computed, DestroyRef, inject, Signal, ViewChild, signal, eff
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatPaginator } from '@angular/material/paginator';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { ALL_INDEXES_KEY, Doc, IDREF_FILTER_MAP, IDREF_RECORDTYPE_TO_ICON_MAP } from '../../../models/idref.model';
+import { ALL_INDEXES_KEY, Doc, IDREF_FILTER_MAP, IDREF_RECORDTYPE_TO_ICON_MAP, SEARCH_INDEX_I18N_MAP } from '../../../models/idref.model';
 import { IdrefQueryBuilderService } from './idref-query-builder.service';
 import { AlertService, CloudAppSettingsService } from '@exlibris/exl-cloudapp-angular-lib';
 import { Settings } from '../../../models/settings.model';
@@ -21,6 +21,7 @@ import { IdrefSearchService } from '../../../services/idref-search.service';
 export class IdrefSearchResultsComponent {
 	public selectedDoc: Doc | null = null;
 	public searchIndexes = IDREF_FILTER_MAP;
+	public searchIndexI18nMap = SEARCH_INDEX_I18N_MAP;
 
 	private authorityDetailsService = inject(AuthorityDetailsService);
 	private idrefSearchService = inject(IdrefSearchService);

@@ -3,6 +3,19 @@ import { MarcStructureValues } from '../models/idref.model';
 
 export const ALL_INDEXES_KEY = 'all';
 
+export const SEARCH_INDEX_I18N_MAP = new Map<string, string>([
+	[ALL_INDEXES_KEY, 'idrefRecord.searchIndex.all'],
+	['Personne', 'idrefRecord.searchIndex.person'],
+	['Collectivité', 'idrefRecord.searchIndex.collectivity'],
+	['Congrès', 'idrefRecord.searchIndex.congress'],
+	['Famille', 'idrefRecord.searchIndex.family'],
+	['Titre uniforme', 'idrefRecord.searchIndex.uniformTitle'],
+	['Auteur / titre', 'idrefRecord.searchIndex.authorTitle'],
+	['Sujet', 'idrefRecord.searchIndex.subject'],
+	['Nom géographique', 'idrefRecord.searchIndex.geographicName'],
+	['Forme / genre', 'idrefRecord.searchIndex.formGenre'],
+]);
+
 export const IDREF_RECORDTYPE_TO_ICON_MAP = new Map<string, string>([
 	['a', 'personne'],
 	['b', 'collectivite'],

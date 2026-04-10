@@ -72,7 +72,18 @@
 		"view": "View",
 		"isStrictSearch": "Strict",
 		"queryPlaceholder": "query",
-		"allIndexes": "All indexes"
+		"searchIndex": {
+			"all": "All indexes",
+			"person": "Person",
+			"collectivity": "Collectivity",
+			"congress": "Conference",
+			"family": "Family",
+			"uniformTitle": "Uniform title",
+			"authorTitle": "Author / title",
+			"subject": "Subject",
+			"geographicName": "Geographic name",
+			"formGenre": "Form / genre"
+		}
 	},
 	"idrefEntryDetails": {
 		"title": "Details of Idref entry",

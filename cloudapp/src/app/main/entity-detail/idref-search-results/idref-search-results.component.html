@@ -12,7 +12,7 @@
 	<div class="search-form__inputs">
 		<select class="searchIndex" formControlName="searchIndex">
 			@for (indexLabel of searchIndexes.keys(); track indexLabel) {
-				<option [value]="indexLabel">{{ indexLabel === 'all' ? ('idrefRecord.allIndexes' | translate) : indexLabel }}</option>
+				<option [value]="indexLabel">{{ (searchIndexI18nMap.get(indexLabel) ?? indexLabel) | translate }}</option>
 			}
 		</select>
 		<input placeholder="{{ 'idrefRecord.queryPlaceholder' | translate }}" formControlName="constructedQuery" (keydown.enter)="onSearch()" />

@@ -69,7 +69,18 @@
 		"view": "Voir",
 		"isStrictSearch": "Stricte",
 		"queryPlaceholder": "requête",
-		"allIndexes": "Tous les index"
+		"searchIndex": {
+			"all": "Tous les index",
+			"person": "Personne",
+			"collectivity": "Collectivité",
+			"congress": "Congrès",
+			"family": "Famille",
+			"uniformTitle": "Titre uniforme",
+			"authorTitle": "Auteur / titre",
+			"subject": "Sujet",
+			"geographicName": "Nom géographique",
+			"formGenre": "Forme / genre"
+		}
 	},
 	"idrefEntryDetails": {
 		"title": "Détails de l'entrée IdRef",
