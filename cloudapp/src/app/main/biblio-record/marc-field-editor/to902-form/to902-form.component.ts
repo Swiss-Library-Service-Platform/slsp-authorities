@@ -3,11 +3,11 @@ import { Component, computed, DestroyRef, effect, inject, input, signal } from '
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NzBibRecord } from '../../../../models/bib-record.model';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { FormValues } from '../model';
+import { FormValues } from '../../../../models/search-form.model';
 import { AlertService, CloudAppEventsService, CloudAppSettingsService } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
 import { Settings } from '../../../../models/settings.model';
-import { IdrefService } from '../../../../services/idref.service';
+import { SelectedBibFieldService } from '../../../../services/selected-bib-field.service';
 import { BibRecordFieldModifierService } from '../bib-record-field-modifier.service';
 
 export enum to902$$aFields {
@@ -29,7 +29,7 @@ export class To902FormComponent {
 	public to902Purpose = Object.values(to902$$aFields);
 
 	private bibRecordFieldModifierService = inject(BibRecordFieldModifierService);
-	private idrefService = inject(IdrefService);
+	private selectedBibFieldService = inject(SelectedBibFieldService);
 	private settingsService = inject(CloudAppSettingsService);
 	private eventService = inject(CloudAppEventsService);
 	private translate = inject(TranslateService);
@@ -39,7 +39,7 @@ export class To902FormComponent {
 
 	public readonly searchMode902 = this.bibRecordFieldModifierService.searchMode902;
 	public readonly searchMode = this.bibRecordFieldModifierService.searchMode;
-	public readonly selectedFieldFromBibRecord = this.idrefService.selectedFieldFromBibRecord;
+	public readonly selectedFieldFromBibRecord = this.selectedBibFieldService.selectedFieldFromBibRecord;
 	public userSignature = signal('');
 	public IZCode = signal('');
 

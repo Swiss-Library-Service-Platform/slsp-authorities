@@ -1,21 +1,31 @@
 /* eslint-disable @typescript-eslint/member-ordering */
-import { AfterViewInit, Component, DestroyRef, ElementRef, ViewChild, effect, inject, input } from '@angular/core';
+import {
+	AfterViewInit,
+	Component,
+	DestroyRef,
+	ElementRef,
+	OnDestroy,
+	ViewChild,
+	effect,
+	inject,
+	input,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { distinctUntilChanged } from 'rxjs';
 import { NzBibRecord } from '../../../../models/bib-record.model';
-import { IdrefService } from '../../../../services/idref.service';
-import { IdrefRecordService } from '../../../entity-detail/idref-record/idref-record.service';
+import { SelectedBibFieldService } from '../../../../services/selected-bib-field.service';
+import { IdrefQueryBuilderService } from '../../../entity-detail/idref-search-results/idref-query-builder.service';
 import { MatDialog } from '@angular/material/dialog';
 import { CreationWarningModalComponent } from '../../creation-warning-modal/creation-warning-modal.component';
 import { BibRecordFieldModifierService } from '../bib-record-field-modifier.service';
 
 @Component({
-	selector: 'app-main-form',
-	templateUrl: './main-form.component.html',
-	styleUrl: './main-form.component.scss',
+	selector: 'app-marc-field-form',
+	templateUrl: './marc-field-form.component.html',
+	styleUrl: './marc-field-form.component.scss',
 })
-export class MainFormComponent implements AfterViewInit {
+export class MarcFieldFormComponent implements AfterViewInit, OnDestroy {
 	public entity = input.required<NzBibRecord | undefined>();
 
 	public searchForm: FormGroup;
@@ -23,19 +33,22 @@ export class MainFormComponent implements AfterViewInit {
 	private lastHighlightedValue: string | null = null;
 	private highlightFramePending = false;
 	@ViewChild('subfieldsTextarea') private subfieldsTextarea?: ElementRef<HTMLTextAreaElement>;
+	@ViewChild('subfieldsWrapper') private subfieldsWrapper?: ElementRef<HTMLElement>;
+	private subfieldsResizeObserver?: ResizeObserver;
 
 
-	private idrefService = inject(IdrefService);
+	private selectedBibFieldService = inject(SelectedBibFieldService);
 	private bibRecordFieldModifierService = inject(BibRecordFieldModifierService);
-	private idrefRecordService = inject(IdrefRecordService);
+	private idrefQueryBuilder = inject(IdrefQueryBuilderService);
 	private fb = inject(FormBuilder);
 	private destroyRef = inject(DestroyRef);
 	private dialog = inject(MatDialog);
 
 	public readonly searchMode = this.bibRecordFieldModifierService.searchMode;
 	public readonly isTo902FormVisible = this.bibRecordFieldModifierService.isTo902FormVisible;
-	public readonly selectedFieldFromBibRecord = this.idrefService.selectedFieldFromBibRecord;
-	public readonly flattenedValue = this.idrefService.flattenedValue;
+	public readonly isTo880FormVisible = this.bibRecordFieldModifierService.isTo880FormVisible;
+	public readonly selectedFieldFromBibRecord = this.selectedBibFieldService.selectedFieldFromBibRecord;
+	public readonly flattenedValue = this.selectedBibFieldService.flattenedValue;
 	public readonly formResetNonce = this.bibRecordFieldModifierService.formResetNonce;
 
 	public constructor() {
@@ -75,7 +88,12 @@ export class MainFormComponent implements AfterViewInit {
 	}
 
 	public ngAfterViewInit(): void {
+		this.initSubfieldsResizeObserver();
 		this.scheduleSubfieldsRender();
+	}
+
+	public ngOnDestroy(): void {
+		this.subfieldsResizeObserver?.disconnect();
 	}
 
 	public onSubfieldsInput(event: Event): void {
@@ -83,8 +101,6 @@ export class MainFormComponent implements AfterViewInit {
 	}
 
 	private scheduleSubfieldsRender(event?: Event): void {
-		this.autoResizeSubfields(event);
-
 		if (this.highlightFramePending) {
 			return;
 		}
@@ -92,8 +108,23 @@ export class MainFormComponent implements AfterViewInit {
 		this.highlightFramePending = true;
 		requestAnimationFrame(() => {
 			this.highlightFramePending = false;
+			this.autoResizeSubfields(event);
 			this.updateSubfieldsHighlight();
 		});
+	}
+
+	private initSubfieldsResizeObserver(): void {
+		const wrapper = this.subfieldsWrapper?.nativeElement;
+
+		if (!wrapper) {
+			return;
+		}
+
+		this.subfieldsResizeObserver = new ResizeObserver(() => {
+			this.scheduleSubfieldsRender();
+		});
+
+		this.subfieldsResizeObserver.observe(wrapper);
 	}
 
 	public autoResizeSubfields(event?: Event): void {
@@ -143,7 +174,7 @@ export class MainFormComponent implements AfterViewInit {
 		};
 
 		this.bibRecordFieldModifierService.setSelectedFieldFromBibRecord(values);
-		this.idrefRecordService.searchFromCurrentEntryContext();
+		this.idrefQueryBuilder.searchFromCurrentEntryContext();
 	}
 
 	public addRecord(): void {
@@ -168,6 +199,10 @@ export class MainFormComponent implements AfterViewInit {
 
 	public showTo902(): void {
 		this.bibRecordFieldModifierService.showTo902();
+	}
+
+	public showTo880(): void {
+		this.bibRecordFieldModifierService.showTo880();
 	}
 
 	public clear(): void {

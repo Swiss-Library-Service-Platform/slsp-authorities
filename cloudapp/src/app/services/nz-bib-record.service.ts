@@ -8,18 +8,18 @@ import { Observable, switchMap, catchError, of, throwError, take, tap, EMPTY } f
 import { NzBibRecord, DataField, BibRecordField } from '../models/bib-record.model';
 import { AuthenticationService } from './authentication.service';
 import { HttpClient } from '@angular/common/http';
-import { RecordService } from './record.service';
-import { StringUtils } from '../utils/stringUtils';
+import { SelectedEntityStateService } from './selected-entity-state.service';
+import { StringUtils } from '../utils/string-utils';
 import { InitService } from './init.service';
 
 @Injectable({
 	providedIn: 'root',
 })
-export class NZQueryService {
+export class NzBibRecordService {
 	private authenticationService = inject(AuthenticationService);
 	private restService = inject(CloudAppRestService);
 	private http = inject(HttpClient);
-	private recordService = inject(RecordService);
+	private selectedEntityState = inject(SelectedEntityStateService);
 	private initService = inject(InitService);
 	private proxyUrl: string | undefined;
 
@@ -47,7 +47,7 @@ export class NZQueryService {
 	): Observable<NzBibRecord> {
 		return this.authenticationService.ensureAccess$().pipe(
 			switchMap(() => {
-				const entity = this.recordService.selectedEntity();
+				const entity = this.selectedEntityState.selectedEntity();
 
 				if (!entity) {
 					return throwError(() => new Error('Aucune entité sélectionnée.'));
@@ -87,7 +87,7 @@ export class NZQueryService {
 	public createFieldIfNotExists(updatedDataField: DataField): Observable<NzBibRecord> {
 		return this.authenticationService.ensureAccess$().pipe(
 			switchMap(() => {
-				const entity = this.recordService.selectedEntity();
+				const entity = this.selectedEntityState.selectedEntity();
 
 				if (!entity) {
 					return throwError(() => new Error('Aucune entité sélectionnée.'));
@@ -117,10 +117,118 @@ export class NZQueryService {
 		);
 	}
 
+	/**
+	 * In a single GET→modify→PUT cycle:
+	 * 1. Find originalFieldRef in the record and replace it with originalFieldUpdated (e.g. with $$6 added)
+	 * 2. Append newField (e.g. the 880 field) to the record
+	 */
+	public createFieldWithLinkedModification(
+		originalFieldRef: BibRecordField,
+		originalFieldUpdated: DataField,
+		newField: DataField
+	): Observable<NzBibRecord> {
+		return this.authenticationService.ensureAccess$().pipe(
+			switchMap(() => {
+				const entity = this.selectedEntityState.selectedEntity();
+
+				if (!entity) {
+					return throwError(() => new Error('Aucune entité sélectionnée.'));
+				}
+
+				return this.getNzMmsIdFromEntity(entity);
+			}),
+			switchMap((nzMmsId) =>
+				this.http
+					.get<NzBibRecord>(this.buildBibUrl(nzMmsId), this.authenticationService.getHttpOptions())
+					.pipe(
+						switchMap((bib) => {
+							const marcRecord = StringUtils.xmlToMarcRecord(bib.anies[0]);
+							const index = marcRecord.dataFields.findIndex((field) =>
+								StringUtils.areDataFieldsEqual(field, originalFieldRef)
+							);
+
+							if (index === -1) {
+								return throwError(() => new Error('FIELD_NOT_FOUND'));
+							}
+
+							marcRecord.dataFields[index] = originalFieldUpdated;
+							marcRecord.dataFields.push(newField);
+
+							const updatedMarcXml = StringUtils.marcRecordToXml(marcRecord);
+
+							return this.http.put<NzBibRecord>(
+								this.buildBibUrl(nzMmsId),
+								`<bib>${updatedMarcXml}</bib>`,
+								this.authenticationService.getXmlHttpOptions()
+							);
+						})
+					)
+			)
+		);
+	}
+
+	/**
+	 * Delete multiple fields and optionally modify a linked field in one PUT.
+	 * Used for $$6 cascade: delete 880 + clean up $$6 in original, or delete original + all linked 880s.
+	 */
+	public deleteBibRecordWithCascade(
+		fieldsToDelete: BibRecordField[],
+		fieldToModify?: { original: BibRecordField; replacement: DataField }
+	): Observable<NzBibRecord> {
+		return this.authenticationService.ensureAccess$().pipe(
+			switchMap(() => {
+				const entity = this.selectedEntityState.selectedEntity();
+
+				if (!entity) {
+					return throwError(() => new Error('Aucune entité sélectionnée.'));
+				}
+
+				return this.getNzMmsIdFromEntity(entity);
+			}),
+			switchMap((nzMmsId) =>
+				this.http
+					.get<NzBibRecord>(this.buildBibUrl(nzMmsId), this.authenticationService.getHttpOptions())
+					.pipe(
+						switchMap((bib) => {
+							const marcRecord = StringUtils.xmlToMarcRecord(bib.anies[0]);
+
+							for (const toDelete of fieldsToDelete) {
+								const idx = marcRecord.dataFields.findIndex((field) =>
+									StringUtils.areDataFieldsEqual(field, toDelete)
+								);
+
+								if (idx !== -1) {
+									marcRecord.dataFields.splice(idx, 1);
+								}
+							}
+
+							if (fieldToModify) {
+								const modIdx = marcRecord.dataFields.findIndex((field) =>
+									StringUtils.areDataFieldsEqual(field, fieldToModify.original)
+								);
+
+								if (modIdx !== -1) {
+									marcRecord.dataFields[modIdx] = fieldToModify.replacement;
+								}
+							}
+
+							const updatedMarcXml = StringUtils.marcRecordToXml(marcRecord);
+
+							return this.http.put<NzBibRecord>(
+								this.buildBibUrl(nzMmsId),
+								`<bib>${updatedMarcXml}</bib>`,
+								this.authenticationService.getXmlHttpOptions()
+							);
+						})
+					)
+			)
+		);
+	}
+
 	public deleteBibRecord(selectedEntry: BibRecordField): Observable<NzBibRecord> {
 		return this.authenticationService.ensureAccess$().pipe(
 			switchMap(() => {
-				const entity = this.recordService.selectedEntity();
+				const entity = this.selectedEntityState.selectedEntity();
 
 				if (!entity) {
 					return throwError(() => new Error('Aucune entité sélectionnée.'));
@@ -147,14 +255,14 @@ export class NZQueryService {
 	}
 
 	public refreshSelectedEntityDetails$(): Observable<NzBibRecord> {
-		const entity = this.recordService.selectedEntity();
+		const entity = this.selectedEntityState.selectedEntity();
 
 		if (!entity) {
 			return EMPTY;
 		}
 
 		return this.getBibRecord(entity).pipe(
-			tap((bib) => this.recordService.selectedEntityDetails.set(bib))
+			tap((bib) => this.selectedEntityState.selectedEntityDetails.set(bib))
 		);
 	}
 

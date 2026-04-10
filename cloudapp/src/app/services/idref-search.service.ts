@@ -1,5 +1,5 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { IdrefRecords } from '../models/idref-model';
+import { IdrefRecords } from '../models/idref.model';
 import { Observable, take, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
@@ -9,7 +9,7 @@ import { Settings } from '../models/settings.model';
 @Injectable({
 	providedIn: 'root',
 })
-export class SearchResultService {
+export class IdrefSearchService {
 	public idrefResult = signal<IdrefRecords | undefined>(undefined);
 	private searchRowNumber = 10;
 	private http = inject(HttpClient);

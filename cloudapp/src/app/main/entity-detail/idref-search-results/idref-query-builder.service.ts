@@ -1,26 +1,26 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 import { Injectable, inject, Signal, computed, signal } from '@angular/core';
-import { Doc, IDREF_FILTER_MAP, IDREF_RECORDTYPE_MAP } from '../../../models/idref.model';
-import { IdrefService } from '../../../services/idref.service';
+import { ALL_INDEXES_KEY, Doc, IDREF_FILTER_MAP, IDREF_RECORDTYPE_MAP } from '../../../models/idref.model';
+import { SelectedBibFieldService } from '../../../services/selected-bib-field.service';
 import { BibRecordField } from '../../../models/bib-record.model';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
 import { catchError, EMPTY } from 'rxjs';
-import { SearchResultService } from '../../../services/search-result.service';
+import { IdrefSearchService } from '../../../services/idref-search.service';
 import { AuthorityDetailsService } from '../idref-entry-details/authority-details.service';
 
 @Injectable({
 	providedIn: 'root',
 })
-export class IdrefRecordService {
-	private searchResultService = inject(SearchResultService);
-	private idrefService = inject(IdrefService);
+export class IdrefQueryBuilderService {
+	private idrefSearchService = inject(IdrefSearchService);
+	private selectedBibFieldService = inject(SelectedBibFieldService);
 	private authorityDetailsService = inject(AuthorityDetailsService);
 	private alert = inject(AlertService);
 	private translate = inject(TranslateService);
 
 	// Données du formulaire.
-	public formSearchIndex = signal<string>('all');
+	public formSearchIndex = signal<string>(ALL_INDEXES_KEY);
 	public formConstructedQuery = signal<string>('');
 	public formIsStrictSearch = signal<boolean>(false);
 
@@ -28,7 +28,7 @@ export class IdrefRecordService {
 		const suffixe = this.formIsStrictSearch() ? '_s' : '_t';
 		const searchIndex = IDREF_FILTER_MAP.get(this.formSearchIndex());
 
-		if (searchIndex !== 'all') {
+		if (searchIndex !== ALL_INDEXES_KEY) {
 			return `${searchIndex}${suffixe}`;
 		} else {
 			return searchIndex;
@@ -40,7 +40,7 @@ export class IdrefRecordService {
 	 */
 	public buildQueryInputValue(): Signal<string> {
 		return computed(() => {
-			const filterValues = this.idrefService.selectedFieldFromBibRecord()?.subfields;
+			const filterValues = this.selectedBibFieldService.selectedFieldFromBibRecord()?.subfields;
 			const $$aValue = filterValues?.find((value) => value.code === 'a')?.value ?? '';
 			const $$dValue = filterValues?.find((value) => value.code === 'd')?.value ?? '';
 			const $$bValue = filterValues?.find((value) => value.code === 'b')?.value ?? '';
@@ -56,7 +56,7 @@ export class IdrefRecordService {
 	public setFormValuesFromEntry(): void {
 
 		// Récupère les valeurs calculées à partir des signaux.
-		const searchIndex = this.idrefService.getMarcStructure()?.label ?? '';
+		const searchIndex = this.selectedBibFieldService.getMarcStructure()?.label ?? '';
 		const constructedQueryValue = this.buildQueryInputValue()();
 
 		this.searchFromFormValues(searchIndex, constructedQueryValue);
@@ -76,7 +76,7 @@ export class IdrefRecordService {
 
 		const query = this.buildQueryFromFormValues(searchIndex, constructedQuery);
 
-		this.searchResultService
+		this.idrefSearchService
 			.searchFromQuery$(query)
 			.pipe(
 				catchError(() => {
@@ -89,7 +89,7 @@ export class IdrefRecordService {
 	}
 
 	public searchFromCurrentEntryContext(): void {
-		const searchIndex = this.idrefService.getMarcStructure()?.label ?? '';
+		const searchIndex = this.selectedBibFieldService.getMarcStructure()?.label ?? '';
 		const constructedQueryValue = this.buildQueryInputValue()();
 
 		this.searchFromFormValues(searchIndex, constructedQueryValue);
@@ -127,7 +127,7 @@ export class IdrefRecordService {
 	 * Met à jour l'entry sélectionnée avec le PPN fourni
 	 */
 	public updateSelectedEntryWithPPN(doc: Doc): void {
-		const selectedEntry = this.idrefService.selectedFieldFromBibRecord();
+		const selectedEntry = this.selectedBibFieldService.selectedFieldFromBibRecord();
 		const ppn_z = doc.ppn_z;
 		const affcourt_z = doc.affcourt_z;
 
@@ -187,11 +187,11 @@ export class IdrefRecordService {
 		};
 
 		// Met à jour le signal.
-		this.idrefService.selectedFieldFromBibRecord.set(newEntry);
+		this.selectedBibFieldService.selectedFieldFromBibRecord.set(newEntry);
 	}
 
 	public reset(): void {
-		this.formSearchIndex.set('all');
+		this.formSearchIndex.set(ALL_INDEXES_KEY);
 		this.formConstructedQuery.set('');
 	}
 }

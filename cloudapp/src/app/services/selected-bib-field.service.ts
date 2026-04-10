@@ -2,7 +2,7 @@ import { computed, Injectable, signal } from '@angular/core';
 import { MARC_STRUCTURE, MarcStructureValues } from '../models/idref.model';
 import { BibRecordField } from '../models/bib-record.model';
 @Injectable({ providedIn: 'root' })
-export class IdrefService {
+export class SelectedBibFieldService {
 	public selectedFieldFromBibRecord = signal<BibRecordField | undefined>(undefined);
 
 	// Concaténation des sous-champs en une chaîne unique.

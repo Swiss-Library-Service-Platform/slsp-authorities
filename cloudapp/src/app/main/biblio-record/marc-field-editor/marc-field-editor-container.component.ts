@@ -4,13 +4,14 @@ import { BibRecordFieldModifierService } from './bib-record-field-modifier.servi
 
 
 @Component({
-	selector: 'app-search',
-	templateUrl: './search.component.html',
-	styleUrls: ['./search.component.scss'],
+	selector: 'app-marc-field-editor-container',
+	templateUrl: './marc-field-editor-container.component.html',
+	styleUrls: ['./marc-field-editor-container.component.scss'],
 })
-export class SearchComponent {
+export class MarcFieldEditorContainerComponent {
 
 	public entity = input.required<NzBibRecord | undefined>();
 	public isTo902FormVisible = inject(BibRecordFieldModifierService).isTo902FormVisible;
+	public isTo880FormVisible = inject(BibRecordFieldModifierService).isTo880FormVisible;
 	public searchMode902 = inject(BibRecordFieldModifierService).searchMode902;
 }

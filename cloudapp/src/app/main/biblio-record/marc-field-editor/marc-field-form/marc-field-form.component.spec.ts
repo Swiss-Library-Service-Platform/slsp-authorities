@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SearchComponent } from './search.component';
+import { MarcFieldFormComponent } from './marc-field-form.component';
 
-describe('SearchComponent', () => {
-  let component: SearchComponent;
-  let fixture: ComponentFixture<SearchComponent>;
+describe('MarcFieldFormComponent', () => {
+  let component: MarcFieldFormComponent;
+  let fixture: ComponentFixture<MarcFieldFormComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SearchComponent]
+      imports: [MarcFieldFormComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(SearchComponent);
+    fixture = TestBed.createComponent(MarcFieldFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

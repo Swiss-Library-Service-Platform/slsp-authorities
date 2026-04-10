@@ -1,43 +1,28 @@
 {
 	"main": {
 		"rightIssue": "You didn't have rights in order to use this cloud app",
-		"actionMessage": "Demo",
-		"actionButtonLabel": "Primary-Action",
-		"detailsButtonLabel": "Details",
+		"showCompleteRecord": "Show complete record",
+		"showBriefRecord": "Show brief record",
 		"resetButtonLabel": "Reset",
-		"noEntities": "No entities",
-		"searchButtonLabel": "Idref search",
-		"idrefLogoAlt": "IdRef logo",
-		"noActiveRecordInMetadataEditor": "No active record, please open a bibliographical record in the Metadata editor",
-		"entity": {
-			"description": "Description",
-			"id": "Id",
-			"type": "Type",
-			"link": "Link"
-		},
-		"acceptRefreshModal": "Warning ! Don't forget to click on the accept refresh."
+		"noActiveRecordInMetadataEditor": "No active record, please open a bibliographical record in the Metadata editor"
 	},
 	"error": {
-		"httpError": "There is an error with the http request",
 		"eventServiceError": "There is an error with the event service of Alma, there is no entities or details to display",
 		"catalogerRoleError": "You need cataloger role in order to use this cloud app",
 		"institutionAllowedError": "Your institution isn't allowed to use this cloud app",
-		"noSelectedEntry": "There is no selected entry",
 		"proxyErrorMmsIdNotFound": "An error occurred, there is no record corresponding to the mms_id: {{0}} in the NZ"
 	},
 	"search":{
 		"addToRecord": "Add",
-		"to902": "To 902",
 		"clear": "Clear",
-		"notImplemented": "Not implemented yet",
 		"noSelectedEntry": "There is no selected entry",
 		"recordAdded": "The record has been updated.",
 		"acceptRefreshModal": "Warning ! Don't forget to click on the accept refresh.",
 		"deleteNotAllowed": "You can't delete this type of field.",
 		"updateNotAllowed": "You can't update this type of field.",
 		"updateRecord": "Update",
-		"hideTo902": "Hide",
 		"showTo902": "Create 902",
+		"showTo880": "Create 880",
 		"mode": {
 			"addField": "Add field",
 			"update": "Update field"
@@ -46,18 +31,24 @@
 			"add902": "Create 902",
 			"update902": "Update 902"
 		},
+		"mode880": {
+			"create880": "Create 880"
+		},
 		"form": {
 			"tagPlaceholder": "tag",
 			"subfieldsPlaceholder": "subfields",
 			"error": {
 				"emptyTag": "Tag is required.",
-				"no$$0In6xx": "This field has no IdRef identifier. Do you really want to add it?",
 				"no$$2With$$0In6xx": "Subfield $$2 idref is missing. Please correct it before inserting the field."
 			},
 			"warning": {
 				"missingIdrefIdentifier": "This field has no IdRef identifier. Do you really want to add it?"
 			}
 
+		},
+		"to880": {
+			"subfieldsLabel": "Subfields",
+			"subfield6Hint": "$$6 {{value}} will be added to the original field."
 		},
 		"to902": {
 			"predefined": {
@@ -69,24 +60,20 @@
 				"emptySignature": "User signature is empty, please fill it in the settings."
 			}
 		}
-
 	},
 	"biblioRecord":{
-		"title": "Authority related fields",
-		"notImplemented": "Not implemented yet"
+		"title": "Authority related fields"
 	},
 	"idrefRecord":{
 		"title": "Idref search",
 		"select": "Select",
 		"noIdrefAuthority": "There is no authority record linked to this PPN.",
-		"paginatorNext": "next page",
 		"NoCurrentSearch": "There are no search results yet.",
 		"view": "View",
 		"isStrictSearch": "Strict",
 		"queryPlaceholder": "query",
-		"selectPageAria": "Select page",
 		"searchIndex": {
-			"all": "All",
+			"all": "All indexes",
 			"person": "Person",
 			"collectivity": "Collectivity",
 			"congress": "Conference",
@@ -107,7 +94,9 @@
 	},
 	"deleteDialog": {
 		"title": "Validate delete",
-		"content": "Are you sure you want to delete this record?",
+		"content": "Are you sure you want to delete this field?",
+		"cascade880": "The $$6 link will be removed from the following field:",
+		"cascadeOriginal": "The following linked 880 fields will also be deleted:",
 		"no": "Cancel",
 		"ok": "Delete"
 	},
@@ -124,7 +113,6 @@
 		"generalTitle": "General user settings",
 		"pageSize": "Page size",
 		"searchRowNumber": "IdRef query size",
-		"proxyUrl": "Proxy URL",
 		"userSignature": "User Signature",
 		"save": "Save",
 		"remove": "Remove",

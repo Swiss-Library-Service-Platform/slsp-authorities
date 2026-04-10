@@ -1,25 +1,25 @@
-@use "../search.shared";
+@use "../marc-field-editor.shared";
 
-.to902-box {
+.to880-box {
     position: relative;
     padding: 10px;
-    background-color: #f3e5f5;
+    background-color: #e0f2f1;
     border-radius: 4px;
-    border-left: 4px solid #ab47bc;
+    border-left: 4px solid #00897b;
 }
 
-.to902-box h3 {
+.to880-box h3 {
     margin: 0 0 8px 0;
     font-size: 15px;
     font-weight: bold;
 }
 
-.to902-box p {
+.to880-box p {
     color: #666;
     font-size: 14px;
 }
 
-.to902-header {
+.to880-header {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -40,7 +40,7 @@
     text-align: left;
 }
 
-.to902-row {
+.to880-row {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
@@ -48,7 +48,7 @@
     width: 100%;
 }
 
-.to902-tag {
+.to880-tag {
     margin-right: 5px;
     flex: 0 0 auto;
     width: calc(3ch + 10px);
@@ -58,14 +58,14 @@
     padding-right: 0;
 }
 
-.to902-userSignature {
+.to880-subfield6 {
     margin-right: 5px;
     flex: 0 0 auto;
-    width: calc(4ch + 10px);
-    min-width: calc(4ch + 10px);
+    width: calc(10ch + 10px);
+    min-width: calc(10ch + 10px);
 }
 
-.to902-ind {
+.to880-ind {
     flex: 0 0 auto;
     width: calc(1ch + 10px);
     min-width: calc(1ch + 10px);
@@ -74,8 +74,8 @@
     padding-right: 0;
 }
 
-.to902-label {
-    color: black;;
+.to880-label {
+    color: black;
     margin-left: 2px;
     margin-right: 2px;
     flex: 0 0 auto;
@@ -85,20 +85,7 @@
     line-height: 1;
 }
 
-.to902-select {
-    flex: 1 1 auto;
-    min-width: 0;
-    min-height: 28px;
-    height: 28px;
-    padding: 4px 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 14px;
-    line-height: 1;
-    box-sizing: border-box;
-}
-
-.to902-textarea {
+.to880-textarea {
     flex: 1 1 auto;
     min-width: 0;
     width: 100%;
@@ -114,17 +101,17 @@
     resize: vertical;
 }
 
-.to902-subfield-row {
+.to880-subfield-row {
     width: 100%;
     flex-wrap: nowrap;
     align-items: center;
 }
 
-.to902-subfield-row .to902-textarea {
+.to880-subfield-row .to880-textarea {
     width: auto;
 }
 
-.to902-close-button {
+.to880-close-button {
     margin-left: auto;
     flex: 0 0 auto;
     width: 32px !important;
@@ -132,6 +119,13 @@
     min-width: 32px !important;
     padding: 0;
     line-height: 32px;
+}
+
+.to880-hint {
+    font-size: 0.85em;
+    color: #00695c;
+    margin-top: 4px;
+    font-style: italic;
 }
 
 .button-section {
@@ -149,10 +143,10 @@
     flex: 0 0 auto;
 }
 
-.to902-row input,
-.to902-row .to902-tag,
-.to902-row .to902-ind,
-.to902-row .to902-userSignature {
+.to880-row input,
+.to880-row .to880-tag,
+.to880-row .to880-ind,
+.to880-row .to880-subfield6 {
     height: 28px;
     padding: 4px 0;
     box-sizing: border-box;
@@ -162,15 +156,15 @@
     vertical-align: middle;
 }
 
-.to902-row > * {
+.to880-row > * {
     margin: 0;
     vertical-align: middle;
 }
 
 input:disabled {
-    background-color: #f0f0f0; /* Fond gris clair */
-    color: #808080;             /* Texte gris */
-    border: 1px solid #ccc;     /* Bordure */
+    background-color: #f0f0f0;
+    color: #808080;
+    border: 1px solid #ccc;
 }
 
 .tag {
@@ -186,12 +180,10 @@ input:disabled {
 
   .subfield {
     color: rgb(0, 0, 255);
-    // width: 3em;
   }
 
 @media (max-width: 900px) {
-        .to902-select,
-        .to902-userSignature {
+        .to880-subfield6 {
                 flex: 1 1 100%;
                 width: 100%;
         }

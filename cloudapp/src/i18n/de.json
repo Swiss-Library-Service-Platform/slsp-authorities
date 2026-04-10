@@ -1,40 +1,26 @@
 {
 	"main": {
 		"rightIssue": "Sie haben keine Berechtigung, diese Cloud App zu verwenden",
-		"actionMessage": "Demo",
-		"actionButtonLabel": "Primär-Aktion",
-		"detailsButtonLabel": "Details",
+		"showCompleteRecord": "Vollansicht",
+		"showBriefRecord": "Kurzansicht",
 		"resetButtonLabel": "Zurücksetzen",
-		"noEntities": "Keine Elemente",
-		"searchButtonLabel": "Idref-Suche",
-		"idrefLogoAlt": "IdRef-Logo",
-		"noActiveRecordInMetadataEditor": "Kein aktiver Datensatz, bitte öffnen Sie einen bibliografischen Datensatz im Metadaten-Editor.",
-		"entity": {
-			"description": "Beschreibung",
-			"id": "Id",
-			"type": "Typ",
-			"link": "Link"
-		},
-		"acceptRefreshModal": "Achtung! Vergessen Sie nicht, auf 'Aktualisierung akzeptieren' zu klicken."
+		"noActiveRecordInMetadataEditor": "Kein aktiver Datensatz, bitte öffnen Sie einen bibliografischen Datensatz im Metadaten-Editor."
 	},
 	"error": {
-		"httpError": "Bei der HTTP-Anfrage ist ein Fehler aufgetreten",
-		"proxyErrorMmsIdNotFound": "REST-API-Fehler: {{0}}",
+		"eventServiceError": "Beim Event-Service von Alma ist ein Fehler aufgetreten, es sind keine Entitäten oder Details vorhanden",
+		"proxyErrorMmsIdNotFound": "Ein Fehler ist aufgetreten, es gibt keinen Datensatz mit der mms_id: {{0}} in der NZ",
 		"catalogerRoleError": "Sie benötigen die Katalogisiererrolle, um diese Cloud App zu verwenden",
-		"institutionAllowedError": "Ihre Institution ist nicht berechtigt, diese Cloud App zu verwenden",
-		"noSelectedEntry": "Kein Eintrag ausgewählt"
+		"institutionAllowedError": "Ihre Institution ist nicht berechtigt, diese Cloud App zu verwenden"
 	},
 	"search": {
 		"addToRecord": "Hinzufügen",
-		"to902": "Zu 902",
 		"clear": "Löschen",
-		"notImplemented": "Noch nicht implementiert",
 		"noSelectedEntry": "Kein Eintrag ausgewählt",
 		"recordAdded": "Der Datensatz wurde aktualisiert.",
 		"acceptRefreshModal": "Achtung! Vergessen Sie nicht, auf 'Aktualisierung akzeptieren' zu klicken.",
 		"updateRecord": "Aktualisieren",
-		"hideTo902": "Ausblenden",
 		"showTo902": "902 erstellen",
+		"showTo880": "880 erstellen",
 		"mode": {
 			"addField": "Feld hinzufügen",
 			"update": "Feld aktualisieren"
@@ -43,17 +29,23 @@
 			"add902": "902 erstellen",
 			"update902": "902 aktualisieren"
 		},
+		"mode880": {
+			"create880": "880 erstellen"
+		},
 		"form": {
 			"tagPlaceholder": "Tag",
 			"subfieldsPlaceholder": "Unterfelder",
 			"error": {
 				"emptyTag": "Tag ist erforderlich.",
-				"no$$0In6xx": "Dieses Feld hat keine IdRef-Kennung. Möchten Sie es wirklich hinzufügen?",
 				"no$$2With$$0In6xx": "Unterfeld $$2 idref fehlt. Bitte korrigieren Sie es, bevor Sie das Feld einfügen."
 			},
 			"warning": {
 				"missingIdrefIdentifier": "Dieses Feld hat keine IdRef-Kennung. Möchten Sie es wirklich hinzufügen?"
 			}
+		},
+		"to880": {
+			"subfieldsLabel": "Unterfelder",
+			"subfield6Hint": "$$6 {{value}} wird dem Originalfeld hinzugefügt."
 		},
 		"to902": {
 			"predefined": {
@@ -64,21 +56,18 @@
 		}
 	},
 	"biblioRecord": {
-		"title": "Autoritätsbezogene Felder",
-		"notImplemented": "Noch nicht implementiert"
+		"title": "Autoritätsbezogene Felder"
 	},
 	"idrefRecord": {
 		"title": "Idref-Suche",
 		"select": "Auswählen",
 		"noIdrefAuthority": "Mit dieser PPN ist kein Normdatensatz verknüpft.",
-		"paginatorNext": "nächste Seite",
 		"NoCurrentSearch": "Es liegen noch keine Suchergebnisse vor.",
 		"view": "Anzeigen",
 		"isStrictSearch": "Strikt",
 		"queryPlaceholder": "Suchanfrage",
-		"selectPageAria": "Seite auswählen",
 		"searchIndex": {
-			"all": "Alle",
+			"all": "Alle Indexe",
 			"person": "Person",
 			"collectivity": "Körperschaft",
 			"congress": "Kongress",
@@ -99,7 +88,9 @@
 	},
 	"deleteDialog": {
 		"title": "Löschen bestätigen",
-		"content": "Möchten Sie diesen Datensatz wirklich löschen?",
+		"content": "Möchten Sie dieses Feld wirklich löschen?",
+		"cascade880": "Die $$6-Verknüpfung wird aus dem folgenden Feld entfernt:",
+		"cascadeOriginal": "Die folgenden verknüpften 880-Felder werden ebenfalls gelöscht:",
 		"no": "Abbrechen",
 		"ok": "Löschen"
 	},
@@ -114,9 +105,8 @@
 	"settings": {
 		"return": "Zurück",
 		"generalTitle": "Allgemeine Einstellungen",
-		"pageSize": "Seitengröße",
+		"pageSize": "Anzahl der Ergebnisse pro Seite",
 		"searchRowNumber": "IdRef-Abfragegröße",
-		"proxyUrl": "Proxy-URL",
 		"userSignature": "Benutzersignatur",
 		"save": "Speichern",
 		"remove": "Entfernen",

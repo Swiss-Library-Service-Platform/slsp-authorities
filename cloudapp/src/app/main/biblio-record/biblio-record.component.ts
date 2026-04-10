@@ -3,16 +3,17 @@ import { MatDialog } from '@angular/material/dialog';
 import { DeleteDialogComponent } from './delete-dialog/delete-dialog.component';
 import { BibRecordField } from '../../models/bib-record.model';
 import { MARC_STRUCTURE_KEY } from '../../models/idref.model';
-import { BiblioReferencedEntryService } from '../../services/biblio-referenced-entry.service';
-import { IdrefService } from '../../services/idref.service';
-import { SearchMode, SearchMode902 } from './search/model';
-import { IdrefRecordService } from '../entity-detail/idref-record/idref-record.service';
+import { EditingFieldBackupService } from '../../services/editing-field-backup.service';
+import { SelectedBibFieldService } from '../../services/selected-bib-field.service';
+import { SearchMode, SearchMode902 } from '../../models/search-form.model';
+import { IdrefQueryBuilderService } from '../entity-detail/idref-search-results/idref-query-builder.service';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
 import { BiblioRecordMarcService } from './domain/biblio-record-marc.service';
-import { StringUtils } from '../../utils/stringUtils';
-import { RecordService } from '../../services/record.service';
-import { BibRecordFieldModifierService } from './search/bib-record-field-modifier.service';
+import { StringUtils } from '../../utils/string-utils';
+import { SubfieldSixLinkUtils } from '../../utils/subfield-six-link-utils';
+import { SelectedEntityStateService } from '../../services/selected-entity-state.service';
+import { BibRecordFieldModifierService } from './marc-field-editor/bib-record-field-modifier.service';
 
 // Composant d'affichage des notices bibliographiques provenant de la NZ.
 @Component({
@@ -22,14 +23,14 @@ import { BibRecordFieldModifierService } from './search/bib-record-field-modifie
 })
 export class BiblioRecordComponent {
 	public lastSavedSelectedBibRecordField: BibRecordField | null = null;
-	public selectedEntityDetails = computed(() => this.recordService.selectedEntityDetails());
+	public selectedEntityDetails = computed(() => this.selectedEntityState.selectedEntityDetails());
 	public dialog = inject(MatDialog);
 	private readonly idrefAllowedTags = new Set(MARC_STRUCTURE_KEY);
 	private bibRecordFieldModifierService = inject(BibRecordFieldModifierService);
-	private idrefService = inject(IdrefService);
-	private referenceCurrentField = inject(BiblioReferencedEntryService);
-	private idrefRecordService = inject(IdrefRecordService);
-	private recordService = inject(RecordService);
+	private selectedBibFieldService = inject(SelectedBibFieldService);
+	private editingFieldBackup = inject(EditingFieldBackupService);
+	private idrefQueryBuilder = inject(IdrefQueryBuilderService);
+	private selectedEntityState = inject(SelectedEntityStateService);
 	private alertService = inject(AlertService);
 	private translate = inject(TranslateService);
 	private marcService = inject(BiblioRecordMarcService);
@@ -37,10 +38,11 @@ export class BiblioRecordComponent {
 	public readonly highlightedUpdatedField = this.bibRecordFieldModifierService.highlightedUpdatedField;
 	// Signaux des tags MARC autorisés.
 	private allowedTags = signal(MARC_STRUCTURE_KEY);
+	public isCompleteView = computed(() => this.allowedTags().length > 0);
 
 	// eslint-disable-next-line @typescript-eslint/member-ordering
 	public  bibRecordFieldsFromSelectedEntityDetails = computed(() => {
-			const anie = this.recordService.selectedEntityDetails()?.anies[0];
+			const anie = this.selectedEntityState.selectedEntityDetails()?.anies[0];
 
 			if(typeof anie === 'string'){
 				return this.marcService.updateMarcFields(anie, this.allowedTags());
@@ -58,19 +60,29 @@ export class BiblioRecordComponent {
 		return this.marcService.getMarcRowStatusClass(entry, this.idrefAllowedTags);
 	}
 
-	public isUpdatedField(entry: BibRecordField): boolean {
-		const updatedField = this.highlightedUpdatedField();
+	public getEditIcon(bibRecordField: BibRecordField): string {
+		const statusClass = this.getMarcRowStatusClass(bibRecordField);
 
-		if (!updatedField) {
-			return false;
-		}
+		return statusClass === 'marc-row--status-other' ? 'search' : 'edit';
+	}
 
-		return StringUtils.areDataFieldsEqual(updatedField, entry);
+	public isFullRowHighlight(entry: BibRecordField): boolean {
+		return this.highlightedUpdatedField().some(
+			(h) => h.mode === 'full' && StringUtils.areDataFieldsEqual(h.field, entry)
+		);
+	}
+
+	public isSubfieldHighlight(entry: BibRecordField, subfieldCode: string): boolean {
+		return this.highlightedUpdatedField().some(
+			(h) => h.mode === 'subfield-only'
+				&& h.subfieldCodes?.includes(subfieldCode)
+				&& StringUtils.areDataFieldsEqual(h.field, entry)
+		);
 	}
 
 	public pushToInput(bibRecordField: BibRecordField): void {
 		this.lastSavedSelectedBibRecordField = bibRecordField; //sauvegarde pour l'affichage
-		this.idrefService.selectedFieldFromBibRecord.set({ ...bibRecordField });
+		this.selectedBibFieldService.selectedFieldFromBibRecord.set({ ...bibRecordField });
 		this.bibRecordFieldModifierService.closeTo902();
 		this.bibRecordFieldModifierService.searchMode902.set(SearchMode902.Add902);
 
@@ -83,11 +95,11 @@ export class BiblioRecordComponent {
 	}
 
 	public saveCurrentEntry(bibRecordField: BibRecordField): void {
-		this.referenceCurrentField.setSavedCurrentEntry(bibRecordField);
+		this.editingFieldBackup.setSavedCurrentEntry(bibRecordField);
 	}
 
 	public searchIdref(): void {
-		this.idrefRecordService.setFormValuesFromEntry();
+		this.idrefQueryBuilder.setFormValuesFromEntry();
 	}
 
 	public deleteField(bibRecordField: BibRecordField): void {
@@ -97,13 +109,43 @@ export class BiblioRecordComponent {
 			return;
 		}
 
+		const allDataFields = this.getCurrentDataFields();
+		let linked880Fields: BibRecordField[] = [];
+		let linkedOriginalField: BibRecordField | null = null;
+
+		if (bibRecordField.tag === '880') {
+			const original = SubfieldSixLinkUtils.findLinkedOriginalField(bibRecordField, allDataFields);
+
+			if (original) {
+				const sibling880s = SubfieldSixLinkUtils.findLinked880Fields(original, allDataFields);
+
+				if (sibling880s.length <= 1) {
+					linkedOriginalField = { ...original, change: '' } as BibRecordField;
+				}
+			}
+		} else if (SubfieldSixLinkUtils.hasSubfield6(bibRecordField)) {
+			linked880Fields = SubfieldSixLinkUtils.findLinked880Fields(bibRecordField, allDataFields)
+				.map((f) => ({ ...f, change: '' }) as BibRecordField);
+		}
+
 		const dialogRef = this.dialog.open(DeleteDialogComponent, {
-			width: '50px',
-			data: { bibRecordField },
+			width: '500px',
+			data: { bibRecordField, linked880Fields, linkedOriginalField },
 		});
 
-		// Aucune action supplémentaire après la fermeture du dialogue.
 		dialogRef.afterClosed().subscribe();
+	}
+
+	private getCurrentDataFields(): BibRecordField[] {
+		const anie = this.selectedEntityState.selectedEntityDetails()?.anies[0];
+
+		if (typeof anie !== 'string') {
+			return [];
+		}
+
+		return StringUtils.xmlToMarcRecord(anie).dataFields.map(
+			(f) => ({ ...f, change: '' }) as BibRecordField
+		);
 	}
 
 	// Met à jour la liste des tags affichés.
