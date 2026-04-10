@@ -1,12 +1,8 @@
 {
    "id": "slsp-authorities",
-   "title": "SLSPAuthorities",
-   "subtitle": "Alma cloudapp that aims to simplify cataloguing workflows that are currently hindered by the architecture of the IdRef-integration into Alma. ",
+   "title": "SLSP Authorities",
+   "subtitle": "Alma cloudapp that aims to simplify cataloguing workflows that are currently hindered by the architecture of the IdRef-integration into Alma.",
    "author": "SLSP",
-   "relevantForInst": [
-      "41SLSP_HPH",
-      "41SLSP_UGE"
-   ],
    "icon": {
       "type": "url",
       "value": "/assets/logo_text_left.png"
