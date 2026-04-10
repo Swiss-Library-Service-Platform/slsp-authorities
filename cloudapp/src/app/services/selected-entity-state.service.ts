@@ -12,5 +12,6 @@ export class SelectedEntityStateService {
 
 	public resetSelectedEntity(): void {
 		this.selectedEntity.set(null);
+		this.selectedEntityDetails.set(undefined);
 	}
 }

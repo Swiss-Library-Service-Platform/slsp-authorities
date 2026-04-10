@@ -311,6 +311,7 @@ export class BibRecordFieldModifierService {
     this.isTo880FormVisible.set(false);
     this.searchMode902.set(SearchMode902.Add902);
     this.searchMode.set(SearchMode.AddField);
+    this.highlightedUpdatedField.set([]);
     this.selectedBibFieldService.reset();
     this.idrefSearchService.reset();
     this.authorityDetailsService.reset();

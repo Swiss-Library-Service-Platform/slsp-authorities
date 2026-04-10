@@ -8,7 +8,7 @@
 	},
 	"error": {
 		"eventServiceError": "Beim Event-Service von Alma ist ein Fehler aufgetreten, es sind keine Entitäten oder Details vorhanden",
-		"proxyErrorMmsIdNotFound": "REST-API-Fehler: {{0}}",
+		"proxyErrorMmsIdNotFound": "Ein Fehler ist aufgetreten, es gibt keinen Datensatz mit der mms_id: {{0}} in der NZ",
 		"catalogerRoleError": "Sie benötigen die Katalogisiererrolle, um diese Cloud App zu verwenden",
 		"institutionAllowedError": "Ihre Institution ist nicht berechtigt, diese Cloud App zu verwenden"
 	},

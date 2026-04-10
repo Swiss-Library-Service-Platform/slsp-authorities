@@ -118,9 +118,12 @@ export class MainFacadeService {
 		this.nzBibRecordService
 			.refreshSelectedEntityDetails$()
 			.pipe(
-				catchError((error) => {
+				catchError(() => {
+					const mmsId = this.selectedEntityState.selectedEntity()?.id ?? '';
+
+					this.selectedEntityState.resetSelectedEntity();
 					this.alert.error(
-						this.translate.instant('error.proxyErrorMmsIdNotFound', [this.extractErrorMessage(error)]),
+						this.translate.instant('error.proxyErrorMmsIdNotFound', [mmsId]),
 						{ autoClose: false }
 					);
 
@@ -129,13 +132,5 @@ export class MainFacadeService {
 				finalize(() => this.loader.hide())
 			)
 			.subscribe();
-	}
-
-	private extractErrorMessage(error: unknown): string {
-		if (error instanceof Error && error.message) {
-			return error.message;
-		}
-
-		return String(error);
 	}
 }
