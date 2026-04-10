@@ -69,7 +69,6 @@
 		"select": "Select",
 		"noIdrefAuthority": "There is no authority record linked to this PPN.",
 		"NoCurrentSearch": "There are no search results yet.",
-		"view": "View",
 		"isStrictSearch": "Strict",
 		"queryPlaceholder": "query",
 		"searchIndex": {

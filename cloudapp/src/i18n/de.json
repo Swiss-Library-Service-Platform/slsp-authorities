@@ -63,7 +63,6 @@
 		"select": "Auswählen",
 		"noIdrefAuthority": "Mit dieser PPN ist kein Normdatensatz verknüpft.",
 		"NoCurrentSearch": "Es liegen noch keine Suchergebnisse vor.",
-		"view": "Anzeigen",
 		"isStrictSearch": "Strikt",
 		"queryPlaceholder": "Suchanfrage",
 		"searchIndex": {

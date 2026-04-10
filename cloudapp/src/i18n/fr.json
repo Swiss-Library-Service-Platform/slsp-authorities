@@ -66,7 +66,6 @@
 		"select": "Sélectionner",
 		"noIdrefAuthority": "Aucune notice d'autorité n'est liée à ce PPN.",
 		"NoCurrentSearch": "Il n'y a pas encore de résultats de recherche.",
-		"view": "Voir",
 		"isStrictSearch": "Stricte",
 		"queryPlaceholder": "requête",
 		"searchIndex": {
