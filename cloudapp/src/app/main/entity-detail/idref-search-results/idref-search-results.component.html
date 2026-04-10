@@ -27,7 +27,10 @@
 				<div
 					class="idrefmarc-row"
 					[class.idrefmarc-row--active]="doc === selectedDoc"
-					aria-hidden="true"
+					tabindex="0"
+					role="button"
+					(click)="showDetails(doc.ppn_z); selectedDoc = doc"
+					(keydown.enter)="showDetails(doc.ppn_z); selectedDoc = doc"
 				>
 					<div class="idrefmarc-column">
 						<mat-icon color="primary" [svgIcon]="iconMap.get(doc.recordtype_z) ?? ''"></mat-icon>
@@ -39,7 +42,7 @@
 						<span class="value">{{ doc.affcourt_z }}</span>
 					</div>
 					<div class="idrefmarc-column idrefmarc-column--actions">
-						<button color="primary" (click)="pushTobiblioRecordForm(doc); selectedDoc = doc">
+						<button color="primary" (click)="$event.stopPropagation(); pushTobiblioRecordForm(doc); selectedDoc = doc">
 							{{ 'idrefRecord.select' | translate }}
 						</button>
 						<button color="primary" (click)="showDetails(doc.ppn_z); selectedDoc = doc">
