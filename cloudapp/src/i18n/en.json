@@ -1,6 +1,6 @@
 {
 	"main": {
-		"rightIssue": "You didn't have rights in order to use this cloud app",
+		"rightIssue": "You do not have the required permissions to use this Cloud App",
 		"showCompleteRecord": "Show complete record",
 		"showBriefRecord": "Show brief record",
 		"resetButtonLabel": "Reset",
