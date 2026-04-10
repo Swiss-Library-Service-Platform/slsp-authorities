@@ -84,7 +84,7 @@
 	},
 	"deleteDialog": {
 		"title": "Validate delete",
-		"content": "Are you sure you want to delete this record?",
+		"content": "Are you sure you want to delete this field?",
 		"cascade880": "The $$6 link will be removed from the following field:",
 		"cascadeOriginal": "The following linked 880 fields will also be deleted:",
 		"no": "Cancel",

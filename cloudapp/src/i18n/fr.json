@@ -80,7 +80,7 @@
 	},
 	"deleteDialog": {
 		"title": "Confirmer la suppression",
-		"content": "Êtes-vous sûr de vouloir supprimer cette notice ?",
+		"content": "Êtes-vous sûr de vouloir supprimer ce champ ?",
 		"cascade880": "Le lien $$6 sera supprimé du champ suivant :",
 		"cascadeOriginal": "Les champs 880 liés suivants seront également supprimés :",
 		"no": "Annuler",
@@ -97,7 +97,7 @@
 	"settings": {
 		"return": "Retour",
 		"generalTitle": "Paramètres généraux",
-		"pageSize": "Taille de page",
+		"pageSize": "Nombre de résultats par page",
 		"searchRowNumber": "Taille de la requête IdRef",
 		"userSignature": "Signature utilisateur",
 		"save": "Enregistrer",
